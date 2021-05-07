@@ -1,0 +1,25 @@
+
+export interface ProcessResultOptions {
+  stdout: string;
+  stderr: string;
+  combined: string;
+  status: Deno.ProcessStatus;
+}
+
+export class ProcessResult {
+  readonly stdout: string;
+  readonly stderr: string;
+  readonly combined: string;
+  readonly status: Deno.ProcessStatus;
+
+  constructor({ stdout, stderr, combined, status }: ProcessResultOptions) {
+    this.stdout = stdout;
+    this.stderr = stderr;
+    this.combined = combined;
+    this.status = status;
+  }
+
+  toString(): string {
+    return this.combined;
+  }
+}
