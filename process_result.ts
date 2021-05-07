@@ -1,4 +1,3 @@
-
 export interface ProcessResultOptions {
   stdout: string;
   stderr: string;
