@@ -107,7 +107,7 @@ Set the current shel.
 
 Set the current working directory.
 
-### `` $`command` ``
+### ``$`command` ``
 
 ```ts
 const count = parseInt(await $`ls -1 | wc -l`);
@@ -152,8 +152,7 @@ try {
 
 ### `cd()`
 
-The global available cd method to sets the current working directory. Also
-available on the global `$` symbol.
+Set the current working directory. Also available on the global `$` symbol.
 
 ### `$.[style]()`
 
