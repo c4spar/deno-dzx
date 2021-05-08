@@ -36,9 +36,6 @@ export class ProcessError extends Error {
     this.stderr = stderr;
     this.combined = combined;
     this.status = status;
-  }
-
-  toString(): string {
-    return this.combined;
+    this.message = combined;
   }
 }
