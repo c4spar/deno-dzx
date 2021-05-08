@@ -1,9 +1,11 @@
-import type { $ as DZX } from "./mod.ts";
+import type { $ } from "./mod.ts";
 
 declare global {
-  const $: DZX;
+  const $: $;
+  const cd: typeof $.cd;
 
   interface Window {
-    $: DZX;
+    $: $;
+    cd: typeof $.cd;
   }
 }

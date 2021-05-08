@@ -5,6 +5,7 @@ import { ProcessError } from "./src/process_error.ts";
 import { $ } from "./mod.ts";
 
 window.$ = $;
+window.cd = $.cd;
 
 const script: string | undefined = Deno.args[0];
 
@@ -21,7 +22,10 @@ try {
         Deno.exit(2);
       }
     }
-  } else if (script.startsWith("http://") || script.startsWith("https://")) {
+  } else if (
+    script.startsWith("http://") || script.startsWith("https://") ||
+    script.startsWith("file://")
+  ) {
     await import(script);
   } else if (script) {
     await import("file://" + join($.cwd, script));
