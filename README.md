@@ -107,34 +107,24 @@ Set the current shel.
 
 Set the current working directory.
 
-### $`command`
+### `` $`command` ``
 
 ```ts
 const count = parseInt(await $`ls -1 | wc -l`);
 console.log(`Files count: ${count}`);
 ```
 
-#### Error Handling
-
-If the executed program returns a non-zero exit code, a `ProcessError` will be
-thrown.
-
-```ts
-try {
-  await $`exit 1`;
-} catch (p) {
-  console.log(`Exit code: ${p.exitCode}`);
-  console.log(`Error: ${p.stderr}`);
-}
-```
-
 #### `ProcessOutput`
+
+If the executed program was successful, an instance of `ProcessOutput` will be
+return.
 
 ```ts
 class ProcessOutput {
   readonly stdout: string;
   readonly stderr: string;
-  readonly statud: Deno.RunStatus;
+  readonly combined: string;
+  readonly status: Deno.ProcessStatus;
   toString(): string;
 }
 ```
@@ -142,23 +132,35 @@ class ProcessOutput {
 #### `ProcessError`
 
 The `ProcessError` class extends from the `Error` class and implements all
-properties and methods from the `ProcessOutput`.
+properties and methods from `ProcessOutput`.
 
 ```ts
 class ProcessError extends Error implements ProcessOutput {}
 ```
 
+If the executed program returns a non-zero exit code, a `ProcessError` will be
+thrown.
+
+```ts
+try {
+  await $`exit 1`;
+} catch (process) {
+  console.log(`Exit code: ${process.status.code}`);
+  console.log(`Error: ${process.stderr}`);
+}
+```
+
 ### `cd()`
 
-Global available cd method to set the current working directory. Also available
-on the global `$` symbol.
+The global available cd method to sets the current working directory. Also
+available on the global `$` symbol.
 
 ### `$.[style]()`
 
 dzx has chainable color methods that are available on the global `$` symbol.
 
 ```ts
-console.log($.blue("Hello world!"));
+console.log($.blue.bold("Hello world!"));
 ```
 
 ## Remote usage
