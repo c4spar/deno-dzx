@@ -1,5 +1,5 @@
 import { DZX } from "./types.d.ts";
-import { colors, iter } from "./deps.ts";
+import { colors, iter, join } from "./deps.ts";
 import { ProcessResult } from "./process_result.ts";
 
 const $: DZX = exec as DZX;
@@ -12,7 +12,7 @@ window.$ = $;
 const script: string | undefined = Deno.args[0];
 
 if (script) {
-  await import(script);
+  await import(join(Deno.cwd(), script));
 } else {
   console.error("missing script");
   Deno.exit(0);
