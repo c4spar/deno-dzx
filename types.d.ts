@@ -5,6 +5,7 @@ type DZX = typeof exec & typeof colors & {
   verbose: boolean;
   cwd: string;
   shell: string;
+  cd: (path: string) => void;
 };
 
 declare global {
