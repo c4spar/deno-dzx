@@ -14,7 +14,7 @@
     <img alt="Licence" src="https://img.shields.io/github/license/c4spar/deno-dzx?logo=github" />
   </a>
   <a href="https://deno.land/x/dzx">
-    <img alt="Discord" src="https://img.shields.io/badge/deno.land/x/dzx-blue?logo=deno&logoColor=959DA6&color=272727" />
+    <img alt="deno.land" src="https://img.shields.io/badge/deno.land/x/dzx-blue?logo=deno&logoColor=959DA6&color=272727" />
   </a>
 </p>
 
