@@ -1,20 +1,21 @@
 /// <reference path="./types.d.ts" />
 
-import { join, readAll } from "./deps.ts";
+import { readAll } from "./deps.ts";
+import { join } from "./deps.ts";
 import { ProcessError } from "./src/process_error.ts";
 import { $ } from "./mod.ts";
 
 window.$ = $;
 
-const script: string | undefined = Deno.args[0];
+let script: string | undefined = Deno.args[0];
 
 try {
   if (!script) {
     if (!Deno.isatty(Deno.stdin.rid)) {
-      const data = new TextDecoder().decode(await readAll(Deno.stdin));
-      if (data) {
+      script = new TextDecoder().decode(await readAll(Deno.stdin));
+      if (script) {
         await import(
-          `data:application/typescript,${encodeURIComponent(data)}`
+          `data:application/typescript,${encodeURIComponent(script)}`
         );
       } else {
         console.error(`usage: dzx <script>`);
@@ -24,9 +25,8 @@ try {
   } else if (script.startsWith("http://") || script.startsWith("https://")) {
     await import(script);
   } else if (script) {
-    await import(join($.cwd, script));
-    // const data = await Deno.readTextFile(join($.cwd, script));
-    // await import(`data:application/typescript,${encodeURIComponent(data)}`);
+    const data = await Deno.readTextFile(join($.cwd, script));
+    await import(`data:application/typescript,${encodeURIComponent(data)}`);
   } else {
     console.error(`usage: dzx <script>`);
     Deno.exit(1);
