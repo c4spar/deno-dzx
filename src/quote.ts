@@ -1,5 +1,3 @@
-import { escapeStr } from "../deps.ts";
-
 export function quote(
   pieces: TemplateStringsArray,
   ...args: Array<string | number>
@@ -8,7 +6,7 @@ export function quote(
   let i = 0;
   for (; i < args.length; i++) {
     if (typeof args[i] === "string") {
-      parsed += escapeStr(args[i] as string) + pieces[i + 1];
+      parsed += $.quote(args[i] as string) + pieces[i + 1];
     } else {
       parsed += args[i] + pieces[i + 1];
     }

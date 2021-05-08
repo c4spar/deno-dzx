@@ -38,7 +38,7 @@ await Promise.all([
 ]);
 
 const name = "foo bar";
-await $`mkdir /tmp/${name}`;
+await $`mkdir /tmp/${name}`; // <-- string will be safly quoted to: /tmp/'foo bar'
 ```
 
 ## Content
@@ -107,6 +107,10 @@ Set the current shel.
 
 Set the current working directory.
 
+### `$.quote`
+
+Parser method that is used to safely quote strings. Used by: ``$`command` ``
+
 ### ``$`command` ``
 
 ```ts
@@ -152,7 +156,7 @@ try {
 
 ### `cd()`
 
-Set the current working directory. Also available on the global `$` symbol.
+Set the current working directory. If path does not exist, an error is thrown.
 
 ### `$.[style]()`
 
@@ -161,6 +165,11 @@ dzx has chainable color methods that are available on the global `$` symbol.
 ```ts
 console.log($.blue.bold("Hello world!"));
 ```
+
+### ``quote`string` ``
+
+The quote methods quotes safly a string. by default the `shq` package is used.
+Can be overidden with `$.quote`.
 
 ## Remote usage
 

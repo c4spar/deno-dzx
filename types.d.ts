@@ -1,11 +1,13 @@
-import type { $ } from "./mod.ts";
+import type { $, cd as _cd, quote as _quote } from "./mod.ts";
 
 declare global {
   const $: $;
-  const cd: typeof $.cd;
+  const cd: typeof _cd;
+  const quote: typeof _quote;
 
   interface Window {
     $: $;
-    cd: typeof $.cd;
+    cd: typeof _cd;
+    quote: typeof _quote;
   }
 }
