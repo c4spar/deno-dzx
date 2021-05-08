@@ -1,3 +1,4 @@
+import { encode } from "./deps.ts";
 import { DZX } from "./types.d.ts";
 import { colors, iter, join } from "./deps.ts";
 import { ProcessResult } from "./process_result.ts";
@@ -12,7 +13,9 @@ window.$ = $;
 const script: string | undefined = Deno.args[0];
 
 if (script) {
-  await import(join(Deno.cwd(), script));
+  const url = join(Deno.cwd(), script);
+  const content = await Deno.readTextFile(url);
+  await import(`data:application/typescript;base64,${encode(content)}`);
 } else {
   console.error("missing script");
   Deno.exit(0);
