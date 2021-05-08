@@ -2,8 +2,9 @@ import { exec } from "./dzx.ts";
 import { colors } from "./deps.ts";
 
 type DZX = typeof exec & typeof colors & {
-  verbose?: boolean;
-  cwd?: string;
+  verbose: boolean;
+  cwd: string;
+  shell: string;
 };
 
 declare global {

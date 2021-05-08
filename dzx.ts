@@ -1,24 +1,47 @@
-import { encode } from "./deps.ts";
+import { readAll } from "./deps.ts";
 import { DZX } from "./types.d.ts";
 import { colors, iter, join } from "./deps.ts";
-import { ProcessResult } from "./process_result.ts";
+import { ProcessError, ProcessResult } from "./process_result.ts";
 
 const $: DZX = exec as DZX;
 
 Object.setPrototypeOf($, Object.getPrototypeOf(colors));
 $._stack = [];
+$.shell = "/bin/sh";
+$.verbose = false;
+$.cwd = Deno.cwd();
 
 window.$ = $;
 
-const script: string | undefined = Deno.args[0];
+let script: string | undefined = Deno.args[0];
 
-if (script) {
-  const url = join(Deno.cwd(), script);
-  const content = await Deno.readTextFile(url);
-  await import(`data:application/typescript;base64,${encode(content)}`);
-} else {
-  console.error("missing script");
-  Deno.exit(0);
+try {
+  if (!script) {
+    if (!Deno.isatty(Deno.stdin.rid)) {
+      script = new TextDecoder().decode(await readAll(Deno.stdin));
+      if (script) {
+        await import(
+          `data:application/typescript,${encodeURIComponent(script)}`
+        );
+      } else {
+        console.error(`usage: dzx <script>`);
+        Deno.exit(2);
+      }
+    }
+  } else if (script.startsWith("http://") || script.startsWith("https://")) {
+    await import(script);
+  } else if (script) {
+    const data = await Deno.readTextFile(join($.cwd, script));
+    await import(`data:application/typescript,${encodeURIComponent(data)}`);
+  } else {
+    console.error(`usage: dzx <script>`);
+    Deno.exit(1);
+  }
+} catch (error) {
+  if (error instanceof ProcessError) {
+    console.error(error);
+  }
+  throw error;
 }
 
 export async function exec(
@@ -41,10 +64,11 @@ export async function exec(
   const stderr: Array<string> = [];
   const combined: Array<string> = [];
   const process = Deno.run({
-    cmd: cmd.split(/\s+/),
+    cmd: [$.shell, "-c", cmd],
+    cwd: $.cwd,
+    env: Deno.env.toObject(),
     stdout: "piped",
     stderr: "piped",
-    cwd: $.cwd,
   });
 
   const [status] = await Promise.all([
@@ -53,11 +77,16 @@ export async function exec(
     read(process.stderr, stderr, combined),
   ]);
 
-  if (!status.success) {
-    throw new Error(stderr.join(""));
+  if (status.success) {
+    return new ProcessResult({
+      stdout: stdout.join(""),
+      stderr: stderr.join(""),
+      combined: combined.join(""),
+      status,
+    });
   }
 
-  return new ProcessResult({
+  throw new ProcessError({
     stdout: stdout.join(""),
     stderr: stderr.join(""),
     combined: combined.join(""),
