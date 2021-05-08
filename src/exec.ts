@@ -1,14 +1,19 @@
-import { iter } from "../deps.ts";
+import { escape, iter } from "../deps.ts";
 import { ProcessError } from "./process_error.ts";
 import { ProcessOutput } from "./process_output.ts";
 
 export async function exec(
   pieces: TemplateStringsArray,
-  ...args: Array<unknown>
+  ...args: Array<string | number>
 ): Promise<ProcessOutput> {
-  let cmd = pieces[0], i = 0;
+  let cmd = pieces[0];
+  let i = 0;
   for (; i < args.length; i++) {
-    cmd += args[i] + pieces[i + 1];
+    if (typeof args[i] === "string") {
+      cmd += escape(args[i] as string) + pieces[i + 1];
+    } else {
+      cmd += args[i] + pieces[i + 1];
+    }
   }
   for (++i; i < pieces.length; i++) {
     cmd += pieces[i];
