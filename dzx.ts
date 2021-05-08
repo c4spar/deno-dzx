@@ -24,9 +24,7 @@ try {
   } else if (script.startsWith("http://") || script.startsWith("https://")) {
     await import(script);
   } else if (script) {
-    // await import(join($.cwd, script));
-    const data = await Deno.readTextFile(join($.cwd, script));
-    await import(`data:application/typescript,${encodeURIComponent(data)}`);
+    await import("file://" + join($.cwd, script));
   } else {
     console.error(`usage: dzx <script>`);
     Deno.exit(1);
