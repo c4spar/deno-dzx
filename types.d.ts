@@ -1,12 +1,4 @@
-import { exec } from "./dzx.ts";
-import { colors } from "./deps.ts";
-
-type DZX = typeof exec & typeof colors & {
-  verbose: boolean;
-  cwd: string;
-  shell: string;
-  cd: (path: string) => void;
-};
+import { $ as DZX } from "./mod.ts";
 
 declare global {
   const $: DZX;
