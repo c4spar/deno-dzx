@@ -1,4 +1,4 @@
-import { $ as DZX } from "./mod.ts";
+import type { $ as DZX } from "./mod.ts";
 
 declare global {
   const $: DZX;

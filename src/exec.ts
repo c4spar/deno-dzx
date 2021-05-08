@@ -1,4 +1,3 @@
-import { $ } from "../mod.ts";
 import { iter } from "../deps.ts";
 import { ProcessError } from "./process_error.ts";
 import { ProcessOutput } from "./process_output.ts";

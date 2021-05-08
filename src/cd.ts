@@ -1,5 +1,3 @@
-import { $ } from "../mod.ts";
-
 export function cd(path: string) {
   if ($.verbose) {
     console.log($.brightBlue("$ %s"), `cd ${path}`);
