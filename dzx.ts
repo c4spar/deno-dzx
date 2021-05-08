@@ -1,54 +1,55 @@
 import { readAll } from "./deps.ts";
 import { DZX } from "./types.d.ts";
 import { colors, iter, join } from "./deps.ts";
-import { ProcessError, ProcessResult } from "./process_result.ts";
 
-const $: DZX = exec as DZX;
+async function main(): Promise<void> {
+  const $: DZX = exec as DZX;
 
-Object.setPrototypeOf($, Object.getPrototypeOf(colors));
-$._stack = [];
-$.shell = "/bin/sh";
-$.verbose = false;
-$.cwd = Deno.cwd();
-$.cd = cd;
+  Object.setPrototypeOf($, Object.getPrototypeOf(colors));
+  $._stack = [];
+  $.shell = "/bin/sh";
+  $.verbose = false;
+  $.cwd = Deno.cwd();
+  $.cd = cd;
 
-window.$ = $;
+  window.$ = $;
 
-let script: string | undefined = Deno.args[0];
+  let script: string | undefined = Deno.args[0];
 
-try {
-  if (!script) {
-    if (!Deno.isatty(Deno.stdin.rid)) {
-      script = new TextDecoder().decode(await readAll(Deno.stdin));
-      if (script) {
-        await import(
-          `data:application/typescript,${encodeURIComponent(script)}`
-        );
-      } else {
-        console.error(`usage: dzx <script>`);
-        Deno.exit(2);
+  try {
+    if (!script) {
+      if (!Deno.isatty(Deno.stdin.rid)) {
+        script = new TextDecoder().decode(await readAll(Deno.stdin));
+        if (script) {
+          await import(
+            `data:application/typescript,${encodeURIComponent(script)}`
+          );
+        } else {
+          console.error(`usage: dzx <script>`);
+          Deno.exit(2);
+        }
       }
+    } else if (script.startsWith("http://") || script.startsWith("https://")) {
+      await import(script);
+    } else if (script) {
+      const data = await Deno.readTextFile(join($.cwd, script));
+      await import(`data:application/typescript,${encodeURIComponent(data)}`);
+    } else {
+      console.error(`usage: dzx <script>`);
+      Deno.exit(1);
     }
-  } else if (script.startsWith("http://") || script.startsWith("https://")) {
-    await import(script);
-  } else if (script) {
-    const data = await Deno.readTextFile(join($.cwd, script));
-    await import(`data:application/typescript,${encodeURIComponent(data)}`);
-  } else {
-    console.error(`usage: dzx <script>`);
-    Deno.exit(1);
+  } catch (error) {
+    if (error instanceof ProcessError) {
+      console.error(error);
+    }
+    throw error;
   }
-} catch (error) {
-  if (error instanceof ProcessError) {
-    console.error(error);
-  }
-  throw error;
 }
 
 export async function exec(
   pieces: TemplateStringsArray,
   ...args: Array<unknown>
-): Promise<ProcessResult> {
+): Promise<ProcessOutput> {
   let cmd = pieces[0], i = 0;
   for (; i < args.length; i++) {
     cmd += args[i] + pieces[i + 1];
@@ -79,7 +80,7 @@ export async function exec(
   ]);
 
   if (status.success) {
-    return new ProcessResult({
+    return new ProcessOutput({
       stdout: stdout.join(""),
       stderr: stderr.join(""),
       combined: combined.join(""),
@@ -93,18 +94,6 @@ export async function exec(
     combined: combined.join(""),
     status,
   });
-}
-
-async function read(
-  reader: Deno.Reader,
-  ...results: Array<Array<string>>
-) {
-  for await (const chunk of iter(reader)) {
-    const str = new TextDecoder().decode(chunk);
-    for (const result of results) {
-      result.push(str);
-    }
-  }
 }
 
 export function cd(path: string) {
@@ -131,3 +120,59 @@ export function cd(path: string) {
 
   $.cwd = path;
 }
+
+async function read(
+  reader: Deno.Reader,
+  ...results: Array<Array<string>>
+) {
+  for await (const chunk of iter(reader)) {
+    const str = new TextDecoder().decode(chunk);
+    for (const result of results) {
+      result.push(str);
+    }
+  }
+}
+
+export interface ProcessOutputOptions {
+  stdout: string;
+  stderr: string;
+  combined: string;
+  status: Deno.ProcessStatus;
+}
+
+export class ProcessOutput {
+  readonly stdout: string;
+  readonly stderr: string;
+  readonly combined: string;
+  readonly status: Deno.ProcessStatus;
+
+  constructor({ stdout, stderr, combined, status }: ProcessOutputOptions) {
+    this.stdout = stdout;
+    this.stderr = stderr;
+    this.combined = combined;
+    this.status = status;
+  }
+
+  toString(): string {
+    return this.combined;
+  }
+}
+
+export class ProcessError extends Error {
+  readonly stdout: string;
+  readonly stderr: string;
+  readonly combined: string;
+  readonly status: Deno.ProcessStatus;
+
+  constructor({ stdout, stderr, combined, status }: ProcessOutputOptions) {
+    super();
+    Object.setPrototypeOf(this, ProcessError.prototype);
+    this.stdout = stdout;
+    this.stderr = stderr;
+    this.combined = combined;
+    this.status = status;
+    this.message = combined;
+  }
+}
+
+await main();
