@@ -56,12 +56,10 @@ deno install --allow-all -r -f https://deno.land/x/dzx/dzx.ts
 
 ## Documentation
 
-You can write your scripts in a file with .js, .mjs or .ts extension.
-
-Add next shebang at the beginning of your script:
+To start writing a dzx script, add next shebang at the beginning of your script:
 
 ```
-#!/usr/bin/env zx
+#!/usr/bin/env dzx
 ```
 
 Now you will be able to run your script as:
@@ -75,7 +73,7 @@ If you want to use typescript you need to add a tripple slash reference for the
 typings at the top of the file, but not before the shebang line.
 
 ```
-#!/usr/bin/env zx
+#!/usr/bin/env dzx
 /// <reference path="https://deno.land/x/dzx/types.d.ts" />
 ```
 
@@ -91,7 +89,7 @@ You can also import all symbol directly from `dzx/mod.ts` instead of using
 globals.
 
 ```ts
-#!/usr/bin/env zx
+#!/usr/bin/env dzx
 import { $ } from "https://deno.land/x/dzx/mod.ts";
 ```
 
