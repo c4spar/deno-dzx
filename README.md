@@ -107,6 +107,10 @@ Set the current shel.
 
 Set the current working directory.
 
+### `$.throwErrors`
+
+Throw error instead of calling `Deno.exit` on error.
+
 ### `$.quote`
 
 Parser method that is used to safely quote strings. Used by: ``$`command` ``
@@ -165,6 +169,15 @@ dzx has chainable color methods that are available on the global `$` symbol.
 ```ts
 console.log($.blue.bold("Hello world!"));
 ```
+
+### `parseFlags()`
+
+Deno's std/flags module for parsing command-line arguments.
+
+Global available types:
+
+- `ArgParsingOptions`
+- `Args`
 
 ### ``quote`string` ``
 
