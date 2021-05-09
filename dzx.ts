@@ -1,12 +1,13 @@
 /// <reference path="./types.d.ts" />
 
 import { join, readAll } from "./deps.ts";
-import { $, cd, quote } from "./mod.ts";
+import { $, cd, parseFlags, quote } from "./mod.ts";
 import { error } from "./src/_utils.ts";
 
 window.$ = $;
 window.cd = cd;
 window.quote = quote;
+window.parseFlags = parseFlags;
 
 const script: string | undefined = Deno.args[0];
 
