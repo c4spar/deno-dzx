@@ -8,6 +8,8 @@ export {
   writeAll,
   writeAllSync,
 } from "https://deno.land/std@0.95.0/io/util.ts";
+export { Buffer } from "https://deno.land/std@0.95.0/io/buffer.ts";
+export { readLines } from "https://deno.land/std@0.95.0/io/bufio.ts";
 export { default as escapeStr } from "https://esm.sh/shq@1.0.2";
 export { parse as parseFlags } from "https://deno.land/std@0.95.0/flags/mod.ts";
 export type {

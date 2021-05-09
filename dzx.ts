@@ -1,25 +1,32 @@
 /// <reference path="./types.d.ts" />
 
+import { join } from "./deps.ts";
+import { error } from "./src/_utils.ts";
 import {
+  $,
+  Buffer,
+  cd,
   iter,
   iterSync,
-  join,
+  parseFlags,
+  quote,
   readAll,
   readAllSync,
+  readLines,
   writeAll,
   writeAllSync,
-} from "./deps.ts";
-import { $, cd, parseFlags, quote } from "./mod.ts";
-import { error } from "./src/_utils.ts";
+} from "./mod.ts";
 
 window.$ = $;
+window.Buffer = Buffer;
 window.cd = cd;
-window.quote = quote;
-window.parseFlags = parseFlags;
 window.iter = iter;
 window.iterSync = iterSync;
+window.parseFlags = parseFlags;
+window.quote = quote;
 window.readAll = readAll;
 window.readAllSync = readAllSync;
+window.readLines = readLines;
 window.writeAll = writeAll;
 window.writeAllSync = writeAllSync;
 

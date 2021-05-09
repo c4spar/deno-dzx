@@ -1,10 +1,12 @@
 import {
+  Buffer,
   colors,
   escapeStr,
   iter,
   iterSync,
   readAll,
   readAllSync,
+  readLines,
   writeAll,
   writeAllSync,
 } from "./deps.ts";
@@ -33,6 +35,7 @@ $.quote = escapeStr;
 $.throwErors = false;
 
 export {
+  Buffer,
   cd,
   iter,
   iterSync,
@@ -40,6 +43,7 @@ export {
   quote,
   readAll,
   readAllSync,
+  readLines,
   writeAll,
   writeAllSync,
 };
