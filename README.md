@@ -172,9 +172,9 @@ console.log($.blue.bold("Hello world!"));
 
 ### `parseFlags()`
 
-Deno's std/flags module for parsing command-line arguments.
+Deno's `std/flags` module for parsing command-line arguments.
 
-Global available types:
+**Global available types:**
 
 - `ArgParsingOptions`
 - `Args`
