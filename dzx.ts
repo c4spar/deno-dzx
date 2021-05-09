@@ -1,34 +1,61 @@
 /// <reference path="./types.d.ts" />
 
-import { join } from "./deps.ts";
 import { error } from "./src/_utils.ts";
 import {
   $,
+  basename,
   Buffer,
   cd,
+  dirname,
+  extname,
+  fromFileUrl,
+  isAbsolute,
   iter,
   iterSync,
+  join,
+  normalize,
   parseFlags,
   quote,
   readAll,
   readAllSync,
   readLines,
+  relative,
+  resolve,
+  toFileUrl,
+  toNamespacedPath,
   writeAll,
   writeAllSync,
 } from "./mod.ts";
 
+// dzx
 window.$ = $;
-window.Buffer = Buffer;
 window.cd = cd;
+
+// std/io
+window.Buffer = Buffer;
 window.iter = iter;
 window.iterSync = iterSync;
-window.parseFlags = parseFlags;
 window.quote = quote;
 window.readAll = readAll;
 window.readAllSync = readAllSync;
 window.readLines = readLines;
 window.writeAll = writeAll;
 window.writeAllSync = writeAllSync;
+
+// std/path
+window.basename = basename;
+window.dirname = dirname;
+window.extname = extname;
+window.fromFileUrl = fromFileUrl;
+window.isAbsolute = isAbsolute;
+window.join = join;
+window.normalize = normalize;
+window.relative = relative;
+window.resolve = resolve;
+window.toFileUrl = toFileUrl;
+window.toNamespacedPath = toNamespacedPath;
+
+window.parseFlags = parseFlags;
 
 const script: string | undefined = Deno.args[0];
 
