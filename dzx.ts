@@ -1,6 +1,14 @@
 /// <reference path="./types.d.ts" />
 
-import { join, readAll } from "./deps.ts";
+import {
+  iter,
+  iterSync,
+  join,
+  readAll,
+  readAllSync,
+  writeAll,
+  writeAllSync,
+} from "./deps.ts";
 import { $, cd, parseFlags, quote } from "./mod.ts";
 import { error } from "./src/_utils.ts";
 
@@ -8,6 +16,12 @@ window.$ = $;
 window.cd = cd;
 window.quote = quote;
 window.parseFlags = parseFlags;
+window.iter = iter;
+window.iterSync = iterSync;
+window.readAll = readAll;
+window.readAllSync = readAllSync;
+window.writeAll = writeAll;
+window.writeAllSync = writeAllSync;
 
 const script: string | undefined = Deno.args[0];
 

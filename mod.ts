@@ -1,4 +1,13 @@
-import { colors, escapeStr } from "./deps.ts";
+import {
+  colors,
+  escapeStr,
+  iter,
+  iterSync,
+  readAll,
+  readAllSync,
+  writeAll,
+  writeAllSync,
+} from "./deps.ts";
 import { cd } from "./src/cd.ts";
 import { exec } from "./src/exec.ts";
 import { quote } from "./src/quote.ts";
@@ -23,4 +32,14 @@ $.cwd = Deno.cwd();
 $.quote = escapeStr;
 $.throwErors = false;
 
-export { cd, parseFlags, quote };
+export {
+  cd,
+  iter,
+  iterSync,
+  parseFlags,
+  quote,
+  readAll,
+  readAllSync,
+  writeAll,
+  writeAllSync,
+};
