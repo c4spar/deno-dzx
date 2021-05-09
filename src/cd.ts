@@ -1,3 +1,5 @@
+import { error } from "./_utils.ts";
+
 export function cd(path: string) {
   if ($.verbose) {
     console.log($.brightBlue("$ %s"), `cd ${path}`);
@@ -5,19 +7,15 @@ export function cd(path: string) {
 
   try {
     Deno.lstatSync(path);
-  } catch (error) {
-    if (error instanceof Deno.errors.NotFound) {
+  } catch (err) {
+    if (err instanceof Deno.errors.NotFound) {
       const stack: string = (new Error().stack!.split("at ")[2]).trim();
-      console.error(`cd: ${path}: No such directory`);
-      console.error(`  at ${stack}`);
-      Deno.exit(1);
-    } else if (error instanceof Deno.errors.PermissionDenied) {
+      error(`cd: ${path}: No such directory\n  at ${stack}`);
+    } else if (err instanceof Deno.errors.PermissionDenied) {
       const stack: string = (new Error().stack!.split("at ")[2]).trim();
-      console.error(`cd: ${path}: Permission denied`);
-      console.error(`  at ${stack}`);
-      Deno.exit(1);
+      error(`cd: ${path}: Permission denied\n  at ${stack}`);
     }
-    throw error;
+    error(err);
   }
 
   $.cwd = path;

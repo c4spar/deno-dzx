@@ -1,8 +1,8 @@
 /// <reference path="./types.d.ts" />
 
 import { join, readAll } from "./deps.ts";
-import { ProcessError } from "./src/process_error.ts";
 import { $, cd, quote } from "./mod.ts";
+import { error } from "./src/_utils.ts";
 
 window.$ = $;
 window.cd = cd;
@@ -19,9 +19,10 @@ try {
           `data:application/typescript,${encodeURIComponent(data)}`
         );
       } else {
-        console.error(`usage: dzx <script>`);
-        Deno.exit(2);
+        error(`usage: dzx <script>`, 2);
       }
+    } else {
+      error(`usage: dzx <script>`);
     }
   } else if (
     script.startsWith("http://") || script.startsWith("https://") ||
@@ -31,12 +32,8 @@ try {
   } else if (script) {
     await import("file://" + join($.cwd, script));
   } else {
-    console.error(`usage: dzx <script>`);
-    Deno.exit(1);
+    error(`usage: dzx <script>`);
   }
-} catch (error) {
-  if (error instanceof ProcessError) {
-    console.error(error);
-  }
-  throw error;
+} catch (err) {
+  error(err);
 }

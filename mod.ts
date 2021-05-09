@@ -8,11 +8,10 @@ export type $ = typeof exec & typeof colors & {
   cwd: string;
   shell: string;
   quote: typeof escapeStr;
+  throwErors: boolean;
 };
 
 export const $: $ = exec as $;
-
-export { quote };
 
 Object.setPrototypeOf($, Object.getPrototypeOf(colors));
 
@@ -21,5 +20,6 @@ $.shell = "/bin/sh";
 $.verbose = false;
 $.cwd = Deno.cwd();
 $.quote = escapeStr;
+$.throwErors = false;
 
-export { cd };
+export { cd, quote };
