@@ -54,13 +54,15 @@ await $`mkdir /tmp/${name}`; // <-- string will be safly quoted to: /tmp/'foo ba
 deno install --allow-all -r -f https://deno.land/x/dzx/dzx.ts
 ```
 
-## Documentation
+## Usage
 
 To start writing a dzx script, add next shebang at the beginning of your script:
 
 ```
 #!/usr/bin/env dzx
 ```
+
+### Javascript
 
 Now you will be able to run your script as:
 
@@ -69,12 +71,22 @@ chmod +x ./script.js
 ./script.js
 ```
 
-If you want to use typescript you need to add a tripple slash reference for the
-typings at the top of the file, but not before the shebang line.
+### Typescript
+
+If you want to use typescript you need to add a tripple slash reference to get
+global typings working.
 
 ```
 #!/usr/bin/env dzx
 /// <reference path="https://deno.land/x/dzx/types.d.ts" />
+```
+
+Or you can import all symbol directly from `dzx/mod.ts` instead of using
+globals.
+
+```ts
+#!/usr/bin/env dzx
+import { $, cd, parseFlags } from "https://deno.land/x/dzx/mod.ts";
 ```
 
 Now you will be able to run your typescript script the same way as your js
@@ -85,13 +97,19 @@ chmod +x ./script.ts
 ./script.ts
 ```
 
-You can also import all symbol directly from `dzx/mod.ts` instead of using
-globals.
+## Remote usage
 
-```ts
-#!/usr/bin/env dzx
-import { $ } from "https://deno.land/x/dzx/mod.ts";
+You can also use `dzx` directly without installation by using the following
+shebang. This also allows you to explicitly set the permissions.
+
+```typescript
+#!/usr/bin/env deno run --allow-run --allow-read --allow-env https://deno.land/x/dzx/dzx.ts
+/// <reference path="https://deno.land/x/dzx/types.d.ts" />
+
+console.log(`Hello ${$.blue.bold("world")}!`);
 ```
+
+## API
 
 ### `$.verbose`
 
@@ -181,15 +199,6 @@ Deno's `std/flags` module for parsing command-line arguments.
 
 The quote methods quotes safly a string. by default the `shq` package is used.
 Can be overidden with `$.quote`.
-
-## Remote usage
-
-```typescript
-#!/usr/bin/env deno run --allow-run --allow-read --allow-env https://deno.land/x/dzx/dzx.ts
-/// <reference path="https://deno.land/x/dzx/types.d.ts" />
-
-console.log(`Hello ${$.blue.bold("world")}!`);
-```
 
 ## Contributing
 
