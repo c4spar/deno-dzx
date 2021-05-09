@@ -44,7 +44,11 @@ await $`mkdir /tmp/${name}`; // <-- string will be safly quoted to: /tmp/'foo ba
 ## Content
 
 - [Install](#install)
-- [Documentation](#documentation)
+- [Usage](#usage)
+  - [Javascript](#javascript)
+  - [Typescript](#typescript)
+  - [Remote usage](#remote-usage)
+- [API](#api)
 - [Contributing](#contributing)
 - [License](#license)
 
@@ -97,10 +101,10 @@ chmod +x ./script.ts
 ./script.ts
 ```
 
-## Remote usage
+### Remote usage
 
 You can also use `dzx` directly without installation by using the following
-shebang. This also allows you to explicitly set the permissions.
+shebang. This also allows you to explicitly set the permissions for your script.
 
 ```typescript
 #!/usr/bin/env deno run --allow-run --allow-read --allow-env https://deno.land/x/dzx/dzx.ts
