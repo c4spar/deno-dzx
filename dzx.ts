@@ -1,9 +1,33 @@
 /// <reference path="./types.d.ts" />
 import { $, io, path } from "./mod.ts";
+import { bundle } from "./src/bundle.ts";
+import { compile } from "./src/compile.ts";
 import { error } from "./src/_utils.ts";
 
 if (import.meta.main) {
-  const script: string | undefined = Deno.args[0];
+  if (Deno.args[0] === "bundle") {
+    const script = Deno.args[Deno.args.length - 1];
+    console.log(
+      await bundle(script, new URL("./mod.ts", import.meta.url).href),
+    );
+    Deno.exit(0);
+  } else if (Deno.args[0] === "compile") {
+    const args = [...Deno.args];
+    args.shift();
+    const script = args.pop();
+    if (!script) {
+      throw error(`usage: dzx compile <script>`);
+    }
+    await compile(
+      script,
+      args,
+      new URL("./mod.ts", import.meta.url).href,
+    );
+    Deno.exit(0);
+  }
+
+  const script = Deno.args[Deno.args.length - 1];
+
   try {
     if (!script) {
       if (!Deno.isatty(Deno.stdin.rid)) {
