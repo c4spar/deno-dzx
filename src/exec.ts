@@ -1,4 +1,3 @@
-import { iter } from "../deps.ts";
 import { ProcessError } from "./process_error.ts";
 import { ProcessOutput } from "./process_output.ts";
 import { quote } from "./quote.ts";
@@ -51,7 +50,7 @@ async function read(
   reader: Deno.Reader,
   ...results: Array<Array<string>>
 ) {
-  for await (const chunk of iter(reader)) {
+  for await (const chunk of io.iter(reader)) {
     const str = new TextDecoder().decode(chunk);
     for (const result of results) {
       result.push(str);

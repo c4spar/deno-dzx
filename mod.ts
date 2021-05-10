@@ -1,36 +1,13 @@
-import {
-  basename,
-  Buffer,
-  colors,
-  dirname,
-  escapeStr,
-  extname,
-  fromFileUrl,
-  isAbsolute,
-  iter,
-  iterSync,
-  join,
-  normalize,
-  readAll,
-  readAllSync,
-  readLines,
-  relative,
-  resolve,
-  toFileUrl,
-  toNamespacedPath,
-  writeAll,
-  writeAllSync,
-} from "./deps.ts";
+import { colors, flags, fs, io, log, path, shq } from "./deps.ts";
 import { cd } from "./src/cd.ts";
 import { exec } from "./src/exec.ts";
 import { quote } from "./src/quote.ts";
-import { parseFlags } from "./src/parse_flags.ts";
 
 export type $ = typeof exec & typeof colors & {
   verbose: boolean;
   cwd: string;
   shell: string;
-  quote: typeof escapeStr;
+  quote: typeof shq;
   throwErors: boolean;
 };
 
@@ -42,30 +19,19 @@ $._stack = [];
 $.shell = "/bin/sh";
 $.verbose = false;
 $.cwd = Deno.cwd();
-$.quote = escapeStr;
+$.quote = shq;
 $.throwErors = false;
 
-export {
-  basename,
-  Buffer,
-  cd,
-  dirname,
-  extname,
-  fromFileUrl,
-  isAbsolute,
-  iter,
-  iterSync,
-  join,
-  normalize,
-  parseFlags,
-  quote,
-  readAll,
-  readAllSync,
-  readLines,
-  relative,
-  resolve,
-  toFileUrl,
-  toNamespacedPath,
-  writeAll,
-  writeAllSync,
-};
+// dzx
+window.$ = $;
+window.cd = cd;
+window.quote = quote;
+
+// x
+window.path = path;
+window.io = io;
+window.fs = fs;
+window.log = log;
+window.flags = flags;
+
+export { cd, flags, fs, io, log, path, quote };
