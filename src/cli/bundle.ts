@@ -1,13 +1,37 @@
-import { error } from "./_utils.ts";
+import { Command, ValidationError } from "./deps.ts";
+import { error } from "../_utils.ts";
+import { fs, path } from "../../mod.ts";
+
+export function bundleCommand() {
+  return new Command<void>()
+    .description("Bundle an dzx script to a standalone deno sript.")
+    .arguments("[script:string]")
+    .option<{ check: boolean }>("--no-check", "Skip type checking modules.")
+    .action(async ({ check }, script?: string) => {
+      if (!script) {
+        if (Deno.isatty(Deno.stdin.rid)) {
+          throw new ValidationError(`Missing argument(s): script`);
+        }
+        script = await Deno.makeTempFile({ suffix: ".ts" });
+        const tmpFile = await Deno.open(script, { write: true });
+        await Deno.copy(Deno.stdin, tmpFile);
+        tmpFile.close();
+      }
+      console.log("Deno.mainModule:", Deno.mainModule);
+      console.log(
+        await bundle(script, {
+          check,
+        }),
+      );
+    });
+}
 
 export async function bundle(
   script: string,
-  dzxModuleUrl: string,
   options: Deno.EmitOptions = {},
 ): Promise<string> {
   const { shebang, tmpFile } = await prepareBundle(
     script,
-    dzxModuleUrl,
     options,
   );
 
@@ -24,7 +48,6 @@ export async function bundle(
 
 export async function prepareBundle(
   script: string,
-  dzxModuleUrl: string,
   options: Deno.EmitOptions = {},
 ): Promise<{ shebang: string; tmpFile: string }> {
   if (!await fs.exists(script)) {
@@ -42,7 +65,8 @@ export async function prepareBundle(
     check: true,
     ...options,
   });
-  const bundleContent = `import "${dzxModuleUrl}";\n` +
+  const bundleContent =
+    `import "${new URL("./mod.ts", Deno.mainModule).href}";\n` +
     Object.values(scriptResult.files)[0] as string;
 
   const tmpDir = await Deno.makeTempDir();

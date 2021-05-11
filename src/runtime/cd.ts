@@ -1,4 +1,4 @@
-import { error } from "./_utils.ts";
+import { error } from "../_utils.ts";
 
 export function cd(path: string) {
   if ($.verbose) {
