@@ -7,7 +7,6 @@ export type $ = typeof exec & typeof colors & {
   shell: string;
   mainModule: string;
   verbose: boolean;
-  cwd: string;
   quote: typeof shq;
   throwErors: boolean;
 };
@@ -20,7 +19,6 @@ $._stack = [];
 $.shell = "/bin/sh";
 $.mainModule = "";
 $.verbose = false;
-$.cwd = Deno.cwd();
 $.quote = shq;
 $.throwErors = false;
 
