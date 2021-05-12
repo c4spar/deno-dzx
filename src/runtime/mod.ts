@@ -23,15 +23,15 @@ $.quote = shq;
 $.throwErors = false;
 
 // dzx
-window.$ = $;
-window.cd = cd;
-window.quote = quote;
+self.$ = $;
+self.cd = cd;
+self.quote = quote;
 
 // x
-window.path = path;
-window.io = io;
-window.fs = fs;
-window.log = log;
-window.flags = flags;
+self.path = path;
+self.io = io;
+self.fs = fs;
+self.log = log;
+self.flags = flags;
 
 export { cd, flags, fs, io, log, path, quote };
