@@ -36,7 +36,7 @@ export async function bundle(
   );
 
   const bundleResult = await Deno.emit(tmpFile, {
-    bundle: "esm",
+    bundle: "module",
     check: false,
   });
 
@@ -61,7 +61,7 @@ export async function prepareBundle(
   }
 
   const scriptResult = await Deno.emit(script, {
-    bundle: "esm",
+    bundle: "module",
     check: true,
     ...options,
   });
