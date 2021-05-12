@@ -4,9 +4,10 @@ import { exec } from "./exec.ts";
 import { quote } from "./quote.ts";
 
 export type $ = typeof exec & typeof colors & {
+  shell: string;
+  mainModule: string;
   verbose: boolean;
   cwd: string;
-  shell: string;
   quote: typeof shq;
   throwErors: boolean;
 };
@@ -17,6 +18,7 @@ Object.setPrototypeOf($, Object.getPrototypeOf(colors));
 
 $._stack = [];
 $.shell = "/bin/sh";
+$.mainModule = "";
 $.verbose = false;
 $.cwd = Deno.cwd();
 $.quote = shq;

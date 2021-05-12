@@ -70,6 +70,7 @@ export function dzx() {
       ) => {
         if (script) {
           script = addProtocool(script);
+          $.mainModule = script;
           if (worker) {
             spawnWorker(script, perms);
           } else {
@@ -96,6 +97,7 @@ export function dzx() {
       `data:application/typescript,${
         encodeURIComponent(`
           import "${new URL("./src/runtime/mod.ts", Deno.mainModule)}";
+          $.mainModule = "${script}";
           await import("${script}");
           if ($.verbose) {
             const end = Date.now();
@@ -125,9 +127,8 @@ export function dzx() {
   async function importFromStdin(): Promise<void> {
     const data = new TextDecoder().decode(await io.readAll(Deno.stdin));
     if (data) {
-      await import(
-        `data:application/typescript,${encodeURIComponent(data)}`
-      );
+      $.mainModule = `data:application/typescript,${encodeURIComponent(data)}`;
+      await import($.mainModule);
     } else {
       // @TODO: add support for exit code in ValidationError
       // throw new ValidationError(`Failed to read from stdin.`, 2);
