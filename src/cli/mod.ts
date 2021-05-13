@@ -1,3 +1,4 @@
+import { VERSION } from "../../version.ts";
 import { io, path } from "../runtime/mod.ts";
 import { bundleCommand } from "./bundle.ts";
 import { compileCommand } from "./compile.ts";
@@ -5,7 +6,7 @@ import { Command, ValidationError } from "./deps.ts";
 
 export function dzx() {
   return new Command<void>()
-    .version("0.2.0")
+    .version(VERSION)
     .name("dzx")
     .description("🦕 A custom deno runtime for fun.")
     .stopEarly()
