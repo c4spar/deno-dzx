@@ -17,7 +17,6 @@ export function bundleCommand() {
         await Deno.copy(Deno.stdin, tmpFile);
         tmpFile.close();
       }
-      console.log("Deno.mainModule:", Deno.mainModule);
       console.log(
         await bundle(script, {
           check,
