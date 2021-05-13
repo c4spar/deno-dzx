@@ -29,10 +29,13 @@ export async function bundle(
   script: string,
   options?: Deno.EmitOptions,
 ): Promise<string> {
-  return bundleFile(await preBundle(
-    script,
-    options,
-  ), { check: false });
+  return bundleFile(
+    await preBundle(
+      script,
+      options,
+    ),
+    { check: false },
+  );
 }
 
 export async function preBundle(
