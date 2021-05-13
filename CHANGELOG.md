@@ -1,3 +1,25 @@
+# [v0.2.1](https://github.com/c4spar/deno-cli/compare/0.2.0...0.2.1) (2021-05-14)
+
+### Features
+
+- add $.stdout and $.stderr
+  ([9d9938c](https://github.com/c4spar/deno-cli/commit/9d9938c),
+  [a191df6](https://github.com/c4spar/deno-cli/commit/a191df6),
+  [9b90325](https://github.com/c4spar/deno-cli/commit/9b90325))
+
+### Bug Fixes
+
+- fix cd method ([27b0d9d](https://github.com/c4spar/deno-cli/commit/27b0d9d))
+
+### Chore
+
+- fmt ([74a9de0](https://github.com/c4spar/deno-cli/commit/74a9de0))
+
+### Documentation Updates
+
+- update readme ([6636b67](https://github.com/c4spar/deno-cli/commit/6636b67),
+  [5663be0](https://github.com/c4spar/deno-cli/commit/5663be0))
+
 # [v0.2.0](https://github.com/c4spar/deno-dzx/compare/0.1.1...0.2.0) (2021-05-13)
 
 ### Features
