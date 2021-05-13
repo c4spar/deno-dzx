@@ -74,6 +74,6 @@ export async function compile(
   p.close();
 
   if (!success) {
-    error(`Failed to compile: ${script}`);
+    throw error(`Failed to compile: ${script}`);
   }
 }

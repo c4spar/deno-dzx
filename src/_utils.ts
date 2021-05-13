@@ -1,6 +1,6 @@
-export function error(message: string | Error, exitCode = 1) {
+export function error(message: string | Error, exitCode = 1): Error {
   if ($.throwErrors) {
-    throw (message instanceof Error
+    return (message instanceof Error
       ? message
       : new Error(getErrorMessage(message)));
   }

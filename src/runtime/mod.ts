@@ -7,10 +7,10 @@ export type $ = typeof exec & typeof colors & {
   shell: string;
   mainModule: string;
   verbose: boolean;
-  quote: typeof shq;
   throwErrors: boolean;
   startTime: number;
   time: number;
+  quote: typeof shq;
 };
 
 export const $: $ = exec as $;
