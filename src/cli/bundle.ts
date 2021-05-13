@@ -1,6 +1,6 @@
 import { Command, ValidationError } from "./deps.ts";
 import { error } from "../_utils.ts";
-import { fs, path } from "../../mod.ts";
+import { path } from "../../mod.ts";
 
 export function bundleCommand() {
   return new Command<void>()

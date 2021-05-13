@@ -1,5 +1,6 @@
 import type {
   $,
+  async as _async,
   cd as _cd,
   flags as _flags,
   fs as _fs,
@@ -16,6 +17,7 @@ declare global {
   const quote: typeof _quote;
 
   // x
+  const async: typeof _async;
   const path: typeof _path;
   const io: typeof _io;
   const fs: typeof _fs;
@@ -29,6 +31,7 @@ declare global {
     quote: typeof _quote;
 
     // x
+    async: typeof _async;
     path: typeof _path;
     io: typeof _io;
     fs: typeof _fs;
@@ -43,6 +46,7 @@ declare global {
     quote: typeof _quote;
 
     // x
+    async: typeof _async;
     path: typeof _path;
     io: typeof _io;
     fs: typeof _fs;
