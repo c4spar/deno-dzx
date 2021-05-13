@@ -42,10 +42,6 @@ export async function preBundle(
   script: string,
   options?: Deno.EmitOptions,
 ): Promise<string> {
-  if (!await fs.exists(script)) {
-    error(`File not found: ${script}`);
-  }
-
   const scriptResult = await bundleFile(script, options);
 
   const bundleContent =
@@ -64,12 +60,21 @@ async function bundleFile(
   file: string,
   options: Deno.EmitOptions = {},
 ): Promise<string> {
-  const result = await Deno.emit(file, {
-    bundle: "module",
-    check: true,
-    ...options,
-  });
-  return Object.values(result.files)[0] as string;
+  try {
+    const result = await Deno.emit(file, {
+      bundle: "module",
+      check: true,
+      ...options,
+    });
+    return Object.values(result.files)[0] as string;
+  } catch (err) {
+    if (err instanceof Deno.errors.NotFound) {
+      throw error(`File not found: ${file}`);
+    } else if (err instanceof Deno.errors.PermissionDenied) {
+      throw error(`Permission denied: ${file}`);
+    }
+    throw error(err);
+  }
 }
 
 // async function getShebang(script: string): Promise<string> {
