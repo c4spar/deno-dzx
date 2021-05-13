@@ -8,7 +8,9 @@ export function cd(dir: string) {
     console.log($.brightBlue("$ %s"), `cd ${dir}`);
   }
   try {
-    if (dir[0] !== path.sep) {
+    if (dir[0] === "~") {
+      dir = path.join(homedir() as string, dir.slice(1));
+    } else if (dir[0] !== path.sep) {
       dir = new URL(dir, path.toFileUrl(cwd + path.sep)).pathname;
     }
     Deno.chdir(dir);
@@ -21,5 +23,17 @@ export function cd(dir: string) {
       error(`cd: ${dir}: Permission denied\n    at ${stack}`);
     }
     error(err);
+  }
+}
+
+function homedir(): string | null {
+  switch (Deno.build.os) {
+    case "windows":
+      return Deno.env.get("USERPROFILE") || null;
+    case "linux":
+    case "darwin":
+      return Deno.env.get("HOME") || null;
+    default:
+      throw Error("Failed to retrive home directory.");
   }
 }
