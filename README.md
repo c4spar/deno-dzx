@@ -34,9 +34,6 @@ console.log(`Hello from ${$.blue.bold("dzx")}!`);
 const branch = await $`git branch --show-current`;
 await $`dep deploy --branch=${branch}`;
 
-cd("src/foo");
-cd("src/bar");
-
 await Promise.all([
   $`deno lint --unstable`,
   $`deno fmt --check`,
@@ -44,7 +41,18 @@ await Promise.all([
 ]);
 
 const name = "foo bar";
-await $`mkdir /tmp/${name}`; // <-- string will be safly quoted to: /tmp/'foo bar'
+await $`mkdir ./tmp/${name}`; // params will be quoted if required: /tmp/'foo bar'
+
+cd("tmp/foo bar");
+console.log(Deno.cwd()); // ./tmp/foo bar
+
+cd("tmp");
+console.log(Deno.cwd()); // ./tmp
+
+await async.delay(1000);
+const basename = path.basename(import.meta.url);
+const stdin = await io.readAll(Deno.stdin);
+await fs.ensureDir("./tmp");
 ```
 
 ## Content
