@@ -5,7 +5,7 @@ export function cd(dir: string) {
     console.log($.brightBlue("$ %s"), `cd ${dir}`);
   }
   try {
-    Deno.chdir(new URL(dir, $.mainModule).pathname);
+    Deno.chdir(dir);
   } catch (err) {
     if (err instanceof Deno.errors.NotFound) {
       const stack: string = (new Error().stack!.split("at ")[2]).trim();
