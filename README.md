@@ -155,18 +155,6 @@ Combile an dzx script to a standalone binary. Can also read from stdin.
 dzx compile ./examplte.ts --allow-read --allow-env --allow-run
 ```
 
-### `dzx help [command]`
-
-Show this help or the help of a sub-command.
-
-### `dzx completions [shell]`
-
-Generate shell completions for `bash`, `fish` and `zsh`.
-
-```shell
-source <(dzx completions zsh)
-```
-
 ## API
 
 ### Methods
@@ -258,17 +246,29 @@ Deno's `std/flags` module.
 
 ### Options
 
-#### `$.verbose`
-
-Enable debugging output.
-
 #### `$.shell`
 
 Set the current shel.
 
+#### `$.mainModule`
+
+The dzx main module.
+
+#### `$.verbose`
+
+Enable debugging output.
+
 #### `$.throwErrors`
 
 Throw errors instead of calling `Deno.exit`.
+
+#### `$.startTime`
+
+Th execution start time in ms.
+
+#### `$.time`
+
+The time left since execution start (now() - $.startTime).
 
 #### `$.quote`
 
