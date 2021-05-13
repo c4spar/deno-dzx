@@ -35,7 +35,7 @@ const branch = await $`git branch --show-current`;
 await $`dep deploy --branch=${branch}`;
 
 await Promise.all([
-  $`deno lint --unstable`,
+  $`deno lint`,
   $`deno fmt --check`,
   $`deno test --allow-all`,
 ]);
@@ -53,6 +53,9 @@ await async.delay(1000);
 const basename = path.basename(import.meta.url);
 const stdin = await io.readAll(Deno.stdin);
 await fs.ensureDir("./tmp");
+
+$.stdout = "inherit"; // print command output to stdout
+await $`ls -la`;
 ```
 
 ## Content
@@ -225,12 +228,13 @@ script.
 
 ## Variables
 
-- **$.shell:** Set the shell that is used by `` $`command` ``.
-- **$.mainModule:** The dzx main module (`readonly`).
+- **$.shell:** Set the shell that is used by `` $`command` ``. Default: `/bin/sh`
+- **$.mainModule:** The executed dzx script.
 - **$.verbose:** Enable debugging output (log shell commands and execution
   time).
+- **$.stdout:** Change stdout mode of `` $`command` ``. Can be `"inherit"`, `"piped"`, `"null"` or `number`. Default: `"piped"`
 - **$.throwErrors:** Throw errors instead of calling `Deno.exit`.
-- **$.startTime:** Th execution start time in ms.
+- **$.startTime:** The execution start time in ms.
 - **$.time:** The time left since execution start (now() - $.startTime).
 - **$.quote:** Parser method that is used to safely quote strings. Used by:
   `` $`command` ``

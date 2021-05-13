@@ -18,13 +18,13 @@ export async function exec(
   const process = Deno.run({
     cmd: [$.shell, "-c", cmd],
     env: Deno.env.toObject(),
-    stdout: "piped",
+    stdout: $.stdout,
     stderr: "piped",
   });
 
   const [status] = await Promise.all([
     process.status(),
-    read(process.stdout, stdout, combined),
+    process.stdout && read(process.stdout, stdout, combined),
     read(process.stderr, stderr, combined),
   ]);
 
