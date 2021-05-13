@@ -8,7 +8,7 @@ export type $ = typeof exec & typeof colors & {
   mainModule: string;
   verbose: boolean;
   quote: typeof shq;
-  throwErors: boolean;
+  throwErrors: boolean;
 };
 
 export const $: $ = exec as $;
@@ -20,7 +20,7 @@ $.shell = "/bin/sh";
 $.mainModule = "";
 $.verbose = false;
 $.quote = shq;
-$.throwErors = false;
+$.throwErrors = false;
 
 // dzx
 self.$ = $;

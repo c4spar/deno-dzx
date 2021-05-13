@@ -1,5 +1,5 @@
 export function error(message: string | Error, exitCode = 1) {
-  if ($.throwErors) {
+  if ($.throwErrors) {
     throw (message instanceof Error
       ? message
       : new Error(getErrorMessage(message)));
