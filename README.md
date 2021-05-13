@@ -34,6 +34,8 @@ console.log(`Hello from ${$.blue.bold("dzx")}!`);
 const branch = await $`git branch --show-current`;
 await $`dep deploy --branch=${branch}`;
 
+// Print command output to stdout. Will be reverted to "piped" after all async ops are done.
+$.stdout = "inherit";
 await Promise.all([
   $`deno lint`,
   $`deno fmt --check`,
@@ -41,7 +43,7 @@ await Promise.all([
 ]);
 
 const name = "foo bar";
-await $`mkdir ./tmp/${name}`; // params will be quoted if required: /tmp/'foo bar'
+await $`mkdir ./tmp/${name}`; // Params will be quoted if required: /tmp/'foo bar'.
 
 cd("tmp/foo bar");
 console.log(Deno.cwd()); // ./tmp/foo bar
@@ -234,7 +236,8 @@ script.
 - **$.verbose:** Enable debugging output (log shell commands and execution
   time).
 - **$.stdout:** Change stdout mode of `` $`command` ``. Can be `"inherit"`,
-  `"piped"`, `"null"` or `number`. Default: `"piped"`
+  `"piped"`, `"null"` or `number`. Will be reverted to default after all async
+  ops are done. Default: `"piped"`
 - **$.throwErrors:** Throw errors instead of calling `Deno.exit`.
 - **$.startTime:** The execution start time in ms.
 - **$.time:** The time left since execution start (now() - $.startTime).

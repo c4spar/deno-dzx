@@ -2,10 +2,13 @@ import { ProcessError } from "./process_error.ts";
 import { ProcessOutput } from "./process_output.ts";
 import { quote } from "./quote.ts";
 
+let runningProcesses = 0;
+
 export async function exec(
   pieces: TemplateStringsArray,
   ...args: Array<string | number>
 ): Promise<ProcessOutput> {
+  runningProcesses++;
   const cmd = quote(pieces, ...args);
 
   if ($.verbose) {
@@ -27,6 +30,10 @@ export async function exec(
     process.stdout && read(process.stdout, stdout, combined),
     read(process.stderr, stderr, combined),
   ]);
+
+  if (--runningProcesses === 0) {
+    $.stdout = "piped";
+  }
 
   if (status.success) {
     return new ProcessOutput({
