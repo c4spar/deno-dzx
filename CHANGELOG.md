@@ -1,3 +1,69 @@
+# [v0.2.0](https://github.com/c4spar/deno-dzx/compare/0.1.1...0.2.0) (2021-05-13)
+
+### Features
+
+- add support for home directory "~" in cd
+  ([a534ea9](https://github.com/c4spar/deno-dzx/commit/a534ea9))
+- support absolute path in cd
+  ([c8d8f72](https://github.com/c4spar/deno-dzx/commit/c8d8f72))
+- add $.startTime and $.time
+  ([02cb655](https://github.com/c4spar/deno-dzx/commit/02cb655))
+- add $.mainModule
+  ([fd5f8b5](https://github.com/c4spar/deno-dzx/commit/fd5f8b5))
+- add worker and permissions support
+  ([838cfbe](https://github.com/c4spar/deno-dzx/commit/838cfbe),
+  [fb990c5](https://github.com/c4spar/deno-dzx/commit/fb990c5))
+- add bundle and compile command
+  ([c2e9a29](https://github.com/c4spar/deno-dzx/commit/c2e9a29),
+  [9daafd2](https://github.com/c4spar/deno-dzx/commit/9daafd2),
+  [8e4b385](https://github.com/c4spar/deno-dzx/commit/8e4b385),
+  [c87b793](https://github.com/c4spar/deno-dzx/commit/c87b793),
+  [dd95c08](https://github.com/c4spar/deno-dzx/commit/dd95c08))
+- add throw errors
+  ([8177dd4](https://github.com/c4spar/deno-dzx/commit/8177dd4),
+  [f0f6899](https://github.com/c4spar/deno-dzx/commit/f0f6899))
+- add async, path, io, fs, log and flags module
+  ([f49c4f2](https://github.com/c4spar/deno-dzx/commit/f49c4f2),
+  [ee95ee5](https://github.com/c4spar/deno-dzx/commit/ee95ee5),
+  [bb4830d](https://github.com/c4spar/deno-dzx/commit/bb4830d),
+  [269ba69](https://github.com/c4spar/deno-dzx/commit/269ba69),
+  [f599187](https://github.com/c4spar/deno-dzx/commit/f599187),
+  [e8fb41f](https://github.com/c4spar/deno-dzx/commit/e8fb41f),
+  [ee95ee5](https://github.com/c4spar/deno-dzx/commit/ee95ee5))
+- add version file
+  ([ebc6143](https://github.com/c4spar/deno-dzx/commit/ebc6143))
+
+### Bug Fixes
+
+- fix cd method ([bf39b0a](https://github.com/c4spar/deno-dzx/commit/bf39b0a),
+  [111d41c](https://github.com/c4spar/deno-dzx/commit/111d41c))
+
+### Code Refactoring
+
+- refactor error method
+  ([562b65f](https://github.com/c4spar/deno-dzx/commit/562b65f))
+- remove $.cwd and use Deno.chdir for cd
+  ([33e097a](https://github.com/c4spar/deno-dzx/commit/33e097a))
+- use cliffy for command line interfaces
+  ([51c234b](https://github.com/c4spar/deno-dzx/commit/51c234b),
+  [95e6f3c](https://github.com/c4spar/deno-dzx/commit/95e6f3c))
+
+### Chore
+
+- fmt ([38b2d38](https://github.com/c4spar/deno-dzx/commit/38b2d38))
+
+### Documentation Updates
+
+- update readme ([23a95e6](https://github.com/c4spar/deno-dzx/commit/23a95e6),
+  [251add4](https://github.com/c4spar/deno-dzx/commit/251add4),
+  [e73f3a6](https://github.com/c4spar/deno-dzx/commit/e73f3a6),
+  [f1a0159](https://github.com/c4spar/deno-dzx/commit/f1a0159),
+  [7808143](https://github.com/c4spar/deno-dzx/commit/7808143),
+  [cb1418a](https://github.com/c4spar/deno-dzx/commit/cb1418a),
+  [3542c19](https://github.com/c4spar/deno-dzx/commit/3542c19),
+  [33918ae](https://github.com/c4spar/deno-dzx/commit/33918ae))
+- add changelog ([02d5f2e](https://github.com/c4spar/deno-dzx/commit/02d5f2e))
+
 # [v0.1.1](https://github.com/c4spar/deno-dzx/compare/0.1.0...0.1.1) (2021-05-08)
 
 ### Bug Fixes
