@@ -35,4 +35,18 @@ declare global {
     log: typeof _log;
     flags: typeof _flags;
   }
+
+  interface WorkerGlobalScope {
+    // dzx
+    $: $;
+    cd: typeof _cd;
+    quote: typeof _quote;
+
+    // x
+    path: typeof _path;
+    io: typeof _io;
+    fs: typeof _fs;
+    log: typeof _log;
+    flags: typeof _flags;
+  }
 }
