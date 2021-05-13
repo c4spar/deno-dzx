@@ -228,11 +228,13 @@ script.
 
 ## Variables
 
-- **$.shell:** Set the shell that is used by `` $`command` ``. Default: `/bin/sh`
+- **$.shell:** Set the shell that is used by `` $`command` ``. Default:
+  `/bin/sh`
 - **$.mainModule:** The executed dzx script.
 - **$.verbose:** Enable debugging output (log shell commands and execution
   time).
-- **$.stdout:** Change stdout mode of `` $`command` ``. Can be `"inherit"`, `"piped"`, `"null"` or `number`. Default: `"piped"`
+- **$.stdout:** Change stdout mode of `` $`command` ``. Can be `"inherit"`,
+  `"piped"`, `"null"` or `number`. Default: `"piped"`
 - **$.throwErrors:** Throw errors instead of calling `Deno.exit`.
 - **$.startTime:** The execution start time in ms.
 - **$.time:** The time left since execution start (now() - $.startTime).
