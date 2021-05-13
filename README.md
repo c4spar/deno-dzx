@@ -1,4 +1,4 @@
-<h1 align="center">❯ DZX</h1>
+<h1 align="center">dzx</h1>
 
 <p align="center" class="badges-container">
   <a href="https://github.com/c4spar/deno-dzx/releases">
@@ -48,7 +48,12 @@ await $`mkdir /tmp/${name}`; // <-- string will be safly quoted to: /tmp/'foo ba
   - [Javascript](#javascript)
   - [Typescript](#typescript)
   - [Remote usage](#remote-usage)
+  - [Worker and permissions](#worker-and-permissions)
+- [CLI](#cli)
 - [API](#api)
+  - [Methods](#methods)
+  - [Modules](#modules)
+  - [Options](#options)
 - [Contributing](#contributing)
 - [License](#license)
 
@@ -90,7 +95,7 @@ globals.
 
 ```ts
 #!/usr/bin/env dzx
-import { $, cd, parseFlags } from "https://deno.land/x/dzx/mod.ts";
+import { $, cd, fs, io, log, path } from "https://deno.land/x/dzx/mod.ts";
 ```
 
 Now you will be able to run your typescript script the same way as your js
@@ -113,36 +118,69 @@ shebang. This also allows you to explicitly set the permissions for your script.
 console.log(`Hello ${$.blue.bold("world")}!`);
 ```
 
+### Worker and permissions
+
+If `dzx` is called with `-w` or `--worker`, the script is executed inside an
+isolated web worker. If enabled, you can also set explicit permissions for your
+script.
+
+> This is currently an exerminental feature and the permission flags doens't
+> support values currently. Read permissions are required by default! Worker are
+> currently not supported with `bundle` and `compile` commands.
+
+## CLI
+
+### `dzx [script] [...args]`
+
+Run an local or remote dzx script (optional in a web worker).
+
+```shell
+dzx --worker ./examplte.ts
+```
+
+### `dzx bundle [script]`
+
+Bundle an dzx script to a standalone deno sript. Can also read from stdin.
+
+```shell
+dzx bundle ./examplte.ts > bundle.js
+deno run --allow-read --allow-env --allow-run bundle.js
+```
+
+### `dzx compile [script] [...permissions]`
+
+Combile an dzx script to a standalone binary. Can also read from stdin.
+
+```shell
+dzx compile ./examplte.ts --allow-read --allow-env --allow-run
+```
+
+### `dzx help [command]`
+
+Show this help or the help of a sub-command.
+
+### `dzx completions [shell]`
+
+Generate shell completions for `bash`, `fish` and `zsh`.
+
+```shell
+source <(dzx completions zsh)
+```
+
 ## API
 
-### `$.verbose`
+### Methods
 
-Enable debugging output.
+#### `` $`command` ``
 
-### `$.shell`
-
-Set the current shel.
-
-### `$.cwd`
-
-Set the current working directory.
-
-### `$.throwErrors`
-
-Throw error instead of calling `Deno.exit` on error.
-
-### `$.quote`
-
-Parser method that is used to safely quote strings. Used by: ``$`command` ``
-
-### ``$`command` ``
+Executes a shell command.
 
 ```ts
 const count = parseInt(await $`ls -1 | wc -l`);
 console.log(`Files count: ${count}`);
 ```
 
-#### `ProcessOutput`
+##### `ProcessOutput`
 
 If the executed program was successful, an instance of `ProcessOutput` will be
 return.
@@ -157,7 +195,7 @@ class ProcessOutput {
 }
 ```
 
-#### `ProcessError`
+##### `ProcessError`
 
 The `ProcessError` class extends from the `Error` class and implements all
 properties and methods from `ProcessOutput`.
@@ -178,31 +216,63 @@ try {
 }
 ```
 
-### `cd()`
+#### `cd()`
 
 Set the current working directory. If path does not exist, an error is thrown.
 
-### `$.[style]()`
+#### `` quote`string` ``
 
-dzx has chainable color methods that are available on the global `$` symbol.
+The quote methods quotes safly a string. by default the `shq` package is used.
+Can be overidden with `$.quote`.
+
+### Modules
+
+#### `$.[style]()`
+
+dzx has chainable ansi color methods that are available on the global `$`
+symbol.
 
 ```ts
 console.log($.blue.bold("Hello world!"));
 ```
 
-### `parseFlags()`
+#### `path`
 
-Deno's `std/flags` module for parsing command-line arguments.
+Deno's `std/path` module.
 
-**Global available types:**
+#### `io`
 
-- `ArgParsingOptions`
-- `Args`
+Deno's `std/io` module.
 
-### ``quote`string` ``
+#### `fs`
 
-The quote methods quotes safly a string. by default the `shq` package is used.
-Can be overidden with `$.quote`.
+Deno's `std/fs` module.
+
+#### `log`
+
+Deno's `std/log` module.
+
+#### `flags`
+
+Deno's `std/flags` module.
+
+### Options
+
+#### `$.verbose`
+
+Enable debugging output.
+
+#### `$.shell`
+
+Set the current shel.
+
+#### `$.throwErrors`
+
+Throw errors instead of calling `Deno.exit`.
+
+#### `$.quote`
+
+Parser method that is used to safely quote strings. Used by: `` $`command` ``
 
 ## Contributing
 
