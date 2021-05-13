@@ -9,6 +9,8 @@ export type $ = typeof exec & typeof colors & {
   verbose: boolean;
   quote: typeof shq;
   throwErrors: boolean;
+  startTime: number;
+  time: number;
 };
 
 export const $: $ = exec as $;
@@ -21,6 +23,10 @@ $.mainModule = "";
 $.verbose = false;
 $.quote = shq;
 $.throwErrors = false;
+$.startTime = Date.now();
+Object.defineProperty($, "time", {
+  get: () => Date.now() - $.startTime,
+});
 
 // dzx
 self.$ = $;

@@ -1,10 +1,9 @@
-import { io, path } from "../../mod.ts";
+import { io, path } from "../runtime/mod.ts";
 import { bundleCommand } from "./bundle.ts";
 import { compileCommand } from "./compile.ts";
 import { Command, ValidationError } from "./deps.ts";
 
 export function dzx() {
-  const start = Date.now();
   return new Command<void>()
     .version("0.2.0")
     .name("dzx")
@@ -64,12 +63,11 @@ export function dzx() {
         _args?: Array<string>,
       ) => {
         if (script) {
-          script = addProtocool(script);
-          $.mainModule = script;
+          $.mainModule = addProtocool(script);
           if (worker) {
-            spawnWorker(script, perms);
+            spawnWorker(perms);
           } else {
-            await import(script);
+            await import($.mainModule);
           }
         } else if (Deno.isatty(Deno.stdin.rid)) {
           throw new ValidationError(`Missing argument(s): script`);
@@ -77,29 +75,29 @@ export function dzx() {
           await importFromStdin();
         }
         if ($.verbose) {
-          const end = Date.now();
-          console.log($.bold("time: %ss"), Math.round(end - start) / 1000);
+          console.log($.bold("time: %ss"), Math.round($.time) / 1000);
         }
       },
     )
     .command("bundle", bundleCommand())
     .command("compile", compileCommand());
 
-  function spawnWorker(script: string, perms: Permissions): void {
+  function spawnWorker(perms: Permissions): void {
     new Worker(
       `data:application/typescript,${
         encodeURIComponent(`
           import "${new URL("./src/runtime/mod.ts", Deno.mainModule)}";
-          $.mainModule = "${script}";
-          await import("${script}");
+          $.mainModule = "${$.mainModule}";
+          $.startTime = ${$.startTime};
+          await import("${$.mainModule}");
           if ($.verbose) {
             const end = Date.now();
-            console.log($.bold("time: %ss"), Math.round(end - ${start}) / 1000);
+            console.log($.bold("time: %ss"), Math.round($.time) / 1000);
           }
           self.close();`)
       }`,
       {
-        name: script,
+        name: $.mainModule,
         type: "module",
         deno: {
           namespace: true,
