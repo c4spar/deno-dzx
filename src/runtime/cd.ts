@@ -1,4 +1,5 @@
 import { error } from "../_utils.ts";
+import { path } from "./mod.ts";
 
 const cwd = Deno.cwd();
 
@@ -7,7 +8,10 @@ export function cd(dir: string) {
     console.log($.brightBlue("$ %s"), `cd ${dir}`);
   }
   try {
-    Deno.chdir(new URL(dir, path.toFileUrl(cwd + path.sep)).pathname);
+    if (dir[0] !== path.sep) {
+      dir = new URL(dir, path.toFileUrl(cwd + path.sep)).pathname;
+    }
+    Deno.chdir(dir);
   } catch (err) {
     if (err instanceof Deno.errors.NotFound) {
       const stack: string = (new Error().stack!.split("at ")[2]).trim();
