@@ -45,15 +45,12 @@ await $`mkdir /tmp/${name}`; // <-- string will be safly quoted to: /tmp/'foo ba
 
 - [Install](#install)
 - [Usage](#usage)
-  - [Javascript](#javascript)
-  - [Typescript](#typescript)
-  - [Remote usage](#remote-usage)
-  - [Worker and permissions](#worker-and-permissions)
-- [CLI](#cli)
-- [API](#api)
+  - [Permissions](#permissions)
+  - [Worker](#worker)
   - [Methods](#methods)
   - [Modules](#modules)
-  - [Options](#options)
+  - [Variables](#variables)
+- [CLI](#cli)
 - [Contributing](#contributing)
 - [License](#license)
 
@@ -71,45 +68,38 @@ To start writing a dzx script, add next shebang at the beginning of your script:
 #!/usr/bin/env dzx
 ```
 
-### Javascript
-
-Now you will be able to run your script as:
-
-```shell
-chmod +x ./script.js
-./script.js
-```
-
-### Typescript
-
-If you want to use typescript you need to add a tripple slash reference to get
-global typings working.
+To enable typings for typescript in your IDE, you can add a tripple slash
+reference to the top of the file,
 
 ```
 #!/usr/bin/env dzx
 /// <reference path="https://deno.land/x/dzx/types.d.ts" />
 ```
 
-Or you can import all symbol directly from `dzx/mod.ts` instead of using
-globals.
+or you can import all symbol directly from the `dzx/mod.ts` module instead of
+using globals.
 
 ```ts
 #!/usr/bin/env dzx
 import { $, cd, fs, io, log, path } from "https://deno.land/x/dzx/mod.ts";
 ```
 
-Now you will be able to run your typescript script the same way as your js
-script:
+After making your script executable,
 
 ```shell
 chmod +x ./script.ts
+```
+
+you can simply run it with:
+
+```shell
 ./script.ts
 ```
 
-### Remote usage
+## Permissions
 
-You can also use `dzx` directly without installation by using the following
-shebang. This also allows you to explicitly set the permissions for your script.
+You can use `dzx` without installation by using next shebang. This also allows
+you to explicitly set the permissions for your script.
 
 ```typescript
 #!/usr/bin/env deno run --allow-run --allow-read --allow-env https://deno.land/x/dzx/dzx.ts
@@ -118,161 +108,167 @@ shebang. This also allows you to explicitly set the permissions for your script.
 console.log(`Hello ${$.blue.bold("world")}!`);
 ```
 
-### Worker and permissions
+## Worker
+
+> This is currently an exerminental feature. Permission flags doens't support
+> values currently. Read permissions are required by default. Workers are
+> currently not supported with `bundle` and `compile` commands.
 
 If `dzx` is called with `-w` or `--worker`, the script is executed inside an
 isolated web worker. If enabled, you can also set explicit permissions for your
 script.
 
-> This is currently an exerminental feature and the permission flags doens't
-> support values currently. Read permissions are required by default! Worker are
-> currently not supported with `bundle` and `compile` commands.
+## Methods
 
-## CLI
+- `` $`command` ``: Executes a shell command.
 
-### `dzx [script] [...args]`
+  ```ts
+  const count = parseInt(await $`ls -1 | wc -l`);
+  console.log(`Files count: ${count}`);
+  ```
 
-Run an local or remote dzx script (optional in a web worker).
+  If the executed program was successful, an instance of `ProcessOutput` will be
+  return.
 
-```shell
-dzx --worker ./examplte.ts
+  ```ts
+  class ProcessOutput {
+    readonly stdout: string;
+    readonly stderr: string;
+    readonly combined: string;
+    readonly status: Deno.ProcessStatus;
+    toString(): string;
+  }
+  ```
+
+  If the executed program returns a non-zero exit code, a `ProcessError` will be
+  thrown.
+
+  The `ProcessError` class extends from the `Error` class and implements all
+  properties and methods from `ProcessOutput`.
+
+  ```ts
+  try {
+    await $`exit 1`;
+  } catch (error) {
+    console.log(`Exit code: ${error.status.code}`);
+    console.log(`Error: ${error.stderr}`);
+  }
+  ```
+
+- `cd()`: Set the current working directory. If path does not exist, an error is
+  thrown.
+
+- `` quote`string` ``: The quote methods quotes safly a string. by default the
+  `shq` package is used. Can be overidden with `$.quote`.
+
+## Modules
+
+- **$.\[style]:** Cliffy's color module. A chainable wrapper for Deno's
+  `std/fmt/colors` module. Available on the global `$` symbol.
+
+  ```ts
+  console.log($.blue.bold("Hello world!"));
+  ```
+
+- **async:** Deno's `std/async` module.
+
+  ```ts
+  await async.delay(1000);
+  ```
+
+- **path:** Deno's `std/path` module.
+
+  ```ts
+  console.log(path.basename(import.meta.url));
+  ```
+
+- **io:** Deno's `std/io` module.
+
+  ```ts
+  const data = await io.readAll(Deno.stdin);
+  ```
+
+- **fs:** Deno's `std/fs` module.
+
+  ```ts
+  fs.ensureDir("./tmp");
+  ```
+
+- **log:** Deno's `std/log` module.
+
+  ```ts
+  log.info("Some info!");
+  ```
+
+- **flags:** Deno's `std/flags` module.
+
+  ```ts
+  console.log($.blue.bold("Hello world!"));
+  ```
+
+## Variables
+
+- **$.shell:** Set the shell that is used by `` $`command` ``.
+- **$.mainModule:** The dzx main module (`readonly`).
+- **$.verbose:** Enable debugging output (log shell commands and execution
+  time).
+- **$.throwErrors:** Throw errors instead of calling `Deno.exit`.
+- **$.startTime:** Th execution start time in ms.
+- **$.time:** The time left since execution start (now() - $.startTime).
+- **$.quote:** Parser method that is used to safely quote strings. Used by:
+  `` $`command` ``
+
+# CLI
+
+```
+Usage:   dzx [script] [args...]
+  Version: v0.2.0
+
+  Description:
+
+    🦕 A custom deno runtime for fun.
+
+  Options:
+
+    -h, --help       - Show this help.
+    -V, --version    - Show the version number for this program.
+    -A, --allow-all  - Allow all permissions.                                           (Depends: --worker)
+    --allow-env      - Allow environment access.                                        (Depends: --worker)
+    --allow-hrtime   - Allow high resolution time measurement.                          (Depends: --worker)
+    --allow-net      - Allow network access.                                            (Depends: --worker)
+    --allow-plugin   - Allow loading plugins.                                           (Depends: --worker)
+    --allow-read     - Allow file system read access.                                   (Depends: --worker)
+    --allow-run      - Allow running subprocesses.                                      (Depends: --worker)
+    --allow-write    - Allow file system write access.                                  (Depends: --worker)
+    -w, --worker     - Run script in an isolated web worker with it's own permissions.
+
+  Commands:
+
+    bundle   [script]                   - Bundle an dzx script to a standalone deno sript.
+    compile  [script] [permissions...]  - Combile an dzx script to a standalone binary.
 ```
 
-### `dzx bundle [script]`
+- **dzx** `[script] [...args]`: Run an local or remote dzx script (optional in a
+  web worker).
 
-Bundle an dzx script to a standalone deno sript. Can also read from stdin.
+  ```shell
+  dzx --worker ./examplte.ts
+  ```
 
-```shell
-dzx bundle ./examplte.ts > bundle.js
-deno run --allow-read --allow-env --allow-run bundle.js
-```
+- **dzx bundle** `[script]`: Bundle an dzx script to a standalone deno sript.
+  Can also read from stdin.
 
-### `dzx compile [script] [...permissions]`
+  ```shell
+  dzx bundle ./examplte.ts > bundle.js
+  deno run --allow-read --allow-env --allow-run bundle.js
+  ```
 
-Combile an dzx script to a standalone binary. Can also read from stdin.
+- **dzx compile** `[script] [...permissions]`: Combile an dzx script to a
+  standalone binary. Can also read from stdin.
 
-```shell
-dzx compile ./examplte.ts --allow-read --allow-env --allow-run
-```
-
-## API
-
-### Methods
-
-#### `` $`command` ``
-
-Executes a shell command.
-
-```ts
-const count = parseInt(await $`ls -1 | wc -l`);
-console.log(`Files count: ${count}`);
-```
-
-##### `ProcessOutput`
-
-If the executed program was successful, an instance of `ProcessOutput` will be
-return.
-
-```ts
-class ProcessOutput {
-  readonly stdout: string;
-  readonly stderr: string;
-  readonly combined: string;
-  readonly status: Deno.ProcessStatus;
-  toString(): string;
-}
-```
-
-##### `ProcessError`
-
-The `ProcessError` class extends from the `Error` class and implements all
-properties and methods from `ProcessOutput`.
-
-```ts
-class ProcessError extends Error implements ProcessOutput {}
-```
-
-If the executed program returns a non-zero exit code, a `ProcessError` will be
-thrown.
-
-```ts
-try {
-  await $`exit 1`;
-} catch (process) {
-  console.log(`Exit code: ${process.status.code}`);
-  console.log(`Error: ${process.stderr}`);
-}
-```
-
-#### `cd()`
-
-Set the current working directory. If path does not exist, an error is thrown.
-
-#### `` quote`string` ``
-
-The quote methods quotes safly a string. by default the `shq` package is used.
-Can be overidden with `$.quote`.
-
-### Modules
-
-#### `$.[style]()`
-
-dzx has chainable ansi color methods that are available on the global `$`
-symbol.
-
-```ts
-console.log($.blue.bold("Hello world!"));
-```
-
-#### `path`
-
-Deno's `std/path` module.
-
-#### `io`
-
-Deno's `std/io` module.
-
-#### `fs`
-
-Deno's `std/fs` module.
-
-#### `log`
-
-Deno's `std/log` module.
-
-#### `flags`
-
-Deno's `std/flags` module.
-
-### Options
-
-#### `$.shell`
-
-Set the current shel.
-
-#### `$.mainModule`
-
-The dzx main module.
-
-#### `$.verbose`
-
-Enable debugging output.
-
-#### `$.throwErrors`
-
-Throw errors instead of calling `Deno.exit`.
-
-#### `$.startTime`
-
-Th execution start time in ms.
-
-#### `$.time`
-
-The time left since execution start (now() - $.startTime).
-
-#### `$.quote`
-
-Parser method that is used to safely quote strings. Used by: `` $`command` ``
+  ```shell
+  dzx compile ./examplte.ts --allow-read --allow-env --allow-run
+  ```
 
 ## Contributing
 
