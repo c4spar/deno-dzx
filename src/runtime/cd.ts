@@ -11,7 +11,7 @@ export function cd(dir: string) {
     if (dir[0] === "~") {
       dir = path.join(homedir() as string, dir.slice(1));
     } else if (dir[0] !== path.sep) {
-      dir = new URL(dir, path.toFileUrl(cwd + path.sep)).pathname;
+      dir = path.join(cwd, dir);
     }
     Deno.chdir(dir);
   } catch (err) {
