@@ -26,10 +26,16 @@
 #!/usr/bin/env dzx
 /// <reference path="https://deno.land/x/dzx/types.d.ts" />
 
+$.verbose = true;
+$.shell = "/usr/local/bin/zsh";
+
 console.log(`Hello from ${$.blue.bold("dzx")}!`);
 
 const branch = await $`git branch --show-current`;
 await $`dep deploy --branch=${branch}`;
+
+cd("src/foo");
+cd("src/bar");
 
 await Promise.all([
   $`deno lint --unstable`,
@@ -57,8 +63,11 @@ await $`mkdir /tmp/${name}`; // <-- string will be safly quoted to: /tmp/'foo ba
 ## Install
 
 ```
-deno install --allow-all -r -f https://deno.land/x/dzx/dzx.ts
+deno install --allow-all -r -f --unstable https://deno.land/x/dzx/dzx.ts
 ```
+
+> `--unstable` is required for the `bundle` command which uses `Deno.emit`, for
+> `std/fs/copy` and for web workers.
 
 ## Usage
 
