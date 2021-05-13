@@ -1,6 +1,4 @@
+export { Command } from "https://deno.land/x/cliffy@v0.18.2/command/command.ts";
 export {
-  Command,
-  CompletionsCommand,
-  HelpCommand,
   ValidationError,
-} from "https://deno.land/x/cliffy@v0.18.2/command/mod.ts";
+} from "https://deno.land/x/cliffy@v0.18.2/flags/_errors.ts";

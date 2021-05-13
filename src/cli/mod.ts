@@ -1,12 +1,7 @@
 import { io, path } from "../../mod.ts";
 import { bundleCommand } from "./bundle.ts";
 import { compileCommand } from "./compile.ts";
-import {
-  Command,
-  CompletionsCommand,
-  HelpCommand,
-  ValidationError,
-} from "./deps.ts";
+import { Command, ValidationError } from "./deps.ts";
 
 export function dzx() {
   const start = Date.now();
@@ -88,9 +83,7 @@ export function dzx() {
       },
     )
     .command("bundle", bundleCommand())
-    .command("compile", compileCommand())
-    .command("help", new HelpCommand().global())
-    .command("completions", new CompletionsCommand());
+    .command("compile", compileCommand());
 
   function spawnWorker(script: string, perms: Permissions): void {
     new Worker(
