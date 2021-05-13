@@ -36,6 +36,7 @@ await $`dep deploy --branch=${branch}`;
 
 // Print command output to stdout. Will be reverted to "piped" after all async ops are done.
 $.stdout = "inherit";
+$.stderr = "inherit";
 await Promise.all([
   $`deno lint`,
   $`deno fmt --check`,
@@ -55,9 +56,6 @@ await async.delay(1000);
 const basename = path.basename(import.meta.url);
 const stdin = await io.readAll(Deno.stdin);
 await fs.ensureDir("./tmp");
-
-$.stdout = "inherit"; // print command output to stdout
-await $`ls -la`;
 ```
 
 ## Content
@@ -236,6 +234,9 @@ script.
 - **$.verbose:** Enable debugging output (log shell commands and execution
   time).
 - **$.stdout:** Change stdout mode of `` $`command` ``. Can be `"inherit"`,
+  `"piped"`, `"null"` or `number`. Will be reverted to default after all async
+  ops are done. Default: `"piped"`
+- **$.stderr:** Change stderr mode of `` $`command` ``. Can be `"inherit"`,
   `"piped"`, `"null"` or `number`. Will be reverted to default after all async
   ops are done. Default: `"piped"`
 - **$.throwErrors:** Throw errors instead of calling `Deno.exit`.

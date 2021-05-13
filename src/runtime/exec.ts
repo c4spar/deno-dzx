@@ -22,13 +22,13 @@ export async function exec(
     cmd: [$.shell, "-c", cmd],
     env: Deno.env.toObject(),
     stdout: $.stdout,
-    stderr: "piped",
+    stderr: $.stderr,
   });
 
   const [status] = await Promise.all([
     process.status(),
     process.stdout && read(process.stdout, stdout, combined),
-    read(process.stderr, stderr, combined),
+    process.stderr && read(process.stderr, stderr, combined),
   ]);
 
   if (--runningProcesses === 0) {

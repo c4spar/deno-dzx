@@ -8,6 +8,7 @@ export type $ = typeof exec & typeof colors & {
   mainModule: string;
   verbose: boolean;
   stdout: NonNullable<Deno.RunOptions["stdout"]>;
+  stderr: NonNullable<Deno.RunOptions["stderr"]>;
   throwErrors: boolean;
   startTime: number;
   time: number;
@@ -23,6 +24,7 @@ $.shell = "/bin/sh";
 $.mainModule = "";
 $.verbose = false;
 $.stdout = "piped";
+$.stderr = "piped";
 $.quote = shq;
 $.throwErrors = false;
 $.startTime = Date.now();
