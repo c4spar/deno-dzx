@@ -29,17 +29,10 @@ export async function bundle(
   script: string,
   options?: Deno.EmitOptions,
 ): Promise<string> {
-  const [shebang, bundledScript] = await Promise.all([
-    getShebang(script),
-    preBundle(
-      script,
-      options,
-    ).then((tmpFile) => bundleFile(tmpFile, { check: false })),
-  ]);
-
-  return shebang
-    .replace("#!/usr/bin/env dzx", "#!/usr/bin/env deno") +
-    bundledScript;
+  return bundleFile(await preBundle(
+    script,
+    options,
+  ), { check: false });
 }
 
 export async function preBundle(
@@ -76,13 +69,13 @@ async function bundleFile(
   return Object.values(result.files)[0] as string;
 }
 
-async function getShebang(script: string): Promise<string> {
-  let shebang = "";
-  const file = await Deno.open(script);
-  const firstLine = await io.readLines(file).next();
-  if (firstLine.value.startsWith("#!")) {
-    shebang = firstLine.value + "\n";
-  }
-  file.close();
-  return shebang;
-}
+// async function getShebang(script: string): Promise<string> {
+//   let shebang = "";
+//   const file = await Deno.open(script);
+//   const firstLine = await io.readLines(file).next();
+//   if (firstLine.value.startsWith("#!")) {
+//     shebang = firstLine.value + "\n";
+//   }
+//   file.close();
+//   return shebang;
+// }
