@@ -1,4 +1,4 @@
-import { prepareBundle } from "./bundle.ts";
+import { preBundle } from "./bundle.ts";
 import { error } from "../_utils.ts";
 import { Command, ValidationError } from "./deps.ts";
 
@@ -43,6 +43,7 @@ export function compileCommand() {
         }
         if (["-h", "--help"].includes(script)) {
           this.showHelp();
+          Deno.exit(0);
         } else {
           await compile(
             script,
@@ -57,7 +58,7 @@ export async function compile(
   script: string,
   args: Array<string>,
 ): Promise<void> {
-  const { tmpFile } = await prepareBundle(script);
+  const tmpFile = await preBundle(script);
 
   const p = Deno.run({
     cmd: [

@@ -28,51 +28,62 @@ export function bundleCommand() {
 
 export async function bundle(
   script: string,
-  options: Deno.EmitOptions = {},
+  options?: Deno.EmitOptions,
 ): Promise<string> {
-  const { shebang, tmpFile } = await prepareBundle(
-    script,
-    options,
-  );
+  const [shebang, bundledScript] = await Promise.all([
+    getShebang(script),
+    preBundle(
+      script,
+      options,
+    ).then((tmpFile) => bundleFile(tmpFile, { check: false })),
+  ]);
 
-  const bundleResult = await Deno.emit(tmpFile, {
-    bundle: "module",
-    check: false,
-  });
-
-  const bundledScript = Object.values(bundleResult.files)[0] as string;
-
-  return shebang.replace("#!/usr/bin/env dzx", "#!/usr/bin/env deno") +
+  return shebang
+    .replace("#!/usr/bin/env dzx", "#!/usr/bin/env deno") +
     bundledScript;
 }
 
-export async function prepareBundle(
+export async function preBundle(
   script: string,
-  options: Deno.EmitOptions = {},
-): Promise<{ shebang: string; tmpFile: string }> {
+  options?: Deno.EmitOptions,
+): Promise<string> {
   if (!await fs.exists(script)) {
     error(`File not found: ${script}`);
   }
-  let shebang = "";
-  const scriptContent = new TextDecoder().decode(await Deno.readFile(script));
-  if (scriptContent.startsWith("#!")) {
-    const parts = scriptContent.split("\n");
-    shebang = (parts.shift() as string) + "\n";
-  }
 
-  const scriptResult = await Deno.emit(script, {
-    bundle: "module",
-    check: true,
-    ...options,
-  });
+  const scriptResult = await bundleFile(script, options);
+
   const bundleContent =
     `import "${new URL("./mod.ts", Deno.mainModule).href}";\n` +
-    Object.values(scriptResult.files)[0] as string;
+    `$.mainModule = import.meta.url;\n${scriptResult}`;
 
   const tmpDir = await Deno.makeTempDir();
   const tmpFile = path.join(tmpDir, path.basename(script));
   const data = new TextEncoder().encode(bundleContent);
   await Deno.writeFile(tmpFile, data, { create: true });
 
-  return { shebang, tmpFile };
+  return tmpFile;
+}
+
+async function bundleFile(
+  file: string,
+  options: Deno.EmitOptions = {},
+): Promise<string> {
+  const result = await Deno.emit(file, {
+    bundle: "module",
+    check: true,
+    ...options,
+  });
+  return Object.values(result.files)[0] as string;
+}
+
+async function getShebang(script: string): Promise<string> {
+  let shebang = "";
+  const file = await Deno.open(script);
+  const firstLine = await io.readLines(file).next();
+  if (firstLine.value.startsWith("#!")) {
+    shebang = firstLine.value + "\n";
+  }
+  file.close();
+  return shebang;
 }
