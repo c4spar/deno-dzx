@@ -182,8 +182,21 @@ console.log(`Hello from ${$.blue.bold("worker")}!`);
   }
   ```
 
-- `cd()`: Set the current working directory. If path does not exist, an error is
-  thrown.
+- `cd()`: Change the current working directory. If path does not exist, an error
+  is thrown. The path is always relative to the original `cwd`, unless the path
+  is an absolute path or starts with `~` which indecates the home directory.
+
+  ```ts
+  console.log(Deno.cwd()); // --> /example/directory
+  cd("foo/bar");
+  console.log(Deno.cwd()); // --> /example/directory/foo/bar
+  cd("foo/baz");
+  console.log(Deno.cwd()); // --> /example/directory/foo/baz
+  cd("/tmp");
+  console.log(Deno.cwd()); // --> /tmp
+  cd("~/Documents");
+  console.log(Deno.cwd()); // --> [HOME]/Documents
+  ```
 
 - `` quote`string` ``: The quote methods quotes safly a string. by default the
   `shq` package is used. Can be overidden with `$.quote`.
