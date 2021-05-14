@@ -1,4 +1,5 @@
 export * as async from "https://deno.land/std@0.93.0/async/mod.ts";
+export type { Deferred } from "https://deno.land/std@0.93.0/async/mod.ts";
 export * as path from "https://deno.land/std@0.93.0/path/mod.ts";
 export * as io from "https://deno.land/std@0.93.0/io/mod.ts";
 export * as fs from "https://deno.land/std@0.93.0/fs/mod.ts";

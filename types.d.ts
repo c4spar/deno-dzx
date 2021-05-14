@@ -13,6 +13,7 @@ import type {
 import type {
   ArgParsingOptions as _ArgParsingOptions,
   Args as _Args,
+  Deferred as _Deferred,
 } from "./src/runtime/deps.ts";
 
 declare global {
@@ -32,6 +33,10 @@ declare global {
   namespace flags {
     type Args = _Args;
     type ArgParsingOptions = _ArgParsingOptions;
+  }
+
+  namespace async {
+    type Deferred<T> = _Deferred<T>;
   }
 
   interface Window {
