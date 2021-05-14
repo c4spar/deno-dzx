@@ -138,6 +138,13 @@ If `dzx` is called with `-w` or `--worker`, the script is executed inside an
 isolated web worker. If enabled, you can also set explicit permissions for your
 script.
 
+```typescript
+#!/usr/bin/env dzx --worker --allow-read
+/// <reference path="https://deno.land/x/dzx/types.d.ts" />
+
+console.log(`Hello from ${$.blue.bold("worker")}!`);
+```
+
 ## Methods
 
 - `` $`command` ``: Executes a shell command.
