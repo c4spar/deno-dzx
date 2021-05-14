@@ -219,7 +219,9 @@ console.log(`Hello from ${$.blue.bold("worker")}!`);
 - **path:** Deno's `std/path` module.
 
   ```ts
-  console.log(path.basename(import.meta.url));
+  const basename = path.basename(import.meta.url);
+  const options: path.GlobToRegExpOptions = { os: "linux" };
+  const regex: RegExp = path.globToRegExp("*.ts", options);
   ```
 
 - **io:** Deno's `std/io` module.
