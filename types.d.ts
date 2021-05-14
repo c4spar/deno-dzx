@@ -18,6 +18,7 @@ import type {
   GlobOptions as _GlobOptions,
   GlobToRegExpOptions as _GlobToRegExpOptions,
   ParsedPath as _ParsedPath,
+  ReadLineResult as _ReadLineResult,
 } from "./src/runtime/deps.ts";
 
 declare global {
@@ -48,6 +49,10 @@ declare global {
     type GlobOptions = _GlobOptions;
     type GlobToRegExpOptions = _GlobToRegExpOptions;
     type ParsedPath = _ParsedPath;
+  }
+
+  namespace io {
+    type ReadLineResult = _ReadLineResult;
   }
 
   interface Window {
