@@ -1,7 +1,5 @@
 import type {
   $,
-  ArgParsingOptions as _ArgParsingOptions,
-  Args as _Args,
   async as _async,
   cd as _cd,
   flags as _flags,
@@ -11,6 +9,11 @@ import type {
   path as _path,
   quote as _quote,
 } from "./mod.ts";
+
+import type {
+  ArgParsingOptions as _ArgParsingOptions,
+  Args as _Args,
+} from "./src/runtime/deps.ts";
 
 declare global {
   // dzx
