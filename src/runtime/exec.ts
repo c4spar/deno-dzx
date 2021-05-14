@@ -19,7 +19,7 @@ export async function exec(
   const stderr: Array<string> = [];
   const combined: Array<string> = [];
   const process = Deno.run({
-    cmd: [$.shell, "-c", cmd],
+    cmd: [$.shell, "-c", $.prefix + " " + cmd],
     env: Deno.env.toObject(),
     stdout: $.stdout,
     stderr: $.stderr,

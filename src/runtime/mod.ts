@@ -5,6 +5,7 @@ import { quote } from "./quote.ts";
 
 export type $ = typeof exec & typeof colors & {
   shell: string;
+  prefix: string;
   mainModule: string;
   verbose: boolean;
   stdout: NonNullable<Deno.RunOptions["stdout"]>;
@@ -22,6 +23,7 @@ Object.setPrototypeOf($, Object.getPrototypeOf(colors));
 
 $._stack = [];
 $.shell = "/bin/sh";
+$.prefix = "set -euo pipefail;";
 $.mainModule = "";
 $.verbose = false;
 $.stdout = "piped";
