@@ -44,9 +44,13 @@ export async function preBundle(
 ): Promise<string> {
   const scriptResult = await bundleFile(script, options);
 
-  const bundleContent =
-    `import "${new URL("./mod.ts", Deno.mainModule).href}";\n` +
-    `$.mainModule = import.meta.url;\n${scriptResult}`;
+  const bundleContent = `import "${new URL("./mod.ts", Deno.mainModule).href}";
+$.mainModule = import.meta.url;
+${scriptResult}
+if ($.verbose) {
+  const end = Date.now();
+  console.log($.bold("time: %ss"), Math.round($.time) / 1000);
+}`;
 
   const tmpDir = await Deno.makeTempDir();
   const tmpFile = path.join(tmpDir, path.basename(script));
