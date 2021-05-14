@@ -61,8 +61,9 @@ export function dzx() {
       async (
         { worker, ...perms },
         script?: string,
-        _args?: Array<string>,
+        args: Array<string> = [],
       ) => {
+        $.args = args;
         if (script) {
           $.mainModule = addProtocool(script);
           if (worker) {
@@ -90,6 +91,9 @@ export function dzx() {
           import "${new URL("./src/runtime/mod.ts", Deno.mainModule)}";
           $.mainModule = "${$.mainModule}";
           $.startTime = ${$.startTime};
+          $.args = JSON.parse(decodeURIComponent("${
+          encodeURIComponent(JSON.stringify($.args))
+        }"));
           await import("${$.mainModule}");
           if ($.verbose) {
             const end = Date.now();

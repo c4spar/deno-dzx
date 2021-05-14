@@ -223,7 +223,7 @@ script.
 - **flags:** Deno's `std/flags` module.
 
   ```ts
-  console.log($.blue.bold("Hello world!"));
+  const args: flags.Args = flags.parse($.args);
   ```
 
 ## Variables
@@ -240,6 +240,8 @@ script.
   `"piped"`, `"null"` or `number`. Will be reverted to default after all async
   ops are done. Default: `"piped"`
 - **$.throwErrors:** Throw errors instead of calling `Deno.exit`.
+- **$.args:** Equivalent to `Deno.args`, but without the script name as first
+  argument.
 - **$.startTime:** The execution start time in ms.
 - **$.time:** The time left since execution start (now() - $.startTime).
 - **$.quote:** Parser method that is used to safely quote strings. Used by:

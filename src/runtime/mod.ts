@@ -9,10 +9,11 @@ export type $ = typeof exec & typeof colors & {
   verbose: boolean;
   stdout: NonNullable<Deno.RunOptions["stdout"]>;
   stderr: NonNullable<Deno.RunOptions["stderr"]>;
+  args: Array<string>;
+  quote: typeof shq;
   throwErrors: boolean;
   startTime: number;
   time: number;
-  quote: typeof shq;
 };
 
 export const $: $ = exec as $;
@@ -25,6 +26,7 @@ $.mainModule = "";
 $.verbose = false;
 $.stdout = "piped";
 $.stderr = "piped";
+$.args = [];
 $.quote = shq;
 $.throwErrors = false;
 $.startTime = Date.now();
