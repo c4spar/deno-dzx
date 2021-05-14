@@ -134,7 +134,8 @@ console.log(`Hello ${$.blue.bold("world")}!`);
 > values currently. Read permissions are required by default.
 
 If `dzx` is called with `-w` or `--worker`, the script is executed inside an
-isolated web worker. If enabled, you can pass explicit permissions directly to the `dzx` cli.
+isolated web worker. If enabled, you can pass explicit permissions directly to
+the `dzx` cli.
 
 ```typescript
 #!/usr/bin/env dzx --worker --allow-read
