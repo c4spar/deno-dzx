@@ -11,6 +11,10 @@ export * as io from "https://deno.land/std@0.93.0/io/mod.ts";
 export type { ReadLineResult } from "https://deno.land/std@0.93.0/io/mod.ts";
 export * as fs from "https://deno.land/std@0.93.0/fs/mod.ts";
 export * as log from "https://deno.land/std@0.93.0/log/mod.ts";
+export type {
+  LevelName,
+  LogConfig,
+} from "https://deno.land/std@0.93.0/log/mod.ts";
 export * as flags from "https://deno.land/std@0.93.0/flags/mod.ts";
 export type {
   ArgParsingOptions,

@@ -17,6 +17,8 @@ import type {
   FormatInputPathObject as _FormatInputPathObject,
   GlobOptions as _GlobOptions,
   GlobToRegExpOptions as _GlobToRegExpOptions,
+  LevelName as _LevelName,
+  LogConfig as _LogConfig,
   ParsedPath as _ParsedPath,
   ReadLineResult as _ReadLineResult,
 } from "./src/runtime/deps.ts";
@@ -53,6 +55,11 @@ declare global {
 
   namespace io {
     type ReadLineResult = _ReadLineResult;
+  }
+
+  namespace log {
+    type LevelName = _LevelName;
+    type LogConfig = _LogConfig;
   }
 
   interface Window {
