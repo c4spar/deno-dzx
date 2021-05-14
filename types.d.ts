@@ -14,6 +14,10 @@ import type {
   ArgParsingOptions as _ArgParsingOptions,
   Args as _Args,
   Deferred as _Deferred,
+  FormatInputPathObject as _FormatInputPathObject,
+  GlobOptions as _GlobOptions,
+  GlobToRegExpOptions as _GlobToRegExpOptions,
+  ParsedPath as _ParsedPath,
 } from "./src/runtime/deps.ts";
 
 declare global {
@@ -37,6 +41,13 @@ declare global {
 
   namespace async {
     type Deferred<T> = _Deferred<T>;
+  }
+
+  namespace path {
+    type FormatInputPathObject = _FormatInputPathObject;
+    type GlobOptions = _GlobOptions;
+    type GlobToRegExpOptions = _GlobToRegExpOptions;
+    type ParsedPath = _ParsedPath;
   }
 
   interface Window {
