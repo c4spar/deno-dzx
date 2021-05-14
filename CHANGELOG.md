@@ -1,3 +1,23 @@
+# [v0.2.3](https://github.com/c4spar/deno-dzx/compare/0.2.2...0.2.3) (2021-05-14)
+
+### Features
+
+- add $.prefix ([4ba75ac](https://github.com/c4spar/deno-dzx/commit/4ba75ac))
+
+### Bug Fixes
+
+- add time logging to bundle
+  ([a4021ac](https://github.com/c4spar/deno-dzx/commit/a4021ac))
+
+### Chore
+
+- fmt ([e6b91c9](https://github.com/c4spar/deno-dzx/commit/e6b91c9))
+
+### Documentation Updates
+
+- update readme ([cece53c](https://github.com/c4spar/deno-dzx/commit/cece53c),
+  [4b707a4](https://github.com/c4spar/deno-dzx/commit/4b707a4))
+
 # [v0.2.2](https://github.com/c4spar/deno-dzx/compare/0.2.1...0.2.2) (2021-05-14)
 
 ### Features
