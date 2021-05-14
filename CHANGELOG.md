@@ -1,3 +1,34 @@
+# [v0.2.2](https://github.com/c4spar/deno-dzx/compare/0.2.1...0.2.2) (2021-05-14)
+
+### Features
+
+- add log types to log namespace
+  ([62db895](https://github.com/c4spar/deno-dzx/commit/62db895))
+- add io types to io namespace
+  ([3bdd903](https://github.com/c4spar/deno-dzx/commit/3bdd903))
+- add path types to path namespace
+  ([99a3913](https://github.com/c4spar/deno-dzx/commit/99a3913))
+- add async types to async namespace
+  ([b22b929](https://github.com/c4spar/deno-dzx/commit/b22b929))
+- add flags types to flags namespace
+  ([0963dc0](https://github.com/c4spar/deno-dzx/commit/0963dc0))
+- add $.args ([b1cdd29](https://github.com/c4spar/deno-dzx/commit/b1cdd29))
+
+### Bug Fixes
+
+- fix flags types ([6ea60c6](https://github.com/c4spar/deno-dzx/commit/6ea60c6))
+
+### Chore
+
+- fix changelog links
+  ([f74b9a2](https://github.com/c4spar/deno-dzx/commit/f74b9a2))
+
+### Documentation Updates
+
+- update readme ([b7d4136](https://github.com/c4spar/deno-dzx/commit/b7d4136),
+  [4ef155e](https://github.com/c4spar/deno-dzx/commit/4ef155e),
+  [5991b6e](https://github.com/c4spar/deno-dzx/commit/5991b6e))
+
 # [v0.2.1](https://github.com/c4spar/deno-dzx/compare/0.2.0...0.2.1) (2021-05-14)
 
 ### Features
