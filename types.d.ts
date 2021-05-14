@@ -1,5 +1,7 @@
 import type {
   $,
+  ArgParsingOptions as _ArgParsingOptions,
+  Args as _Args,
   async as _async,
   cd as _cd,
   flags as _flags,
@@ -23,6 +25,11 @@ declare global {
   const fs: typeof _fs;
   const log: typeof _log;
   const flags: typeof _flags;
+
+  namespace flags {
+    type Args = _Args;
+    type ArgParsingOptions = _ArgParsingOptions;
+  }
 
   interface Window {
     // dzx
