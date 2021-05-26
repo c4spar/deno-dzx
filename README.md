@@ -303,14 +303,14 @@ Usage:   dzx [script] [args...]
   web worker).
 
   ```shell
-  dzx --worker ./examplte.ts
+  dzx --worker ./example.ts
   ```
 
 - **dzx bundle** `[script]`: Bundle an dzx script to a standalone deno sript.
   Can also read from stdin.
 
   ```shell
-  dzx bundle ./examplte.ts > bundle.js
+  dzx bundle ./example.ts > bundle.js
   deno run --allow-read --allow-env --allow-run bundle.js
   ```
 
@@ -318,7 +318,7 @@ Usage:   dzx [script] [args...]
   standalone binary. Can also read from stdin.
 
   ```shell
-  dzx compile ./examplte.ts --allow-read --allow-env --allow-run
+  dzx compile ./example.ts --allow-read --allow-env --allow-run
   ```
 
 ## Contributing
