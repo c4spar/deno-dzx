@@ -1,8 +1,13 @@
 import { VERSION } from "../../version.ts";
-import { io, path } from "../runtime/mod.ts";
+import { $, io, path } from "../runtime/mod.ts";
 import { bundleCommand } from "./bundle.ts";
 import { compileCommand } from "./compile.ts";
-import { Command, ValidationError } from "./deps.ts";
+import {
+  Command,
+  DenoLandProvider,
+  UpgradeCommand,
+  ValidationError,
+} from "./deps.ts";
 
 export function dzx() {
   return new Command<void>()
@@ -82,7 +87,14 @@ export function dzx() {
       },
     )
     .command("bundle", bundleCommand())
-    .command("compile", compileCommand());
+    .command("compile", compileCommand())
+    .command(
+      "upgrade",
+      new UpgradeCommand({
+        args: ["--allow-all", "--unstable"],
+        provider: new DenoLandProvider(),
+      }),
+    );
 
   function spawnWorker(perms: Permissions): void {
     new Worker(
