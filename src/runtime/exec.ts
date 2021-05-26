@@ -1,3 +1,5 @@
+/// <reference path="../../types.d.ts" />
+
 import { ProcessError } from "./process_error.ts";
 import { ProcessOutput } from "./process_output.ts";
 import { quote } from "./quote.ts";

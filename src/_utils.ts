@@ -1,3 +1,5 @@
+/// <reference path="../types.d.ts" />
+
 export function error(message: string | Error, exitCode = 1): Error {
   if ($.throwErrors) {
     return (message instanceof Error

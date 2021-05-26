@@ -1,3 +1,5 @@
+/// <reference path="../../types.d.ts" />
+
 import { async, colors, flags, fs, io, log, path, shq } from "./deps.ts";
 import { cd } from "./cd.ts";
 import { exec } from "./exec.ts";

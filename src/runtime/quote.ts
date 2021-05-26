@@ -1,3 +1,5 @@
+/// <reference path="../../types.d.ts" />
+
 export function quote(
   pieces: TemplateStringsArray,
   ...args: Array<string | number>
