@@ -3,5 +3,5 @@ export { UpgradeCommand } from "https://deno.land/x/cliffy@v0.19.5/command/upgra
 export { DenoLandProvider } from "https://deno.land/x/cliffy@v0.19.5/command/upgrade/provider/deno_land.ts";
 export {
   ValidationError,
-} from "https://deno.land/x/cliffy@v0.19.5/flags/_errors.ts";
+} from "https://deno.land/x/cliffy@v0.19.5/command/_errors.ts";
 export { copy } from "https://deno.land/std@0.104.0/io/mod.ts";

@@ -138,9 +138,7 @@ export function dzx() {
       $.mainModule = `data:application/typescript,${encodeURIComponent(data)}`;
       await import($.mainModule);
     } else {
-      // @TODO: add support for exit code in ValidationError
-      // throw new ValidationError(`Failed to read from stdin.`, 2);
-      throw new ValidationError(`Failed to read from stdin.`);
+      throw new ValidationError(`Failed to read from stdin.`, { exitCode: 2 });
     }
   }
 
