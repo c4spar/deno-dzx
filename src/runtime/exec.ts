@@ -6,10 +6,15 @@ let runningProcesses = 0;
 
 export async function exec(
   pieces: TemplateStringsArray,
-  ...args: Array<string | number>
+  ...args: Array<string | number | ProcessOutput>
 ): Promise<ProcessOutput> {
   runningProcesses++;
-  const cmd = quote(pieces, ...args);
+  const cmd = quote(
+    pieces,
+    ...args.map((
+      a,
+    ) => (a instanceof ProcessOutput ? a.stdout.replace(/\n$/, "") : a)),
+  );
 
   if ($.verbose) {
     console.log($.brightBlue("$ %s"), cmd);

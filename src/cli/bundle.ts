@@ -68,8 +68,18 @@ async function bundleFile(
     const result = await Deno.emit(file, {
       bundle: "module",
       check: true,
+      compilerOptions: {
+        sourceMap: false, // Set sourcemaps to be false so that the resultant files array only has one entry
+      },
       ...options,
     });
+
+    // TODO - the key order of `result.files` is non-deterministic, so this might
+    // need to be reworked a bit to more selectively pull out the bundled file
+    // result that is desired. In the short term, it is reasonably well known
+    // that the first file will be *the only file* when sourcemaps are turned
+    // off in the compiler options (note that not doing this results in
+    // intermittently failing results on repeated calls to `dzx bundle`)
     return Object.values(result.files)[0] as string;
   } catch (err) {
     if (err instanceof Deno.errors.NotFound) {
