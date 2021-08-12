@@ -3,6 +3,9 @@ import { cd } from "./cd.ts";
 import { exec } from "./exec.ts";
 import { quote } from "./quote.ts";
 
+export { ProcessError } from "./process_error.ts";
+export { ProcessOutput } from "./process_output.ts";
+
 export type $Global = typeof exec & typeof colors & {
   shell: string;
   prefix: string;
