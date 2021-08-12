@@ -1,6 +1,6 @@
 import { preBundle } from "./bundle.ts";
 import { error } from "../_utils.ts";
-import { Command, ValidationError } from "./deps.ts";
+import { Command, copy, ValidationError } from "./deps.ts";
 
 export function compileCommand() {
   return new Command<void>()
@@ -39,7 +39,7 @@ export function compileCommand() {
           }
           script = await Deno.makeTempFile();
           const tmpFile = await Deno.open(script);
-          await Deno.copy(Deno.stdin, tmpFile);
+          await copy(Deno.stdin, tmpFile);
         }
         if (["-h", "--help"].includes(script)) {
           this.showHelp();

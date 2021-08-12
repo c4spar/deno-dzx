@@ -1,4 +1,4 @@
-import { Command, ValidationError } from "./deps.ts";
+import { Command, copy, ValidationError } from "./deps.ts";
 import { error } from "../_utils.ts";
 import { path } from "../../mod.ts";
 
@@ -14,7 +14,7 @@ export function bundleCommand() {
         }
         script = await Deno.makeTempFile({ suffix: ".ts" });
         const tmpFile = await Deno.open(script, { write: true });
-        await Deno.copy(Deno.stdin, tmpFile);
+        await copy(Deno.stdin, tmpFile);
         tmpFile.close();
       }
       console.log(

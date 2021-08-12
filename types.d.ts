@@ -1,5 +1,5 @@
 import type {
-  $,
+  $Global,
   async as _async,
   cd as _cd,
   flags as _flags,
@@ -25,7 +25,7 @@ import type {
 
 declare global {
   // dzx
-  const $: $;
+  const $: $Global;
   const cd: typeof _cd;
   const quote: typeof _quote;
 
@@ -64,7 +64,7 @@ declare global {
 
   interface Window {
     // dzx
-    $: $;
+    $: $Global;
     cd: typeof _cd;
     quote: typeof _quote;
 
@@ -79,7 +79,7 @@ declare global {
 
   interface WorkerGlobalScope {
     // dzx
-    $: $;
+    $: $Global;
     cd: typeof _cd;
     quote: typeof _quote;
 
