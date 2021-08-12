@@ -3,7 +3,7 @@ import { cd } from "./cd.ts";
 import { exec } from "./exec.ts";
 import { quote } from "./quote.ts";
 
-export type $ = typeof exec & typeof colors & {
+export type $Global = typeof exec & typeof colors & {
   shell: string;
   prefix: string;
   mainModule: string;
@@ -17,7 +17,7 @@ export type $ = typeof exec & typeof colors & {
   time: number;
 };
 
-export const $: $ = exec as $;
+export const $: $Global = exec as $Global;
 
 Object.setPrototypeOf($, Object.getPrototypeOf(colors));
 

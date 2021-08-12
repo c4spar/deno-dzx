@@ -8,7 +8,7 @@
     <img alt="issues" src="https://img.shields.io/github/issues/c4spar/deno-dzx?label=issues&logo=github">
   </a>
   <a href="https://deno.land/">
-    <img alt="Deno version" src="https://img.shields.io/badge/deno-^1.10.0-blue?logo=deno&color=blue" />
+    <img alt="Deno version" src="https://img.shields.io/badge/deno-^1.13.0-blue?logo=deno&color=blue" />
   </a>
   <a href="https://github.com/c4spar/deno-dzx/blob/main/LICENSE">
     <img alt="Licence" src="https://img.shields.io/github/license/c4spar/deno-dzx?logo=github" />
