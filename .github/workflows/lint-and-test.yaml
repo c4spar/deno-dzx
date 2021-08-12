@@ -1,10 +1,10 @@
-name: Lint
+name: Lint and Test
 
 on: [push, pull_request]
 
 jobs:
-  lint:
-    name: Lint source
+  lint-and-test:
+    name: Lint and test source
     runs-on: ubuntu-latest
     steps:
       - name: Setup repo
@@ -20,3 +20,6 @@ jobs:
 
       - name: Run linter
         run: deno lint --unstable
+
+      - name: Run tests
+        run: deno test --unstable
