@@ -31,6 +31,10 @@ export async function exec(
     process.stderr && read(process.stderr, stderr, combined),
   ]);
 
+  process.stdout?.close();
+  process.stderr?.close();
+  process.close();
+
   if (--runningProcesses === 0) {
     $.stdout = "piped";
   }

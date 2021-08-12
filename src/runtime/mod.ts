@@ -23,7 +23,7 @@ Object.setPrototypeOf($, Object.getPrototypeOf(colors));
 
 $._stack = [];
 $.shell = "/bin/sh";
-$.prefix = "set -euo pipefail;";
+$.prefix = "set -eu;";
 $.mainModule = "";
 $.verbose = false;
 $.stdout = "piped";
