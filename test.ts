@@ -14,6 +14,14 @@ Deno.test("$ works", async () => {
   assertEquals(result.stdout, "hello\n");
 });
 
+Deno.test("only stdout of an exec result will be used if passed to a second call to exec", async () => {
+  const result1 = await $`echo sup >&2; echo hiii`;
+  assertEquals(result1.stderr, "sup\n");
+
+  const result2 = await $`echo ${result1}`;
+  assertEquals(result2.stdout, "hiii\n");
+});
+
 Deno.test("passing environment variables to the child process", async () => {
   Deno.env.set("IS_THIS_THING_ON", "yes");
   const result = await $`echo $IS_THIS_THING_ON`;
