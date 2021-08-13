@@ -250,7 +250,7 @@ console.log(`Hello from ${$.blue.bold("worker")}!`);
 ## Variables
 
 - **$.shell:** Set the shell that is used by `` $`command` ``. Default:
-  `/bin/sh`
+  `/bin/bash`
 - **$.prefix:** Command prefix. Default: `set -euo pipefail;`.
 - **$.mainModule:** The executed dzx script.
 - **$.verbose:** Enable debugging output (log shell commands and execution

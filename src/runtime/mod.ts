@@ -6,7 +6,7 @@ import { quote } from "./quote.ts";
 export { ProcessError } from "./process_error.ts";
 export { ProcessOutput } from "./process_output.ts";
 
-export type $Global = typeof exec & typeof colors & {
+export type $ = typeof exec & typeof colors & {
   shell: string;
   prefix: string;
   mainModule: string;
@@ -20,13 +20,13 @@ export type $Global = typeof exec & typeof colors & {
   time: number;
 };
 
-export const $: $Global = exec as $Global;
+export const $: $ = exec as $;
 
 Object.setPrototypeOf($, Object.getPrototypeOf(colors));
 
 $._stack = [];
-$.shell = "/bin/sh";
-$.prefix = "set -eu;";
+$.shell = "/bin/bash";
+$.prefix = "set -euo pipefail;";
 $.mainModule = "";
 $.verbose = false;
 $.stdout = "piped";
