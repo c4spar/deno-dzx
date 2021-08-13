@@ -287,7 +287,7 @@ Usage:   dzx [script] [args...]
     --allow-env      - Allow environment access.                                        (Depends: --worker)
     --allow-hrtime   - Allow high resolution time measurement.                          (Depends: --worker)
     --allow-net      - Allow network access.                                            (Depends: --worker)
-    --allow-plugin   - Allow loading plugins.                                           (Depends: --worker)
+    --allow-ffi      - Allow loading dynamic libraries.                                 (Depends: --worker)
     --allow-read     - Allow file system read access.                                   (Depends: --worker)
     --allow-run      - Allow running subprocesses.                                      (Depends: --worker)
     --allow-write    - Allow file system write access.                                  (Depends: --worker)

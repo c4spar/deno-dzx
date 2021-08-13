@@ -38,9 +38,9 @@ export function dzx() {
       "Allow network access.",
       { depends: ["worker"] },
     )
-    .option<{ allowPlugin?: boolean }>(
-      "--allow-plugin",
-      "Allow loading plugins.",
+    .option<{ allowFfi?: boolean }>(
+      "--allow-ffi",
+      "Allow loading dynamic libraries.",
       { depends: ["worker"] },
     )
     .option<{ allowRead?: boolean }>(
@@ -121,7 +121,7 @@ export function dzx() {
           permissions: {
             env: perms.allowAll || perms.allowEnv,
             hrtime: perms.allowAll || perms.allowHrtime,
-            plugin: perms.allowAll || perms.allowPlugin,
+            ffi: perms.allowAll || perms.allowFfi,
             run: perms.allowAll || perms.allowRun,
             write: perms.allowAll || perms.allowWrite,
             net: perms.allowAll || perms.allowNet,
@@ -157,7 +157,7 @@ interface Permissions {
   allowAll?: boolean;
   allowEnv?: boolean;
   allowHrtime?: boolean;
-  allowPlugin?: boolean;
+  allowFfi?: boolean;
   allowRun?: boolean;
   allowWrite?: boolean;
   allowNet?: boolean;

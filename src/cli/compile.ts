@@ -10,7 +10,7 @@ export function compileCommand() {
     .option("--allow-env [allow-env:string]", "Allow environment access.")
     .option("--allow-hrtime", "Allow high resolution time measurement.")
     .option("--allow-net [allow-net:string]", "Allow network access.")
-    .option("--allow-plugin", "Allow loading plugins.")
+    .option("--allow-ffi", "Allow loading dynamic libraries.")
     .option(
       "--allow-read [allow-read:string]",
       "Allow file system read access.",
