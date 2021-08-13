@@ -1,3 +1,55 @@
+# [v0.2.4](https://github.com/c4spar/deno-dzx/compare/0.2.3...0.2.4) (2021-08-14)
+
+### Features
+
+- **cli:** add upgrade command
+  ([08981fe](https://github.com/c4spar/deno-dzx/commit/08981fe))
+
+### Bug Fixes
+
+- **cli:** replace --allow-plugin with --allow-ffi
+  ([ede926d](https://github.com/c4spar/deno-cli/commit/ede926d))
+- **cli:** exclude source maps from bundle command
+  ([0da5a1e](https://github.com/c4spar/deno-dzx/commit/0da5a1e))
+- **runtime:** take only stdout when passing a process output to another process
+  ([0da5a1e](https://github.com/c4spar/deno-dzx/commit/0da5a1e))
+
+### Code Refactoring
+
+- **cli:** exit with exit code 2 if reading from stdin fails
+  ([5911dff](https://github.com/c4spar/deno-dzx/commit/5911dff))
+- **runtime:** add typings in runtime files
+  ([2b5656b](https://github.com/c4spar/deno-dzx/commit/2b5656b))
+- **runtime:** change default shell to bash
+  ([513a4da](https://github.com/c4spar/deno-dzx/commit/513a4da))
+
+### Chore
+
+- **ci:** switch to denoland/setup-deno action
+  ([b163313](https://github.com/c4spar/deno-cli/commit/b163313))
+- **ci:** add testing step to github action
+  ([c2b7a5b](https://github.com/c4spar/deno-dzx/commit/c2b7a5b))
+- **upgrade:** deno/std v0.104.0
+  ([513a4da](https://github.com/c4spar/deno-dzx/commit/513a4da),
+  [0e8d0a7](https://github.com/c4spar/deno-dzx/commit/0e8d0a7))
+- **upgrade:** cliffy v0.19.5
+  ([fd82808](https://github.com/c4spar/deno-dzx/commit/fd82808))
+
+### Unit/Integration Tests
+
+- test behavior of passing exec result to another exec call
+  ([21f78c0](https://github.com/c4spar/deno-dzx/commit/21f78c0))
+- add a basic set of test cases
+  ([8673e8c](https://github.com/c4spar/deno-dzx/commit/8673e8c))
+- get the initial test suite passing
+  ([1e57841](https://github.com/c4spar/deno-dzx/commit/1e57841))
+- add initial tests
+  ([c90ea2a](https://github.com/c4spar/deno-dzx/commit/c90ea2a))
+
+### Documentation Updates
+
+- fix typo ([a00b7fd](https://github.com/c4spar/deno-dzx/commit/a00b7fd))
+
 # [v0.2.3](https://github.com/c4spar/deno-dzx/compare/0.2.2...0.2.3) (2021-05-14)
 
 ### Features
