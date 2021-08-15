@@ -74,7 +74,7 @@ export function dzx() {
           const scriptExt = path.extname(script);
 
           $.mainModule = [".md", ".markdown"].includes(scriptExt)
-            ? await moduleFromMarkdown(script)
+            ? addProtocool(await moduleFromMarkdown(script))
             : addProtocool(script);
 
           if (worker) {
