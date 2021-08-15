@@ -118,7 +118,7 @@ export function dzx() {
 
       await Deno.writeTextFile(mdRealPath, mdContent);
 
-      console.log($.dim(`Markdown source saved to ${mdRealPath}`));
+      console.error($.dim(`Markdown source saved to ${mdRealPath}`));
     }
 
     mdRealPath ??= await Deno.realPath(md);
@@ -157,7 +157,7 @@ export function dzx() {
       suffix: `_module.ts`,
     });
 
-    console.log($.dim(`Markdown module saved to ${tmp}\n`));
+    console.error($.dim(`Markdown module saved to ${tmp}\n`));
 
     const finalCode = codeContent.join("").replaceAll(
       "import.meta.url",
