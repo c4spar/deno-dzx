@@ -3,6 +3,7 @@
 import {
   assert,
   assertEquals,
+  assertStringIncludes,
   assertThrowsAsync,
 } from "https://deno.land/std@0.104.0/testing/asserts.ts";
 
@@ -69,4 +70,13 @@ Deno.test("cwd of the parent process is always the starting point for calls to c
   } finally {
     Deno.chdir(parentPwd);
   }
+});
+
+Deno.test("markdown files can be executed as scripts", async () => {
+  const output = await $
+    `deno run -A --unstable ./dzx.ts ./examples/markdown.md`;
+
+  assertStringIncludes(output.stderr, `Markdown module saved to`);
+  assertStringIncludes(output.stdout, `$ echo "Hello World!"`);
+  assertStringIncludes(output.stdout, `$ echo "Hello again World!"`);
 });
