@@ -76,6 +76,9 @@ Deno.test("markdown files can be executed as scripts", async () => {
   const output = await $
     `deno run -A --unstable ./dzx.ts ./examples/markdown.md`;
 
+  const outputLength = await $`echo ${output} | wc -l`;
+
+  assertEquals(Number(outputLength.stdout.trim()), 4);
   assertStringIncludes(output.stderr, `Markdown module saved to`);
   assertStringIncludes(output.stdout, `$ echo "Hello World!"`);
   assertStringIncludes(output.stdout, `$ echo "Hello again World!"`);
