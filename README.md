@@ -146,7 +146,9 @@ console.log(`Hello from ${$.blue.bold("worker")}!`);
 
 ## Markdown
 
-With `dzx` you can run the `js`/`ts` code blocks from a Markdown file as if they were a regular script. This is very convenient when you want to blend some nicely formatted documentation in with the actual steps of execution.
+With `dzx` you can run the `js`/`ts` code blocks from a Markdown file as if they
+were a regular script. This is very convenient when you want to blend some
+nicely formatted documentation in with the actual steps of execution.
 
 Give it a try by running:
 
@@ -154,7 +156,8 @@ Give it a try by running:
 dzx ./examples/markdown.md
 ```
 
-See the [markdown example](./examples/markdown.md) for further documentation and notes.
+See the [markdown example](./examples/markdown.md) for further documentation and
+notes.
 
 ## Methods
 
