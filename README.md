@@ -144,6 +144,18 @@ the `dzx` cli.
 console.log(`Hello from ${$.blue.bold("worker")}!`);
 ```
 
+## Markdown
+
+With `dzx` you can run the `js`/`ts` code blocks from a Markdown file as if they were a regular script. This is very convenient when you want to blend some nicely formatted documentation in with the actual steps of execution.
+
+Give it a try by running:
+
+```bash
+dzx ./examples/markdown.md
+```
+
+See the [markdown example](./examples/markdown.md) for further documentation and notes.
+
 ## Methods
 
 - `` $`command` ``: Executes a shell command.
