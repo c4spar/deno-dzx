@@ -5,6 +5,7 @@ import { compileCommand } from "./compile.ts";
 import {
   Command,
   DenoLandProvider,
+  tokens,
   UpgradeCommand,
   ValidationError,
 } from "./deps.ts";
@@ -70,7 +71,12 @@ export function dzx() {
       ) => {
         $.args = args;
         if (script) {
-          $.mainModule = addProtocool(script);
+          const scriptExt = path.extname(script);
+
+          $.mainModule = [".md", ".markdown"].includes(scriptExt)
+            ? addProtocool(await moduleFromMarkdown(script))
+            : addProtocool(script);
+
           if (worker) {
             spawnWorker(perms);
           } else {
@@ -95,6 +101,81 @@ export function dzx() {
         provider: new DenoLandProvider(),
       }),
     );
+
+  async function moduleFromMarkdown(md: string) {
+    let mdRealPath;
+    let mdContent;
+
+    if (
+      md.startsWith("http://") ||
+      md.startsWith("https://")
+    ) {
+      mdContent = await fetch(md).then((r) => r.text());
+      mdRealPath = await Deno.makeTempFile({
+        prefix: "dzx_",
+        suffix: `_source.md`,
+      });
+
+      await Deno.writeTextFile(mdRealPath, mdContent);
+
+      console.error($.dim(`Markdown source saved to ${mdRealPath}`));
+    }
+
+    mdRealPath ??= await Deno.realPath(md);
+    mdContent ??= await Deno.readTextFile(mdRealPath);
+    const mdFileURL = path.toFileUrl(await Deno.realPath(mdRealPath));
+    const mdTokens = tokens(mdContent);
+
+    const validLangs = ["js", "javascript", "ts", "typescript"];
+    const codeContent: string[] = [];
+
+    mdTokens.forEach((token, idx) => {
+      if (
+        token.type === "start" && token.tag === "codeBlock" &&
+        token.kind === "fenced" &&
+        validLangs
+          .includes(token.language)
+      ) {
+        let cursor = idx + 1;
+
+        while (mdTokens.at(cursor)?.type === "text") {
+          const code = mdTokens.at(cursor);
+
+          // Silly typescript, can't narrow this down based on
+          // the while loop condition...ah well
+          if (code?.type === "text") {
+            codeContent.push(code.content);
+          }
+
+          cursor++;
+        }
+      }
+    });
+
+    const tmp = await Deno.makeTempFile({
+      prefix: "dzx_",
+      suffix: `_module.ts`,
+    });
+
+    console.error($.dim(`Markdown module saved to ${tmp}\n`));
+
+    const finalCode = codeContent.join("").replaceAll(
+      "import.meta.url",
+      `\"${mdFileURL}\"`,
+    );
+
+    await Deno.writeTextFile(
+      tmp,
+      `#!/usr/bin/env dzx
+       /// <reference path="https://deno.land/x/dzx@${VERSION}/types.d.ts" />
+       // deno-lint-ignore-file
+
+       ${finalCode}
+      `,
+    );
+
+    return tmp;
+  }
 
   function spawnWorker(perms: Permissions): void {
     new Worker(
