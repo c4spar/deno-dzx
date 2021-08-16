@@ -2,9 +2,10 @@
 
 import { async, colors, flags, fs, io, log, path, shq } from "./deps.ts";
 import { cd } from "./cd.ts";
-import { envExists, envMissing, HOME, USER } from "./env.ts";
+import { envExists, envMissing } from "./env.ts";
 import { exec } from "./exec.ts";
 import { quote } from "./quote.ts";
+import { homedir, username } from "../_utils.ts";
 
 export { ProcessError } from "./process_error.ts";
 export { ProcessOutput } from "./process_output.ts";
@@ -47,9 +48,6 @@ self.$ = $;
 self.cd = cd;
 self.quote = quote;
 
-self.HOME = HOME;
-self.USER = USER;
-
 // x
 self.async = async;
 self.path = path;
@@ -58,17 +56,15 @@ self.fs = fs;
 self.log = log;
 self.flags = flags;
 
-export {
-  async,
-  cd,
-  envExists,
-  envMissing,
-  flags,
-  fs,
-  HOME,
-  io,
-  log,
-  path,
-  quote,
-  USER,
-};
+// convenient env vars
+self.HOME = homedir(false);
+self.USER = username(false);
+
+// numeric script args ($0 is supplied by $.mainModule)
+[1, 2, 3, 4, 5, 6, 7, 8, 9].forEach((arg) => {
+  Object.defineProperty(self, `$${arg}`, {
+    get: () => $.args.at(arg - 1),
+  });
+});
+
+export { async, cd, envExists, envMissing, flags, fs, io, log, path, quote };

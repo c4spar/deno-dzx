@@ -6,12 +6,10 @@ import type {
   envMissing as _envMissing,
   flags as _flags,
   fs as _fs,
-  HOME as _HOME,
   io as _io,
   log as _log,
   path as _path,
   quote as _quote,
-  USER as _USER,
 } from "./mod.ts";
 
 import type {
@@ -27,6 +25,8 @@ import type {
   ReadLineResult as _ReadLineResult,
 } from "./src/runtime/deps.ts";
 
+type MaybeString = string | undefined;
+
 declare global {
   // dzx
   const $: $;
@@ -34,9 +34,27 @@ declare global {
   const quote: typeof _quote;
 
   /** Equivalent to `$HOME` (the users home directory) in the bash shell */
-  const HOME: typeof _HOME;
+  const HOME: MaybeString;
   /** Equivalent to `$USER` (the current user) in the bash shell */
-  const USER: typeof _USER;
+  const USER: MaybeString;
+  /** The first argument to the script, equivalent to `$1` in the bash shell */
+  const $1: MaybeString;
+  /** The second argument to the script, equivalent to `$2` in the bash shell */
+  const $2: MaybeString;
+  /** The third argument to the script, equivalent to `$3` in the bash shell */
+  const $3: MaybeString;
+  /** The fourth argument to the script, equivalent to `$4` in the bash shell */
+  const $4: MaybeString;
+  /** The fifth argument to the script, equivalent to `$5` in the bash shell */
+  const $5: MaybeString;
+  /** The sixth argument to the script, equivalent to `$6` in the bash shell */
+  const $6: MaybeString;
+  /** The seventh argument to the script, equivalent to `$7` in the bash shell */
+  const $7: MaybeString;
+  /** The eighth argument to the script, equivalent to `$8` in the bash shell */
+  const $8: MaybeString;
+  /** The nineth argument to the script, equivalent to `$9` in the bash shell */
+  const $9: MaybeString;
 
   // x
   const async: typeof _async;
@@ -77,8 +95,17 @@ declare global {
     cd: typeof _cd;
     quote: typeof _quote;
 
-    HOME: typeof _HOME;
-    USER: typeof _USER;
+    HOME: MaybeString;
+    USER: MaybeString;
+    $1: MaybeString;
+    $2: MaybeString;
+    $3: MaybeString;
+    $4: MaybeString;
+    $5: MaybeString;
+    $6: MaybeString;
+    $7: MaybeString;
+    $8: MaybeString;
+    $9: MaybeString;
 
     // x
     async: typeof _async;
@@ -95,8 +122,17 @@ declare global {
     cd: typeof _cd;
     quote: typeof _quote;
 
-    HOME: typeof _HOME;
-    USER: typeof _USER;
+    HOME: MaybeString;
+    USER: MaybeString;
+    $1: MaybeString;
+    $2: MaybeString;
+    $3: MaybeString;
+    $4: MaybeString;
+    $5: MaybeString;
+    $6: MaybeString;
+    $7: MaybeString;
+    $8: MaybeString;
+    $9: MaybeString;
 
     // x
     async: typeof _async;

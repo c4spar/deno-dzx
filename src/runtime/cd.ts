@@ -1,4 +1,4 @@
-import { error } from "../_utils.ts";
+import { error, homedir } from "../_utils.ts";
 import { path } from "./mod.ts";
 
 const cwd = Deno.cwd();
@@ -23,17 +23,5 @@ export function cd(dir: string) {
       throw error(`cd: ${dir}: Permission denied\n    at ${stack}`);
     }
     throw error(err);
-  }
-}
-
-function homedir(): string | null {
-  switch (Deno.build.os) {
-    case "windows":
-      return Deno.env.get("USERPROFILE") || null;
-    case "linux":
-    case "darwin":
-      return Deno.env.get("HOME") || null;
-    default:
-      throw error("Failed to retrive home directory.");
   }
 }

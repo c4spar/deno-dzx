@@ -1,9 +1,3 @@
-/** Equivalent to `$HOME` (the users home directory) in the bash shell */
-export const HOME = Deno.env.get("HOME");
-
-/** Equivalent to `$USER` (the current user) in the bash shell */
-export const USER = Deno.env.get("USER");
-
 /**
  * Check if the specified environment variable is set and is not empty.
  *

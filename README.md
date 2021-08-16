@@ -304,6 +304,8 @@ notes.
   `` $`command` ``
 - **HOME:** Equivalent to `$HOME` (the users home directory) in the bash shell
 - **USER:** Equivalent to `$USER` (the current user) in the bash shell
+- **$1 through $9:** Equivalent to `$1`, `$2`, ... `$9` (the script arguments)
+  in the bash shell
 
 # CLI
 
