@@ -64,6 +64,7 @@ await fs.ensureDir("./tmp");
 - [Usage](#usage)
   - [Permissions](#permissions)
   - [Worker](#worker)
+  - [Markdown](#markdown)
   - [Methods](#methods)
   - [Modules](#modules)
   - [Variables](#variables)
@@ -212,6 +213,24 @@ notes.
   console.log(Deno.cwd()); // --> [HOME]/Documents
   ```
 
+- `envExists()`: Checks if the specified environment variable is defined and
+  non-empty. Provided for convenience when you don't care about the value of a
+  variable, only that it is set.
+
+  ```ts
+  console.log(envExists("HOME")); // --> true
+  console.log(envExists("MADE_UP")); // --> false
+  ```
+
+- `envMissing()`: Checks if the specified environment variable is undefined or
+  empty. Provided for convenience when you don't care about the value of a
+  variable, only that it is absent.
+
+  ```ts
+  console.log(envMissing("HOME")); // --> false
+  console.log(envMissing("MADE_UP")); // --> true
+  ```
+
 - `` quote`string` ``: The quote methods quotes safly a string. by default the
   `shq` package is used. Can be overidden with `$.quote`.
 
@@ -283,6 +302,8 @@ notes.
 - **$.time:** The time left since execution start (now() - $.startTime).
 - **$.quote:** Parser method that is used to safely quote strings. Used by:
   `` $`command` ``
+- **HOME:** Equivalent to `$HOME` (the users home directory) in the bash shell
+- **USER:** Equivalent to `$USER` (the current user) in the bash shell
 
 # CLI
 

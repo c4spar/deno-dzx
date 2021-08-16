@@ -2,6 +2,7 @@
 
 import { async, colors, flags, fs, io, log, path, shq } from "./deps.ts";
 import { cd } from "./cd.ts";
+import { envExists, envMissing, HOME, USER } from "./env.ts";
 import { exec } from "./exec.ts";
 import { quote } from "./quote.ts";
 
@@ -46,6 +47,9 @@ self.$ = $;
 self.cd = cd;
 self.quote = quote;
 
+self.HOME = HOME;
+self.USER = USER;
+
 // x
 self.async = async;
 self.path = path;
@@ -54,4 +58,17 @@ self.fs = fs;
 self.log = log;
 self.flags = flags;
 
-export { async, cd, flags, fs, io, log, path, quote };
+export {
+  async,
+  cd,
+  envExists,
+  envMissing,
+  flags,
+  fs,
+  HOME,
+  io,
+  log,
+  path,
+  quote,
+  USER,
+};

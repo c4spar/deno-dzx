@@ -2,12 +2,16 @@ import type {
   $,
   async as _async,
   cd as _cd,
+  envExists as _envExists,
+  envMissing as _envMissing,
   flags as _flags,
   fs as _fs,
+  HOME as _HOME,
   io as _io,
   log as _log,
   path as _path,
   quote as _quote,
+  USER as _USER,
 } from "./mod.ts";
 
 import type {
@@ -28,6 +32,11 @@ declare global {
   const $: $;
   const cd: typeof _cd;
   const quote: typeof _quote;
+
+  /** Equivalent to `$HOME` (the users home directory) in the bash shell */
+  const HOME: typeof _HOME;
+  /** Equivalent to `$USER` (the current user) in the bash shell */
+  const USER: typeof _USER;
 
   // x
   const async: typeof _async;
@@ -68,6 +77,9 @@ declare global {
     cd: typeof _cd;
     quote: typeof _quote;
 
+    HOME: typeof _HOME;
+    USER: typeof _USER;
+
     // x
     async: typeof _async;
     path: typeof _path;
@@ -82,6 +94,9 @@ declare global {
     $: $;
     cd: typeof _cd;
     quote: typeof _quote;
+
+    HOME: typeof _HOME;
+    USER: typeof _USER;
 
     // x
     async: typeof _async;
