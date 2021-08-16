@@ -197,6 +197,57 @@ notes.
   }
   ```
 
+- `` $s`command` ``: Executes a shell command and _only returns its exit code_
+  (without throwing an error)
+
+  ```ts
+  const trueStatus = await $`true`);
+  console.log(trueStatus); // -> 0
+  ```
+
+  If the executed program returns a non-zero exit code, no error will be thrown.
+  Either the non-zero code will be the return value, or a `1` will be returned
+  by default.
+
+  ```ts
+  const falseStatus = await $`false`);
+  console.log(falseStatus); // -> 1
+  ```
+
+- `` $o`command` ``: Executes a shell command and _only returns its trimmed
+  stdout_ (without throwing an error)
+
+  ```ts
+  const stdout = await $`pwd`);
+  console.log(stdout); // -> '/home/code/project
+  ```
+
+  If the executed program returns a non-zero exit code, no error will be thrown.
+  Either the failed processes stdout will be the return value, or an empty
+  string will be returned by default
+
+  ```ts
+  const stdout = await $`echo 'hello' >&2; exit 1;`);
+  console.log(stdout); // -> ""
+  ```
+
+- `` $e`command` ``: Executes a shell command and _only returns its trimmed
+  stderr_ (without throwing an error)
+
+  ```ts
+  const stderr = await $`pwd`);
+  console.log(stderr); // -> ""
+  ```
+
+  If the executed program returns a non-zero exit code, no error will be thrown.
+  Either the failed processes stderr will be the return value, or an empty
+  string will be returned by default
+
+  ```ts
+  const stderr = await $`echo 'hello' >&2; exit 1;`);
+  console.log(stderr); // -> "hello"
+  ```
+
 - `cd()`: Change the current working directory. If path does not exist, an error
   is thrown. The path is always relative to the original `cwd`, unless the path
   is an absolute path or starts with `~` which indecates the home directory.
