@@ -1,5 +1,8 @@
 import type {
   $,
+  $e as _$e,
+  $o as _$o,
+  $s as _$s,
   async as _async,
   cd as _cd,
   envExists as _envExists,
@@ -28,8 +31,53 @@ import type {
 type MaybeString = string | undefined;
 
 declare global {
-  // dzx
+  /**
+   * Run a command and return its output streams as well
+   * as details about the process exit status.
+   */
   const $: $;
+
+  /**
+   * Run a command and return only its exit code
+   *
+   * If the command throws an error or fails in some way,
+   * this method will not re-throw that error. It will
+   * either return the exit code from the process, or `1`
+   * if no exit code is produced (due to an error)
+   *
+   * If you want assurance that a failure in the child process
+   * will throw an error, use `$`
+   * @see $
+   */
+  const $s: typeof _$s;
+
+  /**
+   * Run a command and return only its trimmed stdout
+   *
+   * If the command throws an error or fails in some way,
+   * this method will not re-throw that error. It will only
+   * have output if the command produces text written
+   * to its stdout stream.
+   *
+   * If you want assurance that a failure in the child process
+   * will throw an error, use `$`
+   * @see $
+   */
+  const $o: typeof _$o;
+
+  /**
+   * Run a command and return only its trimmed stderr
+   *
+   * If the command throws an error or fails in some way,
+   * this method will not re-throw that error. It will only
+   * have output if the command produces text written
+   * to its stderr stream.
+   *
+   * If you want assurance that a failure in the child process
+   * will throw an error, use `$`
+   * @see exec
+   */
+  const $e: typeof _$e;
   const cd: typeof _cd;
   const quote: typeof _quote;
 
@@ -92,6 +140,9 @@ declare global {
   interface Window {
     // dzx
     $: $;
+    $s: typeof $s;
+    $o: typeof $o;
+    $e: typeof $e;
     cd: typeof _cd;
     quote: typeof _quote;
 
@@ -119,6 +170,9 @@ declare global {
   interface WorkerGlobalScope {
     // dzx
     $: $;
+    $s: typeof $s;
+    $o: typeof $o;
+    $e: typeof $e;
     cd: typeof _cd;
     quote: typeof _quote;
 
