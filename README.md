@@ -353,10 +353,6 @@ notes.
 - **$.time:** The time left since execution start (now() - $.startTime).
 - **$.quote:** Parser method that is used to safely quote strings. Used by:
   `` $`command` ``
-- **HOME:** Equivalent to `$HOME` (the users home directory) in the bash shell
-- **USER:** Equivalent to `$USER` (the current user) in the bash shell
-- **$1 through $9:** Equivalent to `$1`, `$2`, ... `$9` (the script arguments)
-  in the bash shell
 
 # CLI
 
