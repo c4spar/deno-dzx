@@ -201,7 +201,7 @@ notes.
   (without throwing an error)
 
   ```ts
-  const trueStatus = await $`true`);
+  const trueStatus = await $s`true`);
   console.log(trueStatus); // -> 0
   ```
 
@@ -210,7 +210,7 @@ notes.
   by default.
 
   ```ts
-  const falseStatus = await $`false`);
+  const falseStatus = await $s`false`);
   console.log(falseStatus); // -> 1
   ```
 
@@ -218,7 +218,7 @@ notes.
   stdout_ (without throwing an error)
 
   ```ts
-  const stdout = await $`pwd`);
+  const stdout = await $o`pwd`);
   console.log(stdout); // -> '/home/code/project
   ```
 
@@ -227,7 +227,7 @@ notes.
   string will be returned by default
 
   ```ts
-  const stdout = await $`echo 'hello' >&2; exit 1;`);
+  const stdout = await $o`echo 'hello' >&2; exit 1;`);
   console.log(stdout); // -> ""
   ```
 
@@ -235,7 +235,7 @@ notes.
   stderr_ (without throwing an error)
 
   ```ts
-  const stderr = await $`pwd`);
+  const stderr = await $e`pwd`);
   console.log(stderr); // -> ""
   ```
 
@@ -244,7 +244,7 @@ notes.
   string will be returned by default
 
   ```ts
-  const stderr = await $`echo 'hello' >&2; exit 1;`);
+  const stderr = await $e`echo 'hello' >&2; exit 1;`);
   console.log(stderr); // -> "hello"
   ```
 
