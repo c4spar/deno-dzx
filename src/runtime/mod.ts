@@ -2,7 +2,6 @@
 
 import { async, colors, flags, fs, io, log, path, shq } from "./deps.ts";
 import { cd } from "./cd.ts";
-import { envExists, envMissing } from "./env.ts";
 import { exec, statusOnly, stderrOnly, stdoutOnly } from "./exec.ts";
 import { quote } from "./quote.ts";
 
@@ -61,4 +60,4 @@ self.fs = fs;
 self.log = log;
 self.flags = flags;
 
-export { async, cd, envExists, envMissing, flags, fs, io, log, path, quote };
+export { async, cd, flags, fs, io, log, path, quote };

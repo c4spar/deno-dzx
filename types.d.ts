@@ -5,8 +5,6 @@ import type {
   $s as _$s,
   async as _async,
   cd as _cd,
-  envExists as _envExists,
-  envMissing as _envMissing,
   flags as _flags,
   fs as _fs,
   io as _io,
