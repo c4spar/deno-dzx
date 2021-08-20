@@ -26,7 +26,7 @@ export function cd(dir: string) {
   }
 }
 
-export function homedir(): string | null {
+function homedir(): string | null {
   switch (Deno.build.os) {
     case "windows":
       return Deno.env.get("USERPROFILE") || null;
