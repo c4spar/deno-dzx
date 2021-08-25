@@ -34,6 +34,6 @@ function homedir(): string | null {
     case "darwin":
       return Deno.env.get("HOME") || null;
     default:
-      throw error("Failed to retrive home directory.");
+      throw error("Failed to retrieve home directory.");
   }
 }

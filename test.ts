@@ -7,12 +7,45 @@ import {
   assertThrowsAsync,
 } from "https://deno.land/std@0.104.0/testing/asserts.ts";
 
-import { $, cd, path, ProcessError } from "./mod.ts";
+import { $, $e, $o, $s, cd, path, ProcessError } from "./mod.ts";
 
 Deno.test("$ works", async () => {
   const result = await $`echo hello`;
 
   assertEquals(result.stdout, "hello\n");
+});
+
+Deno.test("$s works", async () => {
+  const result1 = await $s`echo hello`;
+  assertEquals(result1, 0);
+
+  const result2 = await $s`echo hello >&2`;
+  assertEquals(result2, 0);
+
+  const result3 = await $s`echo hello; exit 1;`;
+  assertEquals(result3, 1);
+});
+
+Deno.test("$o works", async () => {
+  const result1 = await $o`echo hello`;
+  assertEquals(result1, "hello");
+
+  const result2 = await $o`echo hello >&2`;
+  assertEquals(result2, "");
+
+  const result3 = await $o`echo hello; exit 1;`;
+  assertEquals(result3, "hello");
+});
+
+Deno.test("$e works", async () => {
+  const result1 = await $e`echo hello`;
+  assertEquals(result1, "");
+
+  const result2 = await $e`echo hello >&2`;
+  assertEquals(result2, "hello");
+
+  const result3 = await $e`echo hello; exit 1;`;
+  assertEquals(result3, "");
 });
 
 Deno.test("only stdout of an exec result will be used if passed to a second call to exec", async () => {

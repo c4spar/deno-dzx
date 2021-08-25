@@ -2,7 +2,7 @@
 
 import { async, colors, flags, fs, io, log, path, shq } from "./deps.ts";
 import { cd } from "./cd.ts";
-import { exec } from "./exec.ts";
+import { exec, statusOnly, stderrOnly, stdoutOnly } from "./exec.ts";
 import { quote } from "./quote.ts";
 
 export { ProcessError } from "./process_error.ts";
@@ -23,6 +23,9 @@ export type $ = typeof exec & typeof colors & {
 };
 
 export const $: $ = exec as $;
+export const $s: typeof statusOnly = statusOnly;
+export const $o: typeof stdoutOnly = stdoutOnly;
+export const $e: typeof stderrOnly = stderrOnly;
 
 Object.setPrototypeOf($, Object.getPrototypeOf(colors));
 
@@ -43,6 +46,9 @@ Object.defineProperty($, "time", {
 
 // dzx
 self.$ = $;
+self.$s = $s;
+self.$o = $o;
+self.$e = $e;
 self.cd = cd;
 self.quote = quote;
 

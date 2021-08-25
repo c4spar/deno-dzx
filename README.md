@@ -64,6 +64,7 @@ await fs.ensureDir("./tmp");
 - [Usage](#usage)
   - [Permissions](#permissions)
   - [Worker](#worker)
+  - [Markdown](#markdown)
   - [Methods](#methods)
   - [Modules](#modules)
   - [Variables](#variables)
@@ -194,6 +195,57 @@ notes.
     console.log(`Exit code: ${error.status.code}`);
     console.log(`Error: ${error.stderr}`);
   }
+  ```
+
+- `` $s`command` ``: Executes a shell command and _only returns its exit code_
+  (without throwing an error)
+
+  ```ts
+  const trueStatus = await $s`true`);
+  console.log(trueStatus); // -> 0
+  ```
+
+  If the executed program returns a non-zero exit code, no error will be thrown.
+  Either the non-zero code will be the return value, or a `1` will be returned
+  by default.
+
+  ```ts
+  const falseStatus = await $s`false`);
+  console.log(falseStatus); // -> 1
+  ```
+
+- `` $o`command` ``: Executes a shell command and _only returns its trimmed
+  stdout_ (without throwing an error)
+
+  ```ts
+  const stdout = await $o`pwd`);
+  console.log(stdout); // -> '/home/code/project
+  ```
+
+  If the executed program returns a non-zero exit code, no error will be thrown.
+  Either the failed processes stdout will be the return value, or an empty
+  string will be returned by default
+
+  ```ts
+  const stdout = await $o`echo 'hello' >&2; exit 1;`);
+  console.log(stdout); // -> ""
+  ```
+
+- `` $e`command` ``: Executes a shell command and _only returns its trimmed
+  stderr_ (without throwing an error)
+
+  ```ts
+  const stderr = await $e`pwd`);
+  console.log(stderr); // -> ""
+  ```
+
+  If the executed program returns a non-zero exit code, no error will be thrown.
+  Either the failed processes stderr will be the return value, or an empty
+  string will be returned by default
+
+  ```ts
+  const stderr = await $e`echo 'hello' >&2; exit 1;`);
+  console.log(stderr); // -> "hello"
   ```
 
 - `cd()`: Change the current working directory. If path does not exist, an error
