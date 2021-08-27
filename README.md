@@ -363,7 +363,7 @@ Usage:   dzx [script] [args...]
   Commands:
 
     bundle   [script]                   - Bundle an dzx script to a standalone deno sript.
-    compile  [script] [permissions...]  - Combile an dzx script to a standalone binary.
+    compile  [script] [permissions...]  - Compile an dzx script to a standalone binary.
 ```
 
 - **dzx** `[script] [...args]`: Run an local or remote dzx script (optional in a
@@ -381,12 +381,22 @@ Usage:   dzx [script] [args...]
   deno run --allow-read --allow-env --allow-run bundle.js
   ```
 
-- **dzx compile** `[script] [...permissions]`: Combile an dzx script to a
-  standalone binary. Can also read from stdin.
+- **dzx compile** `[...permissions] [script] [...script-arguments]`: Compile an
+  dzx script to a standalone binary. Can also read from stdin.
 
   ```shell
-  dzx compile ./example.ts --allow-read --allow-env --allow-run
+  dzx compile --allow-read --allow-env --allow-run ./example.ts --port 8080
   ```
+
+  > Note that when reading from `stdin`, you must separate "deno compile" flags
+  > (i.e. your permissions) from your "script args" with a double dash (`--`),
+  > i.e.
+  > ```shell
+  > cat ./example.ts | dzx compile --allow-read -- --port 8080
+  > ```
+  > It is also recommended when reading from `stdin` that you pass the --output
+  > flag with your permissions to specify the output file name, otherwise the
+  > compiled file will be emitted with a random value as its name.
 
 ## Contributing
 
