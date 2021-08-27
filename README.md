@@ -363,7 +363,7 @@ Usage:   dzx [script] [args...]
   Commands:
 
     bundle   [script]                   - Bundle an dzx script to a standalone deno sript.
-    compile  [script] [permissions...]  - Combile an dzx script to a standalone binary.
+    compile  [script] [permissions...]  - Compile an dzx script to a standalone binary.
 ```
 
 - **dzx** `[script] [...args]`: Run an local or remote dzx script (optional in a
@@ -381,7 +381,7 @@ Usage:   dzx [script] [args...]
   deno run --allow-read --allow-env --allow-run bundle.js
   ```
 
-- **dzx compile** `[...permissions] [script] [...script-arguments]`: Combile an
+- **dzx compile** `[...permissions] [script] [...script-arguments]`: Compile an
   dzx script to a standalone binary. Can also read from stdin.
 
   ```shell

@@ -234,7 +234,7 @@ export function dzx() {
   }
 }
 
-export interface Permissions {
+interface Permissions {
   allowAll?: boolean;
   allowEnv?: boolean | string[];
   allowHrtime?: boolean;
