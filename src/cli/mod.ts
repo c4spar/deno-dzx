@@ -234,13 +234,13 @@ export function dzx() {
   }
 }
 
-interface Permissions {
+export interface Permissions {
   allowAll?: boolean;
-  allowEnv?: boolean;
+  allowEnv?: boolean | string[];
   allowHrtime?: boolean;
   allowFfi?: boolean;
-  allowRun?: boolean;
-  allowWrite?: boolean;
-  allowNet?: boolean;
-  allowRead?: boolean;
+  allowRun?: boolean | (string | URL)[];
+  allowWrite?: boolean | (string | URL)[];
+  allowNet?: boolean | string[];
+  allowRead?: boolean | (string | URL)[];
 }
