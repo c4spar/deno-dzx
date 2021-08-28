@@ -21,6 +21,7 @@ jobs:
           deno-version: ${{ matrix.deno }}
 
       - name: Install zsh
+        if: runner.os == 'Linux'
         run: sudo apt-get update; sudo apt-get install zsh
 
       - name: Run tests
