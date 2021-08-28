@@ -1,0 +1,33 @@
+name: Lint and Test
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    name: Test
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        deno: [v1.x]
+    steps:
+      - name: Setup repo
+        uses: actions/checkout@v2
+
+      - name: Setup Deno
+        uses: denoland/setup-deno@v1
+        with:
+          deno-version: ${{ matrix.deno }}
+
+      - name: Run tests
+        run: deno test --coverage=./cov --unstable --shuffle --allow-all --jobs 2
+
+      - name: Generate lcov
+        run: deno coverage --unstable --lcov ./cov > cov.lcov
+
+      - name: Upload coverage
+        uses: codecov/codecov-action@v2
+        with:
+          name: ${{ matrix.os }}-${{ matrix.deno }}
+          files: cov.lcov
