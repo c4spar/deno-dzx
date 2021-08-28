@@ -4,6 +4,9 @@
   <a href="https://github.com/c4spar/deno-dzx/releases">
     <img alt="Version" src="https://img.shields.io/github/v/release/c4spar/deno-dzx?logo=github&color=F86F00" />
   </a>
+  <a href="https://codecov.io/gh/c4spar/deno-dzx">
+    <img src="https://codecov.io/gh/c4spar/deno-dzx/branch/main/graph/badge.svg"/>
+  </a>
   <a href="https://github.com/c4spar/deno-dzx/issues">
     <img alt="issues" src="https://img.shields.io/github/issues/c4spar/deno-dzx?label=issues&logo=github">
   </a>
