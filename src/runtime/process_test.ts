@@ -99,7 +99,7 @@ Deno.test({
       },
       ProcessError,
     );
-    assert(Date.now() - start < 100, "process.kill() took too long");
+    assert(Date.now() - start < 1000, "process.kill() took too long");
   },
 });
 
