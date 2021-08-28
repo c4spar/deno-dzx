@@ -128,7 +128,11 @@ Deno.test({
   name: "[process] should iterate over stdout line by line",
   async fn() {
     const lines: Array<string> = [];
-    for await (const line of new Process("echo foo; echo bar >&2; echo baz; echo baz >&2")) {
+    for await (
+      const line of new Process(
+        "echo foo; echo bar >&2; echo baz; echo baz >&2",
+      )
+    ) {
       lines.push(line);
     }
     assertEquals(lines, ["foo", "baz"]);
