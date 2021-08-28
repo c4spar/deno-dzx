@@ -60,7 +60,9 @@ Deno.test({
 Deno.test({
   name: "[process error] should have correct exit code",
   async fn() {
-    const statusCode = await $`exit 2`.catch((error) => error.status.code);
+    const statusCode = await $`exit 2`.catch((error) =>
+      error instanceof ProcessError ? error.status.code : null
+    );
     assertEquals(statusCode, 2);
   },
 });
