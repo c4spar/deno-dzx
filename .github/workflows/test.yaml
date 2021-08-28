@@ -20,6 +20,9 @@ jobs:
         with:
           deno-version: ${{ matrix.deno }}
 
+      - name: Install zsh
+        run: sudo apt-get update; sudo apt-get install zsh
+
       - name: Run tests
         run: deno test --coverage=./cov --unstable --shuffle --allow-all --jobs 2
 
