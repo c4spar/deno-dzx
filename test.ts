@@ -5,7 +5,7 @@ import {
   assertEquals,
   assertStringIncludes,
   assertThrowsAsync,
-} from "https://deno.land/std@0.104.0/testing/asserts.ts";
+} from "./dev_deps.ts";
 
 import { $, $e, $o, $s, cd, path, ProcessError } from "./mod.ts";
 

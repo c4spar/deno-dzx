@@ -13,6 +13,7 @@ export type $ = typeof exec & typeof colors & {
   prefix: string;
   mainModule: string;
   verbose: boolean;
+  stdin: NonNullable<Deno.RunOptions["stdin"]>;
   stdout: NonNullable<Deno.RunOptions["stdout"]>;
   stderr: NonNullable<Deno.RunOptions["stderr"]>;
   args: Array<string>;
@@ -34,6 +35,7 @@ $.shell = "/bin/bash";
 $.prefix = "set -euo pipefail;";
 $.mainModule = "";
 $.verbose = false;
+$.stdin = "piped";
 $.stdout = "piped";
 $.stderr = "piped";
 $.args = [];
