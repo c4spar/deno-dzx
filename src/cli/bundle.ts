@@ -46,6 +46,7 @@ export async function preBundle(
 
   const bundleContent = `import "${new URL("./mod.ts", Deno.mainModule).href}";
 $.mainModule = import.meta.url;
+$.args = Deno.args;
 ${scriptResult}
 if ($.verbose) {
   const end = Date.now();
