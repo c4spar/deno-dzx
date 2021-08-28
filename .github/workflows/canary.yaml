@@ -1,0 +1,26 @@
+name: Lint and Test
+
+on:
+  schedule:
+    - cron: 0 0 * * *
+
+jobs:
+  canary:
+    name: Canary
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        deno: [canary]
+    steps:
+      - name: Setup repo
+        uses: actions/checkout@v2
+
+      - name: Setup Deno
+        uses: denoland/setup-deno@v1
+        with:
+          deno-version: ${{ matrix.deno }}
+
+      - name: Run tests
+        run: deno test --unstable --shuffle --allow-all --jobs 2
