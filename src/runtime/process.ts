@@ -173,7 +173,7 @@ export class Process extends Reader<ProcessOutput>
           this.#process.stdout,
           [stdout, combined],
           (line) => {
-            if ($.verbose > 1 && this.#inherit) {
+            if ($.verbose && this.#inherit) {
               io.writeAllSync(
                 Deno.stdout,
                 new TextEncoder().encode(line + "\n"),
@@ -188,7 +188,7 @@ export class Process extends Reader<ProcessOutput>
           this.#process.stderr,
           [stderr, combined],
           (line) => {
-            if ($.verbose > 1 && this.#inherit) {
+            if ($.verbose && this.#inherit) {
               io.writeAllSync(
                 Deno.stderr,
                 new TextEncoder().encode(line + "\n"),
