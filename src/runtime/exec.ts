@@ -34,7 +34,7 @@ export function statusOnly(
   pieces: TemplateStringsArray,
   ...args: Array<string | number | ProcessOutput>
 ): Promise<number> {
-  return exec(pieces, ...args).statusCode();
+  return exec(pieces, ...args).statusCode;
 }
 
 /**
@@ -54,8 +54,8 @@ export function stdoutOnly(
   ...args: Array<string | number | ProcessOutput>
 ): Promise<string> {
   return exec(pieces, ...args)
-    .noThrow()
-    .output()
+    .noThrow
+    .stdout
     .then((output) => output.trim());
 }
 
@@ -76,7 +76,7 @@ export function stderrOnly(
   ...args: Array<string | number | ProcessOutput>
 ): Promise<string> {
   return exec(pieces, ...args)
-    .noThrow()
-    .stderrOutput()
+    .noThrow
+    .stderr
     .then((output) => output.trim());
 }

@@ -36,7 +36,7 @@ Deno.test({
   name: "[process] should return process status if status is called",
   async fn() {
     const { code, success } = await new Process("echo foo; echo bar >&2")
-      .status();
+      .status;
     assert(success);
     assertEquals(code, 0);
   },
@@ -46,7 +46,7 @@ Deno.test({
   name: "[process] should return exit code if statusCode is called",
   async fn() {
     const statusCode: number = await new Process("echo foo; echo bar >&2")
-      .statusCode();
+      .statusCode;
     assertEquals(statusCode, 0);
   },
 });
@@ -54,7 +54,7 @@ Deno.test({
 Deno.test({
   name: "[process] should return stdout if output is called",
   async fn() {
-    const stdout: string = await new Process("echo foo; echo bar >&2").output();
+    const stdout: string = await new Process("echo foo; echo bar >&2").stdout;
     assertEquals(stdout, "foo\n");
   },
 });
@@ -62,8 +62,7 @@ Deno.test({
 Deno.test({
   name: "[process] should return stderr if stderrOutput is called",
   async fn() {
-    const stderr: string = await new Process("echo foo; echo bar >&2")
-      .stderrOutput();
+    const stderr: string = await new Process("echo foo; echo bar >&2").stderr;
     assertEquals(stderr, "bar\n");
   },
 });
@@ -94,7 +93,7 @@ Deno.test({
       () => {
         $.shell = "/bin/zsh";
         const process = new Process("sleep 10");
-        setTimeout(() => process.kill(Deno.Signal.SIGKILL), 10);
+        setTimeout(() => process.kill("SIGKILL"), 10);
         return process;
       },
       ProcessError,
@@ -112,7 +111,7 @@ Deno.test({
   },
 });
 
-// @TODO: read from stdin does not work
+// // @TODO: read from stdin does not work
 // Deno.test({
 //   name: "[process] should read stdin",
 //   async fn() {
@@ -121,6 +120,10 @@ Deno.test({
 //     await io.copy(reader, cat);
 //     const output = await cat;
 //     assertEquals(output.toString().trim(), "foo");
+
+//     await $(new io.StringReader("foo")).copy($`cat`).copy(Deno.stdout);
+
+//     await $($`echo foo`, { stdout: inherit });
 //   },
 // });
 

@@ -17,22 +17,28 @@ export class Process
     AsyncIterableIterator<string>,
     Deno.Reader,
     Deno.Writer {
-  private static runningProcesses = 0;
-  readonly #process: Deno.Process;
+  readonly #cmd: string;
+  readonly #process: Deno.Process<
+    Deno.RunOptions & { stdin: "piped"; stdout: "piped"; stderr: "piped" }
+  >;
   readonly #deferred: async.Deferred<ProcessOutput> = async.deferred();
   readonly #pullQueue: PullQueueItem[] = [];
   readonly #pushQueue: Array<string | null> = [];
   #isStarted = false;
   #closed = false;
   #throwErrors = true;
+  #inherit = true;
 
-  constructor(private readonly cmd: string) {
+  constructor(cmd: string) {
+    this.#cmd = cmd;
+    if ($.verbose) {
+      console.log($.brightBlue("$ %s"), this.#cmd);
+    }
     this.#process = Deno.run({
-      cmd: [$.shell, "-c", $.prefix + " " + cmd],
-      env: Deno.env.toObject(),
-      stdin: $.stdin,
-      stdout: $.stdout,
-      stderr: $.stderr,
+      cmd: [$.shell, "-c", $.prefix + " " + this.#cmd],
+      stdin: "piped",
+      stdout: "piped",
+      stderr: "piped",
     });
   }
 
@@ -53,57 +59,70 @@ export class Process
     return this.#process.pid;
   }
 
-  get stdin(): (Deno.Writer & Deno.Closer) | null {
+  get stdin(): Deno.Writer & Deno.Closer {
+    this.#inherit = false;
+    this.#run();
     return this.#process.stdin;
   }
 
-  get stdout(): (Deno.Reader & Deno.Closer) | null {
-    return this.#process.stdout;
+  get stdout(): Reader<string> {
+    return new Reader({
+      reader: () => {
+        this.#inherit = false;
+        this.#run();
+        return this.#process.stdout;
+      },
+      resolve: () => this.then(({ stdout }) => stdout),
+      copy: (dest: Deno.Writer | Process): Process => {
+        this.#inherit = false;
+        this.#run(() => io.copy(this.#process.stdout, dest));
+        return dest instanceof Process ? dest : this;
+      },
+    });
   }
 
-  get stderr(): (Deno.Reader & Deno.Closer) | null {
-    return this.#process.stderr;
+  get stderr(): Reader<string> {
+    return new Reader({
+      reader: () => {
+        this.#inherit = false;
+        this.#run();
+        return this.#process.stderr;
+      },
+      resolve: () => this.then(({ stderr }) => stderr),
+      copy: (dest: Deno.Writer | Process): Process => {
+        this.#inherit = false;
+        this.#run(() => io.copy(this.#process.stderr, dest));
+        return dest instanceof Process ? dest : this;
+      },
+    });
   }
 
-  status(): Promise<Deno.ProcessStatus> {
-    return this.noThrow().then(({ status }) => status);
+  get status(): Promise<Deno.ProcessStatus> {
+    return this.noThrow.then(({ status }) => status);
   }
 
-  statusCode(): Promise<number> {
-    return this.status().then(({ code }) => code);
+  get statusCode(): Promise<number> {
+    return this.status.then(({ code }) => code);
   }
 
-  output(): Promise<string> {
-    return this.then(({ stdout }) => stdout);
-  }
-
-  stderrOutput(): Promise<string> {
-    return this.then(({ stderr }) => stderr);
-  }
-
-  kill(signo: number): void {
+  kill(signo: Parameters<Deno.Process["kill"]>[0]): void {
     this.#process.kill(signo);
   }
 
   read(p: Uint8Array): Promise<number | null> {
-    if (!this.#process.stdout) {
-      throw new Error(`stdout is not piped: ${this.cmd}`);
-    }
+    this.#inherit = false;
     this.#run();
     return this.#process.stdout.read(p);
   }
 
   write(p: Uint8Array): Promise<number> {
-    if (!this.#process.stdin) {
-      throw new Error(`stdin is not piped: ${this.cmd}`);
-    }
+    this.#inherit = false;
     this.#run();
     return this.#process.stdin.write(p);
   }
 
   copy(dest: Deno.Writer | Process): Process {
-    this.#run(() => io.copy(this, dest));
-    return dest instanceof Process ? dest : this;
+    return this.stdout.copy(dest);
   }
 
   then<T = ProcessOutput, S = never>(
@@ -112,13 +131,11 @@ export class Process
       | undefined
       | null,
     reject?:
-      | ((error: ProcessError) => S | PromiseLike<S>)
+      | ((error: unknown) => S | PromiseLike<S>)
       | undefined
       | null,
   ): Promise<T | S> {
-    return this.#run()
-      .then(resolve)
-      .catch(reject);
+    return this.#run().then(resolve, reject);
   }
 
   catch<T = never>(
@@ -130,21 +147,17 @@ export class Process
     return this.#run().catch(reject);
   }
 
-  finally(onFinally?: (() => void) | null): Promise<ProcessOutput> {
+  finally(onFinally?: (() => void) | undefined | null): Promise<ProcessOutput> {
     return this.#run().finally(onFinally);
   }
 
-  noThrow(): this {
+  get noThrow(): this {
     this.#throwErrors = false;
     return this;
   }
 
   async next(): Promise<IteratorResult<string>> {
     const event: string | null = await this.#pull();
-
-    if (event) {
-      return { done: false, value: event };
-    }
 
     return event
       ? { done: false, value: event }
@@ -156,11 +169,6 @@ export class Process
       return this.#deferred;
     }
     this.#isStarted = true;
-    Process.runningProcesses++;
-
-    if ($.verbose) {
-      console.log($.brightBlue("$ %s"), this.cmd);
-    }
 
     this.#read(fn)
       .then(this.#deferred.resolve)
@@ -174,24 +182,41 @@ export class Process
     const stderr: Array<string> = [];
     const combined: Array<string> = [];
 
-    const [status, _, stdoutError, stderrError]: [
-      Deno.ProcessStatus,
+    const [_, status, stdoutError, stderrError]: [
       unknown,
+      Deno.ProcessStatus,
       Error | void,
       Error | void,
     ] = await Promise.all([
-      this.#process.status(),
       fn?.(),
-      !fn && this.#process.stdout
+      this.#process.status(),
+      !fn
         ? read(
           this.#process.stdout,
           [stdout, combined],
-          (line) => this.#push(line),
+          (line) => {
+            if ($.verbose > 1 && this.#inherit) {
+              io.writeAllSync(
+                Deno.stdout,
+                new TextEncoder().encode(line + "\n"),
+              );
+            }
+            this.#push(line);
+          },
         )
         : undefined,
-      this.#process.stderr
-        ? read(this.#process.stderr, [stderr, combined])
-        : undefined,
+      read(
+        this.#process.stderr,
+        [stderr, combined],
+        (line) => {
+          if ($.verbose > 1 && this.#inherit) {
+            io.writeAllSync(
+              Deno.stderr,
+              new TextEncoder().encode(line + "\n"),
+            );
+          }
+        },
+      ),
     ]);
 
     if (stdoutError || stderrError) {
@@ -199,12 +224,6 @@ export class Process
     }
 
     this.#close();
-
-    if (--Process.runningProcesses === 0) {
-      $.stdout = "piped";
-      $.stderr = "piped";
-      $.stdin = "piped";
-    }
 
     const result = {
       stdout: stdout.join(""),
@@ -261,9 +280,69 @@ export class Process
     }
     this.#closed = true;
     this.#push(null);
-    this.#process.stdin?.close();
-    this.#process.stdout?.close();
-    this.#process.stderr?.close();
-    this.#process?.close();
+    this.#process.stdin.close();
+    this.#process.stdout.close();
+    this.#process.stderr.close();
+    this.#process.close();
+  }
+}
+
+export class Reader<T> implements Deno.Reader, Deno.Closer, Promise<T> {
+  #reader: () => Deno.Reader & Deno.Closer;
+  #resolve: () => Promise<T>;
+  #copy: (dest: Deno.Writer | Process) => Process;
+
+  constructor(
+    { reader, resolve, copy }: {
+      reader: () => Deno.Reader & Deno.Closer;
+      resolve: () => Promise<T>;
+      copy: (dest: Deno.Writer | Process) => Process;
+    },
+  ) {
+    this.#reader = reader;
+    this.#resolve = resolve;
+    this.#copy = copy;
+  }
+
+  get [Symbol.toStringTag](): string {
+    return "Reader";
+  }
+
+  read(p: Uint8Array): Promise<number | null> {
+    return this.#reader().read(p);
+  }
+
+  copy(dest: Deno.Writer | Process): Process {
+    return this.#copy(dest);
+  }
+
+  close(): void {
+    this.#reader().close();
+  }
+
+  then<R = T, S = never>(
+    resolve?:
+      | ((value: T) => R | PromiseLike<R>)
+      | undefined
+      | null,
+    reject?:
+      | ((error: unknown) => S | PromiseLike<S>)
+      | undefined
+      | null,
+  ): Promise<R | S> {
+    return this.#resolve().then(resolve, reject);
+  }
+
+  catch<R = never>(
+    reject?:
+      | ((error: unknown) => R | PromiseLike<R>)
+      | undefined
+      | null,
+  ): Promise<T | R> {
+    return this.#resolve().catch(reject);
+  }
+
+  finally(onfinally?: (() => void) | undefined | null): Promise<T> {
+    return this.#resolve().finally(onfinally);
   }
 }
