@@ -82,13 +82,15 @@ async function bundleFile(
     // off in the compiler options (note that not doing this results in
     // intermittently failing results on repeated calls to `dzx bundle`)
     return Object.values(result.files)[0] as string;
-  } catch (err) {
+  } catch (err: unknown) {
     if (err instanceof Deno.errors.NotFound) {
       throw error(`File not found: ${file}`);
     } else if (err instanceof Deno.errors.PermissionDenied) {
       throw error(`Permission denied: ${file}`);
     }
-    throw error(err);
+    throw error(
+      err instanceof Error ? err : new Error(`[non-error-thrown] ${err}`),
+    );
   }
 }
 
