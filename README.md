@@ -296,7 +296,16 @@ notes.
 - **io:** Deno's `std/io` module.
 
   ```ts
-  const data = await io.readAll(Deno.stdin);
+  const fileReader = await Deno.open("./example.txt");
+  for await (let line of io.readLines(fileReader)) {
+    console.log(line);
+  }
+  ```
+
+- **streams:** Deno's `std/streams` module.
+
+  ```ts
+  const data = await streams.readAll(Deno.stdin);
   ```
 
 - **fs:** Deno's `std/fs` module.

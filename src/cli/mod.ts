@@ -105,7 +105,7 @@ export function dzx() {
     );
 
   async function importFromStdin(): Promise<void> {
-    const data = new TextDecoder().decode(await io.readAll(Deno.stdin));
+    const data = new TextDecoder().decode(await streams.readAll(Deno.stdin));
     if (data) {
       $.mainModule = `data:application/typescript,${encodeURIComponent(data)}`;
       await import($.mainModule);

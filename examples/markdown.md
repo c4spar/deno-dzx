@@ -108,11 +108,3 @@ const importMetaUrl = "file:///<redacted>/dzx/examples/markdown.md";
 // const importMetaUrl = "file:///home/user/code/example.md";
 console.log({ importMetaUrl });
 ```
-
-Note that when executed, the path to the compiled script temp file will be
-printed to the console, so you can always review what `Deno` executed if
-something goes wrong. The message will look like:
-
-```
-Markdown module saved to /tmp/dzx_e2d2e74f_module.ts
-```
