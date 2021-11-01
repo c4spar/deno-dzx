@@ -1,6 +1,16 @@
 /// <reference path="../../types.d.ts" />
 
-import { async, colors, flags, fs, io, log, path, shq } from "./deps.ts";
+import {
+  async,
+  colors,
+  flags,
+  fs,
+  io,
+  log,
+  path,
+  shq,
+  streams,
+} from "./deps.ts";
 import { cd } from "./cd.ts";
 import { exec, statusOnly, stderrOnly, stdoutOnly } from "./exec.ts";
 import { quote } from "./quote.ts";
@@ -56,8 +66,9 @@ self.quote = quote;
 self.async = async;
 self.path = path;
 self.io = io;
+self.streams = streams;
 self.fs = fs;
 self.log = log;
 self.flags = flags;
 
-export { async, cd, flags, fs, io, log, path, quote };
+export { async, cd, flags, fs, io, log, path, quote, streams };

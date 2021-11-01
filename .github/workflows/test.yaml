@@ -21,13 +21,16 @@ jobs:
           deno-version: ${{ matrix.deno }}
 
       - name: Run tests
-        run: deno test --coverage=./cov --unstable --shuffle --allow-all --jobs 2
+        run: deno test --unstable --shuffle --allow-all --jobs 2
 
-      - name: Generate lcov
-        run: deno coverage --unstable --lcov ./cov > cov.lcov
-
-      - name: Upload coverage
-        uses: codecov/codecov-action@v2
-        with:
-          name: ${{ matrix.os }}-${{ matrix.deno }}
-          files: cov.lcov
+#      - name: Run tests
+#        run: deno test --coverage=./cov --unstable --shuffle --allow-all --jobs 2
+#
+#      - name: Generate lcov
+#        run: deno coverage --unstable --lcov ./cov > cov.lcov
+#
+#      - name: Upload coverage
+#        uses: codecov/codecov-action@v2
+#        with:
+#          name: ${{ matrix.os }}-${{ matrix.deno }}
+#          files: cov.lcov

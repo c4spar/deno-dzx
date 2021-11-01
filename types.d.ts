@@ -1,5 +1,5 @@
 import type {
-  $,
+  $ as _$,
   $e as _$e,
   $o as _$o,
   $s as _$s,
@@ -11,19 +11,33 @@ import type {
   log as _log,
   path as _path,
   quote as _quote,
-} from "./mod.ts";
+  streams as _streams,
+} from "./src/runtime/mod.ts";
 
 import type {
   ArgParsingOptions as _ArgParsingOptions,
   Args as _Args,
+  CopyOptions as _CopyOptions,
+  DebouncedFunction as _DebouncedFunction,
   Deferred as _Deferred,
+  DelayOptions as _DelayOptions,
+  ExpandGlobOptions as _ExpandGlobOptions,
   FormatInputPathObject as _FormatInputPathObject,
+  FormatterFunction as _FormatterFunction,
   GlobOptions as _GlobOptions,
   GlobToRegExpOptions as _GlobToRegExpOptions,
+  HandlerOptions as _HandlerOptions,
+  IOReadableStreamFromReaderOptions as _IOReadableStreamFromReaderOptions,
+  IOWritableStreamFromWriterOptions as _IOWritableStreamFromWriterOptions,
   LevelName as _LevelName,
   LogConfig as _LogConfig,
+  LogMode as _LogMode,
   ParsedPath as _ParsedPath,
+  ReadableStreamFromReaderOptions as _ReadableStreamFromReaderOptions,
   ReadLineResult as _ReadLineResult,
+  WalkEntry as _WalkEntry,
+  WalkOptions as _WalkOptions,
+  WritableStreamFromWriterOptions as _WritableStreamFromWriterOptions,
 } from "./src/runtime/deps.ts";
 
 declare global {
@@ -31,7 +45,7 @@ declare global {
    * Run a command and return its output streams as well
    * as details about the process exit status.
    */
-  const $: $;
+  const $: _$;
 
   /**
    * Run a command and return only its exit code
@@ -81,17 +95,15 @@ declare global {
   const async: typeof _async;
   const path: typeof _path;
   const io: typeof _io;
+  const streams: typeof _streams;
   const fs: typeof _fs;
   const log: typeof _log;
   const flags: typeof _flags;
 
-  namespace flags {
-    type Args = _Args;
-    type ArgParsingOptions = _ArgParsingOptions;
-  }
-
   namespace async {
+    type DebouncedFunction<T extends Array<unknown>> = _DebouncedFunction<T>;
     type Deferred<T> = _Deferred<T>;
+    type DelayOptions = _DelayOptions;
   }
 
   namespace path {
@@ -102,20 +114,44 @@ declare global {
   }
 
   namespace io {
+    /** @deprecated This interface has been moved to `streams`. */
+    type ReadableStreamFromReaderOptions = _IOReadableStreamFromReaderOptions;
     type ReadLineResult = _ReadLineResult;
+    /** @deprecated This interface has been moved to `streams`. */
+    type WritableStreamFromWriterOptions = _IOWritableStreamFromWriterOptions;
+  }
+
+  namespace streams {
+    type ReadableStreamFromReaderOptions = _ReadableStreamFromReaderOptions;
+    type WritableStreamFromWriterOptions = _WritableStreamFromWriterOptions;
+  }
+
+  namespace fs {
+    type CopyOptions = _CopyOptions;
+    type ExpandGlobOptions = _ExpandGlobOptions;
+    type WalkEntry = _WalkEntry;
+    type WalkOptions = _WalkOptions;
   }
 
   namespace log {
+    type FormatterFunction = _FormatterFunction;
+    type HandlerOptions = _HandlerOptions;
     type LevelName = _LevelName;
     type LogConfig = _LogConfig;
+    type LogMode = _LogMode;
+  }
+
+  namespace flags {
+    type ArgParsingOptions = _ArgParsingOptions;
+    type Args = _Args;
   }
 
   interface Window {
     // dzx
-    $: $;
-    $s: typeof $s;
-    $o: typeof $o;
-    $e: typeof $e;
+    $: _$;
+    $s: typeof _$s;
+    $o: typeof _$o;
+    $e: typeof _$e;
     cd: typeof _cd;
     quote: typeof _quote;
 
@@ -123,6 +159,7 @@ declare global {
     async: typeof _async;
     path: typeof _path;
     io: typeof _io;
+    streams: typeof _streams;
     fs: typeof _fs;
     log: typeof _log;
     flags: typeof _flags;
@@ -130,10 +167,10 @@ declare global {
 
   interface WorkerGlobalScope {
     // dzx
-    $: $;
-    $s: typeof $s;
-    $o: typeof $o;
-    $e: typeof $e;
+    $: _$;
+    $s: typeof _$s;
+    $o: typeof _$o;
+    $e: typeof _$e;
     cd: typeof _cd;
     quote: typeof _quote;
 
@@ -141,6 +178,7 @@ declare global {
     async: typeof _async;
     path: typeof _path;
     io: typeof _io;
+    streams: typeof _streams;
     fs: typeof _fs;
     log: typeof _log;
     flags: typeof _flags;

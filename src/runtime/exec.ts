@@ -127,7 +127,7 @@ async function read(
   reader: Deno.Reader,
   ...results: Array<Array<string>>
 ) {
-  for await (const chunk of io.iter(reader)) {
+  for await (const chunk of streams.iterateReader(reader)) {
     const str = new TextDecoder().decode(chunk);
     for (const result of results) {
       result.push(str);
