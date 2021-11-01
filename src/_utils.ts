@@ -1,4 +1,4 @@
-/// <reference path="../types.d.ts" />
+import { path } from "./runtime/deps.ts";
 
 export function error(message: string | Error, exitCode = 1): Error {
   if ($.throwErrors) {
@@ -12,4 +12,14 @@ export function error(message: string | Error, exitCode = 1): Error {
 
 function getErrorMessage(message: string) {
   return $.red(`${$.bold("error:")} ${message}`);
+}
+
+export function addProtocol(script: string): string {
+  const hasProtocol: boolean = script.startsWith("http://") ||
+    script.startsWith("https://") || script.startsWith("file://");
+  if (!hasProtocol) {
+    script = "file://" +
+      (path.isAbsolute(script) ? script : path.join(Deno.cwd(), script));
+  }
+  return script;
 }
