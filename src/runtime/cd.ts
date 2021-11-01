@@ -14,7 +14,7 @@ export function cd(dir: string) {
       dir = path.join(cwd, dir);
     }
     Deno.chdir(dir);
-  } catch (err) {
+  } catch (err: unknown) {
     if (err instanceof Deno.errors.NotFound) {
       const stack: string = (new Error().stack!.split("at ")[2]).trim();
       throw error(`cd: ${dir}: No such directory\n    at ${stack}`);
@@ -22,7 +22,9 @@ export function cd(dir: string) {
       const stack: string = (new Error().stack!.split("at ")[2]).trim();
       throw error(`cd: ${dir}: Permission denied\n    at ${stack}`);
     }
-    throw error(err);
+    throw error(
+      err instanceof Error ? err : new Error(`[non-error-thrown] ${err}`),
+    );
   }
 }
 
