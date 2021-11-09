@@ -1,3 +1,46 @@
+# [0.3.0](https://github.com/c4spar/deno-dzx/compare/0.2.4...0.3.0) (Nov 9, 2021)
+
+### Features
+
+- **cli:** add the ability to run markdown files (#2)
+  ([933149b](https://github.com/c4spar/deno-dzx/commit/933149b))
+- **runtime:** add streams module (#12)
+  ([62eb4ed](https://github.com/c4spar/deno-dzx/commit/62eb4ed))
+- **runtime:** add $s, $o and $e shorthands (#3)
+  ([d7f40a6](https://github.com/c4spar/deno-dzx/commit/d7f40a6))
+
+### Bug Fixes
+
+- **compile:** ensure flags are properly parsed and embedded (#5)
+  ([2b16240](https://github.com/c4spar/deno-dzx/commit/2b16240))
+- **runtime:** ensure $.args is populated for bundled/compiled scripts (#10)
+  ([db61cd9](https://github.com/c4spar/deno-dzx/commit/db61cd9))
+
+### Code Refactoring
+
+- default to unknown in catch variables (#14)
+  ([60ab69c](https://github.com/c4spar/deno-dzx/commit/60ab69c))
+- **cli:** move worker and markdown code into separate files (#13)
+  ([8218d23](https://github.com/c4spar/deno-dzx/commit/8218d23))
+
+### Chore
+
+- **ci:** fix workflow names
+  ([0b7c673](https://github.com/c4spar/deno-dzx/commit/0b7c673))
+- **ci:** split workflow files, add canary test's and generate code coverage
+  (#9) ([da153f4](https://github.com/c4spar/deno-dzx/commit/da153f4))
+- **upgrade:** deno/std v0.113.0 (#16)
+  ([c2e28ec](https://github.com/c4spar/deno-dzx/commit/c2e28ec))
+
+### Unit/Integration Tests
+
+- **runtime:** add process output and process error test's (#11)
+  ([f3d513a](https://github.com/c4spar/deno-dzx/commit/f3d513a))
+
+### Documentation Updates
+
+- update readme ([215059f](https://github.com/c4spar/deno-dzx/commit/215059f))
+
 # [v0.2.4](https://github.com/c4spar/deno-dzx/compare/0.2.3...0.2.4) (2021-08-14)
 
 ### Features
@@ -8,7 +51,7 @@
 ### Bug Fixes
 
 - **cli:** replace --allow-plugin with --allow-ffi
-  ([ede926d](https://github.com/c4spar/deno-cli/commit/ede926d))
+  ([ede926d](https://github.com/c4spar/deno-dzx/commit/ede926d))
 - **cli:** exclude source maps from bundle command
   ([0da5a1e](https://github.com/c4spar/deno-dzx/commit/0da5a1e))
 - **runtime:** take only stdout when passing a process output to another process
@@ -26,7 +69,7 @@
 ### Chore
 
 - **ci:** switch to denoland/setup-deno action
-  ([b163313](https://github.com/c4spar/deno-cli/commit/b163313))
+  ([b163313](https://github.com/c4spar/deno-dzx/commit/b163313))
 - **ci:** add testing step to github action
   ([c2b7a5b](https://github.com/c4spar/deno-dzx/commit/c2b7a5b))
 - **upgrade:** deno/std v0.104.0
