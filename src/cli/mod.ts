@@ -1,5 +1,5 @@
 import { VERSION } from "../../version.ts";
-import { $, io, path } from "../runtime/mod.ts";
+import { $, path } from "../runtime/mod.ts";
 import { bundleCommand } from "./bundle.ts";
 import { compileCommand } from "./compile.ts";
 import {
