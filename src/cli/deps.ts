@@ -4,6 +4,6 @@ export { DenoLandProvider } from "https://deno.land/x/cliffy@v0.20.1/command/upg
 export {
   ValidationError,
 } from "https://deno.land/x/cliffy@v0.20.1/command/_errors.ts";
-export { copy } from "https://deno.land/std@0.113.0/io/mod.ts";
+export { copy } from "https://deno.land/std@0.114.0/io/mod.ts";
 export { tokens } from "https://deno.land/x/rusty_markdown@v0.4.1/mod.ts";
-export { parse } from "https://deno.land/std@0.113.0/flags/mod.ts";
+export { parse } from "https://deno.land/std@0.114.0/flags/mod.ts";
