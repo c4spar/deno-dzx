@@ -3,7 +3,7 @@ import { path } from "./mod.ts";
 
 const cwd = Deno.cwd();
 
-export function cd(dir: string) {
+export function cd(dir: string): string {
   if ($.verbose) {
     console.log($.brightBlue("$ %s"), `cd ${dir}`);
   }
@@ -14,6 +14,7 @@ export function cd(dir: string) {
       dir = path.join(cwd, dir);
     }
     Deno.chdir(dir);
+    return dir;
   } catch (err: unknown) {
     if (err instanceof Deno.errors.NotFound) {
       const stack: string = (new Error().stack!.split("at ")[2]).trim();
