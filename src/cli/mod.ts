@@ -11,6 +11,7 @@ import {
 import { addProtocol } from "../_utils.ts";
 import { getMarkdownModule } from "./markdown.ts";
 import { spawnWorker } from "./worker.ts";
+import { replCommand } from "./repl.ts";
 
 export function dzx() {
   return new Command<void>()
@@ -96,6 +97,7 @@ export function dzx() {
     )
     .command("bundle", bundleCommand())
     .command("compile", compileCommand())
+    .command("repl", replCommand())
     .command(
       "upgrade",
       new UpgradeCommand({
