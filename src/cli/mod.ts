@@ -9,6 +9,7 @@ import {
   ValidationError,
 } from "./deps.ts";
 import { addProtocol } from "../_utils.ts";
+import { evalCommand } from "./eval.ts";
 import { importModule } from "./lib/bootstrap.ts";
 import { getModuleFromStdin } from "./lib/stream.ts";
 import { getMarkdownModule } from "./lib/markdown.ts";
@@ -102,6 +103,7 @@ export function dzx() {
     )
     .command("bundle", bundleCommand())
     .command("compile", compileCommand())
+    .command("eval", evalCommand())
     .command("repl", replCommand())
     .command(
       "upgrade",

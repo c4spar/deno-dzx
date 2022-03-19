@@ -351,33 +351,34 @@ notes.
 # CLI
 
 ```
-  Usage:   dzx [script] [args...]
-  Version: 0.3.0
+Usage:   dzx [script] [args...]
+Version: 0.3.0
 
-  Description:
+Description:
 
-    🦕 A custom deno runtime for fun.
+  🦕 A custom deno runtime for fun.
 
-  Options:
+Options:
 
-    -h, --help       - Show this help.
-    -V, --version    - Show the version number for this program.
-    -A, --allow-all  - Allow all permissions.                                           (Depends: --worker)
-    --allow-env      - Allow environment access.                                        (Depends: --worker)
-    --allow-hrtime   - Allow high resolution time measurement.                          (Depends: --worker)
-    --allow-net      - Allow network access.                                            (Depends: --worker)
-    --allow-ffi      - Allow loading dynamic libraries.                                 (Depends: --worker)
-    --allow-read     - Allow file system read access.                                   (Depends: --worker)
-    --allow-run      - Allow running subprocesses.                                      (Depends: --worker)
-    --allow-write    - Allow file system write access.                                  (Depends: --worker)
-    -w, --worker     - Run script in an isolated web worker with it's own permissions.
+  -h, --help       - Show this help.
+  -V, --version    - Show the version number for this program.
+  -A, --allow-all  - Allow all permissions.                                           (Depends: --worker)
+  --allow-env      - Allow environment access.                                        (Depends: --worker)
+  --allow-hrtime   - Allow high resolution time measurement.                          (Depends: --worker)
+  --allow-net      - Allow network access.                                            (Depends: --worker)
+  --allow-ffi      - Allow loading dynamic libraries.                                 (Depends: --worker)
+  --allow-read     - Allow file system read access.                                   (Depends: --worker)
+  --allow-run      - Allow running subprocesses.                                      (Depends: --worker)
+  --allow-write    - Allow file system write access.                                  (Depends: --worker)
+  -w, --worker     - Run script in an isolated web worker with it's own permissions.
 
-  Commands:
+Commands:
 
-    bundle   [script]                                           - Bundle an dzx script to a standalone deno sript.
-    compile  [compile-options...] [script] [script-options...]  - Combile an dzx script to a standalone binary.
-    repl                                                        - Start a dzx repl
-    upgrade                                                     - Upgrade dzx executable to latest or given version.
+  bundle   [script]                                           - Bundle an dzx script to a standalone deno sript.
+  compile  [compile-options...] [script] [script-options...]  - Combile an dzx script to a standalone binary.
+  eval     <code>                                             - Evaluate a dzx script from the command line.
+  repl                                                        - Start a dzx repl.
+  upgrade                                                     - Upgrade dzx executable to latest or given version.
 ```
 
 - **dzx** `[script] [...args]`: Run a local or remote dzx script (optional in a
@@ -412,9 +413,41 @@ notes.
   > flag with your permissions to specify the output file name, otherwise the
   > compiled file will be emitted with a random value as its name.
 
-- **dzx repl**: Start a dzx repl (deno repl bootstrapped with dzx).
+- **dzx eval**: Evaluate a dzx script from command line.
 
-- **dzx upgrade**: Start a dzx repl.
+  ```shell
+  dzx eval "console.log($.shell)"
+  ```
+
+  Eval can also read from stdin:
+
+  ```shell
+  echo "console.log($.shell)" | dzx eval
+  ```
+
+- **dzx repl**: Start a dzx repl (Read eval print loop).
+
+  The `repl` command starts a deno repl bootstrapped with the dzx runtime code.
+
+- **dzx upgrade**: Upgrade the `dzx` executable to latest or given version.
+
+  Upgrade to latest version:
+
+  ```shell
+  dzx upgrade
+  ```
+
+  Upgrade to specific version:
+
+  ```shell
+  dzx upgrade --version 3.0.0
+  ```
+
+  List all available versions:
+
+  ```shell
+  dzx upgrade --list-versions
+  ```
 
 ## Contributing
 
