@@ -425,7 +425,9 @@ Commands:
   echo "console.log($.shell)" | dzx eval
   ```
 
-- **dzx repl**: Start a dzx repl (deno repl bootstrapped with dzx).
+- **dzx repl**: Start a dzx repl (Read eval print loop).
+
+  The `repl` command starts a deno repl bootstrapped with the dzx runtime code.
 
 - **dzx upgrade**: Start a dzx repl.
 
