@@ -4,7 +4,11 @@ import { getModuleFromStdin } from "./lib/stream.ts";
 
 export function evalCommand() {
   return new Command<void>()
-    .description("Evaluate a dzx script from the command line.")
+    .description(`Evaluate a dzx script from the command line.\n
+  dzx eval "console.log($.shell)"\n
+Or read from stdin:\n
+  echo "console.log($.shell)" | dzx eval
+`)
     .arguments("<code:string>")
     .useRawArgs()
     .action(

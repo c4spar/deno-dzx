@@ -413,6 +413,18 @@ Commands:
   > flag with your permissions to specify the output file name, otherwise the
   > compiled file will be emitted with a random value as its name.
 
+- **dzx eval**: Evaluate a dzx script from command line.
+
+  ```shell
+  dzx eval "console.log($.shell)"
+  ```
+
+  Eval can also read from stdin:
+
+  ```shell
+  echo "console.log($.shell)" | dzx eval
+  ```
+
 - **dzx repl**: Start a dzx repl (deno repl bootstrapped with dzx).
 
 - **dzx upgrade**: Start a dzx repl.
