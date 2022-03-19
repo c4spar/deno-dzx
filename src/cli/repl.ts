@@ -9,11 +9,11 @@ export function replCommand() {
       "Node compatibility mode. Currently only enables built-in node modules like 'fs' and globals like 'process'",
     )
     .option(
-      "--inspect=<HOST:PORT>",
+      "--inspect=<host:string>",
       "Activate inspector on host:port (default: 127.0.0.1:9229)",
     )
     .option(
-      "--inspect-brk=<HOST:PORT>",
+      "--inspect-brk=<host:string>",
       "Activate inspector on host:port and break at start of user script",
     )
     .option("--no-check", "Skip type checking modules.")
@@ -38,7 +38,7 @@ export async function repl(
       "repl",
       "--unstable", // dzx requires unstable
       "--eval",
-      `import * as dzx from "${new URL("../../mod.ts", import.meta.url)}"`,
+      `import "${new URL("../../mod.ts", import.meta.url)}"`,
       ...args.filter((e) => e !== "--eval"), // we already use eval, and it can only be used once
     ],
   });

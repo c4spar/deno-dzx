@@ -1,6 +1,7 @@
 import { Command, copy, ValidationError } from "./deps.ts";
 import { error } from "../_utils.ts";
 import { path } from "../runtime/mod.ts";
+import { bootstrapModule } from "./lib/bootstrap.ts";
 
 export function bundleCommand() {
   return new Command<void>()
@@ -42,16 +43,11 @@ export async function preBundle(
   script: string,
   options?: Deno.EmitOptions,
 ): Promise<string> {
-  const scriptResult = await bundleFile(script, options);
-
-  const bundleContent = `import "${new URL("./mod.ts", Deno.mainModule).href}";
-$.mainModule = import.meta.url;
-$.args = Deno.args;
-${scriptResult}
-if ($.verbose) {
-  const end = Date.now();
-  console.log($.bold("time: %ss"), Math.round($.time) / 1000);
-}`;
+  const bundleContent = bootstrapModule({
+    mainModule: "import.meta.url",
+    args: "Deno.args",
+    code: await bundleFile(script, options),
+  });
 
   const tmpDir = await Deno.makeTempDir();
   const tmpFile = path.join(tmpDir, path.basename(script));
