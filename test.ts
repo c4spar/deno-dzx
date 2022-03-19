@@ -3,8 +3,8 @@
 import {
   assert,
   assertEquals,
+  assertRejects,
   assertStringIncludes,
-  assertThrowsAsync,
 } from "./dev_deps.ts";
 
 import { $, $e, $o, $s, cd, path, ProcessError } from "./mod.ts";
@@ -83,7 +83,7 @@ Deno.test("create a directory with a space in the name", async () => {
 });
 
 Deno.test("subprocess command failure throws a ProcessError", async () => {
-  await assertThrowsAsync(async () => await $`somefakebinary`, ProcessError);
+  await assertRejects(async () => await $`somefakebinary`, ProcessError);
 });
 
 Deno.test("cwd of the parent process is always the starting point for calls to cd", async () => {
