@@ -1,5 +1,5 @@
 import { tokens } from "https://deno.land/x/rusty_markdown@v0.4.1/mod.ts";
-import { addProtocol } from "../_utils.ts";
+import { addProtocol } from "../../_utils.ts";
 
 export async function getMarkdownModule(url: string) {
   let mdContent;
@@ -34,15 +34,16 @@ export async function getMarkdownModule(url: string) {
     }
   });
 
-  const finalCode = codeContent.join("")
+  const code = codeContent.join("")
     .replaceAll("import.meta.url", `\"${url}\"`);
 
   return `data:application/typescript,${
     encodeURIComponent(`
-          /// <reference path="${new URL("./types.d.ts", Deno.mainModule)}" />
-          {
-            ${finalCode}
-          }
+      /// <reference path="${new URL(
+      "../../../types.d.ts",
+      import.meta.url,
+    )}" />
+      {\n${code}\n}
     `)
   }`;
 }

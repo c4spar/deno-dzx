@@ -9,8 +9,10 @@ import {
   ValidationError,
 } from "./deps.ts";
 import { addProtocol } from "../_utils.ts";
-import { getMarkdownModule } from "./markdown.ts";
-import { spawnWorker } from "./worker.ts";
+import { importModule } from "./lib/bootstrap.ts";
+import { getModuleFromStdin } from "./lib/stream.ts";
+import { getMarkdownModule } from "./lib/markdown.ts";
+import { spawnWorker } from "./lib/worker.ts";
 import { replCommand } from "./repl.ts";
 
 export function dzx() {
@@ -72,26 +74,29 @@ export function dzx() {
         script?: string,
         args: Array<string> = [],
       ) => {
-        $.args = args;
+        if (!script && Deno.isatty(Deno.stdin.rid)) {
+          throw new ValidationError(`Missing argument(s): script`);
+        }
+
+        let mainModule: string;
         if (script) {
           const scriptExt = path.extname(script);
-
-          $.mainModule = [".md", ".markdown"].includes(scriptExt)
+          mainModule = [".md", ".markdown"].includes(scriptExt)
             ? await getMarkdownModule(script)
             : addProtocol(script);
-
-          if (worker) {
-            spawnWorker(perms);
-          } else {
-            await import($.mainModule);
-          }
-        } else if (Deno.isatty(Deno.stdin.rid)) {
-          throw new ValidationError(`Missing argument(s): script`);
         } else {
-          await importFromStdin();
+          mainModule = await getModuleFromStdin();
         }
-        if ($.verbose) {
-          console.log($.bold("time: %ss"), Math.round($.time) / 1000);
+
+        if (worker) {
+          spawnWorker({
+            perms,
+            mainModule,
+            args,
+            startTime: $.startTime,
+          });
+        } else {
+          await importModule({ mainModule, args });
         }
       },
     )
@@ -105,14 +110,4 @@ export function dzx() {
         provider: new DenoLandProvider(),
       }),
     );
-
-  async function importFromStdin(): Promise<void> {
-    const data = new TextDecoder().decode(await streams.readAll(Deno.stdin));
-    if (data) {
-      $.mainModule = `data:application/typescript,${encodeURIComponent(data)}`;
-      await import($.mainModule);
-    } else {
-      throw new ValidationError(`Failed to read from stdin.`, { exitCode: 2 });
-    }
-  }
 }

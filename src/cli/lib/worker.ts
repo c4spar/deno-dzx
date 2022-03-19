@@ -1,4 +1,4 @@
-import { $ } from "../runtime/mod.ts";
+import { bootstrapModule, BootstrapOptions } from "./bootstrap.ts";
 
 export interface Permissions {
   allowAll?: boolean;
@@ -11,24 +11,26 @@ export interface Permissions {
   allowRead?: boolean | (string | URL)[];
 }
 
-export function spawnWorker(perms: Permissions): void {
+export interface SpawnWorkerOptions extends Omit<BootstrapOptions, "base64"> {
+  perms: Permissions;
+}
+
+export function spawnWorker({
+  args,
+  startTime,
+  mainModule,
+  perms,
+}: SpawnWorkerOptions): void {
   new Worker(
-    `data:application/typescript,${
-      encodeURIComponent(`
-          import "${new URL("./src/runtime/mod.ts", Deno.mainModule)}";
-          $.mainModule = "${$.mainModule}";
-          $.startTime = ${$.startTime};
-          $.args = JSON.parse(decodeURIComponent("${
-        encodeURIComponent(JSON.stringify($.args))
-      }"));
-          await import("${$.mainModule}");
-          if ($.verbose) {
-            console.log($.bold("time: %ss"), Math.round($.time) / 1000);
-          }
-          self.close();`)
-    }`,
+    bootstrapModule({
+      args: args,
+      startTime: startTime,
+      mainModule: mainModule,
+      base64: true,
+      code: `await import("${mainModule}");`,
+    }),
     {
-      name: $.mainModule,
+      name: mainModule,
       type: "module",
       deno: {
         namespace: true,

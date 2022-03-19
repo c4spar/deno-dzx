@@ -42,7 +42,7 @@ Object.setPrototypeOf($, Object.getPrototypeOf(colors));
 $._stack = [];
 $.shell = "/bin/bash";
 $.prefix = "set -euo pipefail;";
-$.mainModule = "";
+$.mainModule = Deno.mainModule;
 $.verbose = false;
 $.stdout = "piped";
 $.stderr = "piped";
