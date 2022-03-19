@@ -3,7 +3,7 @@ import { Command } from "./deps.ts";
 
 export function replCommand() {
   return new Command<void>()
-    .description("Start a dzx repl")
+    .description("Start a dzx repl.")
     .option(
       "--compat",
       "Node compatibility mode. Currently only enables built-in node modules like 'fs' and globals like 'process'",
