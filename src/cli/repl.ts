@@ -38,7 +38,10 @@ export async function repl(
       "repl",
       "--unstable", // dzx requires unstable
       "--eval",
-      `import "${new URL("../../mod.ts", import.meta.url)}"; $.throwErrors = true;`,
+      `import "${new URL(
+        "../../mod.ts",
+        import.meta.url,
+      )}"; $.throwErrors = true;`,
       ...args.filter((e) => e !== "--eval"), // we already use eval, and it can only be used once
     ],
   });
