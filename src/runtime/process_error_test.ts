@@ -2,7 +2,7 @@ import {
   assert,
   assertEquals,
   assertObjectMatch,
-  assertThrowsAsync,
+  assertRejects,
 } from "../../dev_deps.ts";
 import { $, ProcessError } from "./mod.ts";
 
@@ -46,14 +46,14 @@ Deno.test({
 Deno.test({
   name: "[process error] should throw an instance of error",
   async fn() {
-    await assertThrowsAsync(() => $`exit 1`, Error);
+    await assertRejects(() => $`exit 1`, Error);
   },
 });
 
 Deno.test({
   name: "[process error] should throw an instance of process error",
   async fn() {
-    await assertThrowsAsync(() => $`exit 1`, ProcessError);
+    await assertRejects(() => $`exit 1`, ProcessError);
   },
 });
 
