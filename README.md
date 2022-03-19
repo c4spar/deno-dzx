@@ -429,7 +429,25 @@ Commands:
 
   The `repl` command starts a deno repl bootstrapped with the dzx runtime code.
 
-- **dzx upgrade**: Start a dzx repl.
+- **dzx upgrade**: Upgrade the `dzx` executable to latest or given version.
+
+  Upgrade to latest version:
+
+  ```shell
+  dzx upgrade
+  ```
+
+  Upgrade to specific version:
+
+  ```shell
+  dzx upgrade --version 3.0.0
+  ```
+
+  List all available versions:
+
+  ```shell
+  dzx upgrade --list-versions
+  ```
 
 ## Contributing
 
