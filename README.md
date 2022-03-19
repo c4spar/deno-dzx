@@ -351,8 +351,8 @@ notes.
 # CLI
 
 ```
-Usage:   dzx [script] [args...]
-  Version: v0.2.3
+  Usage:   dzx [script] [args...]
+  Version: 0.3.0
 
   Description:
 
@@ -374,18 +374,20 @@ Usage:   dzx [script] [args...]
 
   Commands:
 
-    bundle   [script]                   - Bundle an dzx script to a standalone deno sript.
-    compile  [script] [permissions...]  - Compile an dzx script to a standalone binary.
+    bundle   [script]                                           - Bundle an dzx script to a standalone deno sript.
+    compile  [compile-options...] [script] [script-options...]  - Combile an dzx script to a standalone binary.
+    repl                                                        - Start a dzx repl
+    upgrade                                                     - Upgrade dzx executable to latest or given version.
 ```
 
-- **dzx** `[script] [...args]`: Run an local or remote dzx script (optional in a
+- **dzx** `[script] [...args]`: Run a local or remote dzx script (optional in a
   web worker).
 
   ```shell
   dzx --worker ./example.ts
   ```
 
-- **dzx bundle** `[script]`: Bundle an dzx script to a standalone deno sript.
+- **dzx bundle** `[script]`: Bundle a dzx script to a standalone deno script.
   Can also read from stdin.
 
   ```shell
@@ -409,6 +411,10 @@ Usage:   dzx [script] [args...]
   > It is also recommended when reading from `stdin` that you pass the --output
   > flag with your permissions to specify the output file name, otherwise the
   > compiled file will be emitted with a random value as its name.
+
+- **dzx repl**: Start a dzx repl (deno repl bootstrapped with dzx).
+
+- **dzx upgrade**: Start a dzx repl.
 
 ## Contributing
 
