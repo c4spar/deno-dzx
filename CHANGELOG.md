@@ -1,3 +1,33 @@
+# [0.3.1](https://github.com/c4spar/deno-dzx/compare/0.3.0...0.3.1) (Mar 20, 2022)
+
+### Features
+
+- **cli:** Add repl command (#20)
+  ([5850a4d](https://github.com/c4spar/deno-dzx/commit/5850a4d))
+- **cli:** add eval command (#23)
+  ([f613be7](https://github.com/c4spar/deno-dzx/commit/f613be7))
+
+### Bug Fixes
+
+- **cli:** throw errors in repl (#24)
+  ([b3b7bc6](https://github.com/c4spar/deno-dzx/commit/b3b7bc6))
+
+### Code Refactoring
+
+- **cli:** refactor runtime bootstrapping (#22)
+  ([c86b667](https://github.com/c4spar/deno-dzx/commit/c86b667))
+
+### Chore
+
+- **upgrade:** deno/std@v0.130.0, cliffy@v0.22.2 (#25)
+  ([d97535e](https://github.com/c4spar/deno-dzx/commit/d97535e))
+
+### Documentation Updates
+
+- bump version to 0.3.1
+  ([4570b37](https://github.com/c4spar/deno-dzx/commit/4570b37))
+- update readme ([528228b](https://github.com/c4spar/deno-dzx/commit/528228b))
+
 # [0.3.0](https://github.com/c4spar/deno-dzx/compare/0.2.4...0.3.0) (Nov 9, 2021)
 
 ### Features
