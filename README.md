@@ -27,7 +27,7 @@
 
 ```typescript
 #!/usr/bin/env dzx
-/// <reference path="https://deno.land/x/dzx@0.3.0/types.d.ts" />
+/// <reference path="https://deno.land/x/dzx@0.3.1/types.d.ts" />
 
 $.verbose = true;
 $.shell = "/usr/local/bin/zsh";
@@ -78,7 +78,7 @@ await fs.ensureDir("./tmp");
 ## Install
 
 ```
-deno install --allow-all --unstable -f https://deno.land/x/dzx@0.3.0/dzx.ts
+deno install --allow-all --unstable -f https://deno.land/x/dzx@0.3.1/dzx.ts
 ```
 
 > `--unstable` is required for the `bundle` command which uses `Deno.emit`, for
@@ -97,7 +97,7 @@ reference to the top of the file,
 
 ```
 #!/usr/bin/env dzx
-/// <reference path="https://deno.land/x/dzx@0.3.0/types.d.ts" />
+/// <reference path="https://deno.land/x/dzx@0.3.1/types.d.ts" />
 ```
 
 or you can import all symbol directly from the `dzx/mod.ts` module instead of
@@ -105,7 +105,7 @@ using globals.
 
 ```ts
 #!/usr/bin/env dzx
-import { $, cd, fs, io, log, path } from "https://deno.land/x/dzx@0.3.0/mod.ts";
+import { $, cd, fs, io, log, path } from "https://deno.land/x/dzx@0.3.1/mod.ts";
 ```
 
 After making your script executable,
@@ -126,8 +126,8 @@ You can use `dzx` without installation by using next shebang. This also allows
 you to explicitly set the permissions for your script.
 
 ```typescript
-#!/usr/bin/env deno run --allow-run --allow-read --allow-env https://deno.land/x/dzx@0.3.0/dzx.ts
-/// <reference path="https://deno.land/x/dzx@0.3.0/types.d.ts" />
+#!/usr/bin/env deno run --allow-run --allow-read --allow-env https://deno.land/x/dzx@0.3.1/dzx.ts
+/// <reference path="https://deno.land/x/dzx@0.3.1/types.d.ts" />
 
 console.log(`Hello ${$.blue.bold("world")}!`);
 ```
@@ -143,7 +143,7 @@ the `dzx` cli.
 
 ```typescript
 #!/usr/bin/env dzx --worker --allow-read
-/// <reference path="https://deno.land/x/dzx@0.3.0/types.d.ts" />
+/// <reference path="https://deno.land/x/dzx@0.3.1/types.d.ts" />
 
 console.log(`Hello from ${$.blue.bold("worker")}!`);
 ```
@@ -352,7 +352,7 @@ notes.
 
 ```
 Usage:   dzx [script] [args...]
-Version: 0.3.0
+Version: 0.3.1
 
 Description:
 

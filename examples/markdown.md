@@ -92,7 +92,7 @@ something like this:
 
 ```
 #!/usr/bin/env dzx
-/// <reference path="https://deno.land/x/dzx@0.2.4/types.d.ts" />
+/// <reference path="https://deno.land/x/dzx@0.3.1/types.d.ts" />
 // deno-lint-ignore-file
 
 $.verbose = true;
