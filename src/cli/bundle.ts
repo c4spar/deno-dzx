@@ -5,8 +5,8 @@ import { bootstrapModule } from "./lib/bootstrap.ts";
 
 export function bundleCommand() {
   return new Command()
-    .description("Bundle an dzx script to a standalone deno sript.")
-    .arguments("[script]")
+    .description("Bundle a dzx script to a standalone deno script.")
+    .arguments("[script:file]")
     .option("--no-check", "Skip type checking modules.")
     .action(async ({ check }, script?: string) => {
       if (!script) {

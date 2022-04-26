@@ -4,10 +4,9 @@ import { Command, copy, parse, ValidationError } from "./deps.ts";
 
 export function compileCommand() {
   return new Command()
-    .description("Combile an dzx script to a standalone binary.")
-    .arguments(
-      "[compile-options...:string[]] [script:string] [script-options...:string[]]",
-    )
+    .description("Compile a dzx script to a standalone binary.")
+    .usage("[compile-options...] [script] [script-options...]")
+    .arguments("[script:file]")
     .option("-A, --allow-all", "Allow all permissions.")
     .option("--allow-env [allow-env:string]", "Allow environment access.")
     .option("--allow-hrtime", "Allow high resolution time measurement.")
