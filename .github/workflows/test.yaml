@@ -1,6 +1,6 @@
 name: Test
 
-on: [push, pull_request]
+on: [push]
 
 jobs:
   test:
@@ -13,7 +13,7 @@ jobs:
         deno: [v1.x]
     steps:
       - name: Setup repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Setup Deno
         uses: denoland/setup-deno@v1
