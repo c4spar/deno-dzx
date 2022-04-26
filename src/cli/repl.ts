@@ -2,7 +2,7 @@ import { error } from "../_utils.ts";
 import { Command } from "./deps.ts";
 
 export function replCommand() {
-  return new Command<void>()
+  return new Command()
     .description("Start a dzx repl.")
     .option(
       "--compat",

@@ -17,55 +17,53 @@ import { spawnWorker } from "./lib/worker.ts";
 import { replCommand } from "./repl.ts";
 
 export function dzx() {
-  return new Command<void>()
+  return new Command()
     .version(VERSION)
     .name("dzx")
     .description("🦕 A custom deno runtime for fun.")
     .stopEarly()
-    .arguments<[script?: string, args?: Array<string>]>(
-      "[script:string] [args...:string[]]",
-    )
-    .option<{ allowAll?: boolean }>(
+    .arguments("[script:string] [args...:string]")
+    .option(
       "-A, --allow-all",
       "Allow all permissions.",
       { depends: ["worker"] },
     )
-    .option<{ allowEnv?: boolean }>(
+    .option(
       "--allow-env",
       "Allow environment access.",
       { depends: ["worker"] },
     )
-    .option<{ allowHrtime?: boolean }>(
+    .option(
       "--allow-hrtime",
       "Allow high resolution time measurement.",
       { depends: ["worker"] },
     )
-    .option<{ allowNet?: boolean }>(
+    .option(
       "--allow-net",
       "Allow network access.",
       { depends: ["worker"] },
     )
-    .option<{ allowFfi?: boolean }>(
+    .option(
       "--allow-ffi",
       "Allow loading dynamic libraries.",
       { depends: ["worker"] },
     )
-    .option<{ allowRead?: boolean }>(
+    .option(
       "--allow-read",
       "Allow file system read access.",
       { depends: ["worker"] },
     )
-    .option<{ allowRun?: boolean }>(
+    .option(
       "--allow-run",
       "Allow running subprocesses.",
       { depends: ["worker"] },
     )
-    .option<{ allowWrite?: boolean }>(
+    .option(
       "--allow-write",
       "Allow file system write access.",
       { depends: ["worker"] },
     )
-    .option<{ worker?: boolean }>(
+    .option(
       "-w, --worker",
       "Run script in an isolated web worker with it's own permissions.",
     )

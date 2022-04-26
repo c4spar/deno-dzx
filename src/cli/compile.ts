@@ -3,7 +3,7 @@ import { error } from "../_utils.ts";
 import { Command, copy, parse, ValidationError } from "./deps.ts";
 
 export function compileCommand() {
-  return new Command<void>()
+  return new Command()
     .description("Combile an dzx script to a standalone binary.")
     .arguments(
       "[compile-options...:string[]] [script:string] [script-options...:string[]]",

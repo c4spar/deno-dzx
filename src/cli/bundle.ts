@@ -4,10 +4,10 @@ import { path } from "../runtime/mod.ts";
 import { bootstrapModule } from "./lib/bootstrap.ts";
 
 export function bundleCommand() {
-  return new Command<void>()
+  return new Command()
     .description("Bundle an dzx script to a standalone deno sript.")
-    .arguments("[script:string]")
-    .option<{ check: boolean }>("--no-check", "Skip type checking modules.")
+    .arguments("[script]")
+    .option("--no-check", "Skip type checking modules.")
     .action(async ({ check }, script?: string) => {
       if (!script) {
         if (Deno.isatty(Deno.stdin.rid)) {

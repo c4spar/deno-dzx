@@ -15,7 +15,6 @@ import type {
 } from "./src/runtime/mod.ts";
 
 import type {
-  ArgParsingOptions as _ArgParsingOptions,
   Args as _Args,
   CopyOptions as _CopyOptions,
   DebouncedFunction as _DebouncedFunction,
@@ -33,6 +32,7 @@ import type {
   LogConfig as _LogConfig,
   LogMode as _LogMode,
   ParsedPath as _ParsedPath,
+  ParseOptions as _ParseOptions,
   ReadableStreamFromReaderOptions as _ReadableStreamFromReaderOptions,
   ReadLineResult as _ReadLineResult,
   WalkEntry as _WalkEntry,
@@ -48,21 +48,21 @@ declare global {
   const $: _$;
 
   /**
-   * Run a command and return only its exit code
+   * Run a command and return only its exit code.
    *
    * If the command throws an error or fails in some way,
    * this method will not re-throw that error. It will
    * either return the exit code from the process, or `1`
-   * if no exit code is produced (due to an error)
+   * if no exit code is produced (due to an error).
    *
    * If you want assurance that a failure in the child process
-   * will throw an error, use `$`
+   * will throw an error, use `$`.
    * @see $
    */
   const $s: typeof _$s;
 
   /**
-   * Run a command and return only its trimmed stdout
+   * Run a command and return only its trimmed stdout.
    *
    * If the command throws an error or fails in some way,
    * this method will not re-throw that error. It will only
@@ -70,7 +70,7 @@ declare global {
    * to its stdout stream.
    *
    * If you want assurance that a failure in the child process
-   * will throw an error, use `$`
+   * will throw an error, use `$`.
    * @see $
    */
   const $o: typeof _$o;
@@ -116,9 +116,9 @@ declare global {
   namespace io {
     /** @deprecated This interface has been moved to `streams`. */
     type ReadableStreamFromReaderOptions = _IOReadableStreamFromReaderOptions;
-    type ReadLineResult = _ReadLineResult;
     /** @deprecated This interface has been moved to `streams`. */
     type WritableStreamFromWriterOptions = _IOWritableStreamFromWriterOptions;
+    type ReadLineResult = _ReadLineResult;
   }
 
   namespace streams {
@@ -142,7 +142,9 @@ declare global {
   }
 
   namespace flags {
-    type ArgParsingOptions = _ArgParsingOptions;
+    /** @deprecated use `ParseOptions` instead. */
+    type ArgParsingOptions = _ParseOptions;
+    type ParseOptions = _ParseOptions;
     type Args = _Args;
   }
 
