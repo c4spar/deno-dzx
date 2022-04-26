@@ -3,7 +3,7 @@ import { bootstrapScript, importModule } from "./lib/bootstrap.ts";
 import { getModuleFromStdin } from "./lib/stream.ts";
 
 export function evalCommand() {
-  return new Command<void>()
+  return new Command()
     .description(`Evaluate a dzx script from the command line.\n
   dzx eval "console.log($.shell)"\n
 Or read from stdin:\n
