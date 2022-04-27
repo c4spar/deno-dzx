@@ -1,6 +1,7 @@
 import { $ } from "../../runtime/mod.ts";
 
 export interface BootstrapOptions {
+  code?: string;
   startTime?: number;
   mainModule?: string;
   args?: Array<string> | string;
@@ -23,14 +24,17 @@ export function stringifyArgs(args: Array<string>) {
 export function bootstrap(options: BootstrapOptions): string {
   const code = [
     `import "${new URL("../../../mod.ts", import.meta.url)}";`,
+    "{",
     options.startTime ? `$.startTime = ${options.startTime};` : "",
-    options.mainModule ? `$.mainModule = ${options.mainModule};` : "",
+    options.mainModule ? `$.mainModule = "${options.mainModule}";` : "",
     options.verbose !== undefined ? `$.verbose = ${options.verbose};` : "",
     typeof options.args === "string"
       ? options.args
       : options.args
       ? stringifyArgs(options.args)
       : "",
+    "}",
+    options.code,
   ].filter((line) => line).join("\n");
 
   return options.base64 ? base64Module(code) : code;
@@ -45,9 +49,7 @@ export function teardown(): string {
   ].join("\n");
 }
 
-export interface BootstrapModuleOptions extends BootstrapOptions {
-  code?: string;
-}
+export type BootstrapModuleOptions = BootstrapOptions;
 
 export function bootstrapScript(code: string) {
   return base64Module(`
@@ -60,11 +62,13 @@ export function bootstrapScript(code: string) {
 }
 
 export function bootstrapModule(options: BootstrapModuleOptions) {
-  return [
-    bootstrap(options),
-    options.code ? `{\n${options.code}\n}` : "",
-    teardown(),
-  ].filter((line) => line).join("\n");
+  return bootstrap({
+    ...options,
+    code: [
+      options.code ? `{\n${options.code}\n}` : "",
+      teardown(),
+    ].filter((line) => line).join("\n"),
+  });
 }
 
 export interface ImportModuleOptions {
