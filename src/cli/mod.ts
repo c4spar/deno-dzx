@@ -21,7 +21,6 @@ export function dzx() {
     .version(VERSION)
     .name("dzx")
     .description("🦕 A custom deno runtime for fun.")
-    .stopEarly()
     .arguments("[script:string] [args...:string]")
     .option(
       "-A, --allow-all",
@@ -67,9 +66,24 @@ export function dzx() {
       "-w, --worker",
       "Run script in an isolated web worker with it's own permissions.",
     )
+    .option(
+      "-v, --verbose",
+      "Run script in verbose mode. This option can appear up to three times.\n" +
+        "-v: Print executed commands and script execution time.\n" +
+        "-vv: Print also stdout and stderr.\n" +
+        "-vvv: Print internal debug information.",
+      {
+        collect: true,
+        default: 1,
+        // deno-lint-ignore no-inferrable-types
+        value: (_, previus: number = 0) => ++previus,
+      },
+    )
+    .option("--no-verbose", "Disable stdout output.")
+    .stopEarly()
     .action(
       async (
-        { worker, ...perms },
+        { worker, verbose, ...perms },
         script?: string,
         args: Array<string> = [],
       ) => {
@@ -92,10 +106,11 @@ export function dzx() {
             perms,
             mainModule,
             args,
+            verbose,
             startTime: $.startTime,
           });
         } else {
-          await importModule({ mainModule, args });
+          await importModule({ mainModule, args, verbose });
         }
       },
     )

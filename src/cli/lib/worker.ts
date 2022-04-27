@@ -20,12 +20,14 @@ export function spawnWorker({
   startTime,
   mainModule,
   perms,
+  verbose,
 }: SpawnWorkerOptions): void {
   new Worker(
     bootstrapModule({
-      args: args,
-      startTime: startTime,
-      mainModule: mainModule,
+      args,
+      startTime,
+      mainModule,
+      verbose,
       base64: true,
       code: `await import("${mainModule}");`,
     }),

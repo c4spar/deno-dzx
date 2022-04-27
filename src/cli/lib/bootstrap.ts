@@ -5,6 +5,7 @@ export interface BootstrapOptions {
   mainModule?: string;
   args?: Array<string> | string;
   base64?: boolean;
+  verbose?: number | boolean;
 }
 
 export function base64Module(code: string) {
@@ -24,6 +25,7 @@ export function bootstrap(options: BootstrapOptions): string {
     `import "${new URL("../../../mod.ts", import.meta.url)}";`,
     options.startTime ? `$.startTime = ${options.startTime};` : "",
     options.mainModule ? `$.mainModule = ${options.mainModule};` : "",
+    options.verbose !== undefined ? `$.verbose = ${options.verbose};` : "",
     typeof options.args === "string"
       ? options.args
       : options.args
@@ -68,12 +70,16 @@ export function bootstrapModule(options: BootstrapModuleOptions) {
 export interface ImportModuleOptions {
   mainModule: string;
   args?: Array<string>;
+  verbose?: number | boolean;
 }
 
 export async function importModule(options: ImportModuleOptions) {
   $.mainModule = options.mainModule;
   if (options.args) {
     $.args = options.args;
+  }
+  if (typeof options.verbose !== "undefined") {
+    $.verbose = options.verbose;
   }
   await import($.mainModule);
   if ($.verbose) {

@@ -34,8 +34,8 @@ export async function exec(
 
   const [status] = await Promise.all([
     process.status(),
-    process.stdout && read(process.stdout, stdout, combined),
-    process.stderr && read(process.stderr, stderr, combined),
+    process.stdout && read(process.stdout, [stdout, combined], Deno.stdout),
+    process.stderr && read(process.stderr, [stderr, combined], Deno.stderr),
   ]);
 
   process.stdout?.close();
@@ -125,12 +125,18 @@ export const stderrOnly = async (
 
 async function read(
   reader: Deno.Reader,
-  ...results: Array<Array<string>>
-) {
-  for await (const chunk of streams.iterateReader(reader)) {
-    const str = new TextDecoder().decode(chunk);
+  results: Array<Array<string>>,
+  outputStream: Deno.Writer,
+): Promise<Error | void> {
+  for await (const line of io.readLines(reader)) {
     for (const result of results) {
-      result.push(str);
+      result.push(line + "\n");
+    }
+    if ($.verbose > 1) {
+      await io.writeAll(
+        outputStream,
+        new TextEncoder().encode(line + "\n"),
+      );
     }
   }
 }
