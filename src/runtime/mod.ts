@@ -19,17 +19,17 @@ export { ProcessError } from "./process_error.ts";
 export { ProcessOutput } from "./process_output.ts";
 
 export type $ = typeof exec & typeof colors & {
-  shell: string;
-  prefix: string;
-  mainModule: string;
+  get mainModule(): string;
+  get args(): Array<string>;
   get verbose(): number;
   set verbose(value: boolean | number);
+  get startTime(): number;
+  shell: string;
+  prefix: string;
   stdout: NonNullable<Deno.RunOptions["stdout"]>;
   stderr: NonNullable<Deno.RunOptions["stderr"]>;
-  args: Array<string>;
   quote: typeof shq;
   throwErrors: boolean;
-  startTime: number;
   time: number;
 };
 
@@ -43,13 +43,10 @@ Object.setPrototypeOf($, Object.getPrototypeOf(colors));
 $._stack = [];
 $.shell = "/bin/bash";
 $.prefix = "set -euo pipefail;";
-$.mainModule = Deno.mainModule;
 $.stdout = "piped";
 $.stderr = "piped";
-$.args = [];
 $.quote = shq;
 $.throwErrors = false;
-$.startTime = Date.now();
 
 let _verbose = 1;
 Object.defineProperty($, "verbose", {

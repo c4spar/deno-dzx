@@ -17,7 +17,6 @@ export interface SpawnWorkerOptions extends Omit<BootstrapOptions, "base64"> {
 
 export function spawnWorker({
   args,
-  startTime,
   mainModule,
   perms,
   verbose,
@@ -25,7 +24,6 @@ export function spawnWorker({
   new Worker(
     bootstrapModule({
       args,
-      startTime,
       mainModule,
       verbose,
       base64: true,
