@@ -1,5 +1,5 @@
 import { VERSION } from "../../version.ts";
-import { $, path } from "../runtime/mod.ts";
+import { path } from "../runtime/mod.ts";
 import { bundleCommand } from "./bundle.ts";
 import { compileCommand } from "./compile.ts";
 import {
@@ -107,7 +107,6 @@ export function dzx() {
             mainModule,
             args,
             verbose,
-            startTime: $.startTime,
           });
         } else {
           await importModule({ mainModule, args, verbose });

@@ -1,8 +1,9 @@
 import { $ } from "../../runtime/mod.ts";
 
+const startTime = Date.now();
+
 export interface BootstrapOptions {
   code?: string;
-  startTime?: number;
   mainModule?: string;
   args?: Array<string> | string;
   base64?: boolean;
@@ -14,19 +15,32 @@ export function base64Module(code: string) {
 }
 
 export function stringifyArgs(args: Array<string>) {
-  return args?.length
-    ? `$.args = JSON.parse(decodeURIComponent("${
+  if (!args?.length) {
+    return "";
+  }
+  let code = args?.length
+    ? `const args = JSON.parse(decodeURIComponent("${
       encodeURIComponent(JSON.stringify(args))
-    }"));`
-    : "";
+    }"));\n`
+    : "const args = [];\n";
+  code += `Object.defineProperty($, "args", { get: () => args });`;
+  return code;
+}
+
+export function stringifyMainModule(mainModule: string) {
+  return `Object.defineProperty($, "mainModule", { get: () => "${mainModule}" });`;
+}
+
+export function stringifyStartTime(startTime: number) {
+  return `Object.defineProperty($, "startTime", { get: () => ${startTime} });`;
 }
 
 export function bootstrap(options: BootstrapOptions): string {
   const code = [
     `import "${new URL("../../../mod.ts", import.meta.url)}";`,
     "{",
-    options.startTime ? `$.startTime = ${options.startTime};` : "",
-    options.mainModule ? `$.mainModule = "${options.mainModule}";` : "",
+    stringifyStartTime(startTime),
+    options.mainModule ? stringifyMainModule(options.mainModule) : "",
     options.verbose !== undefined ? `$.verbose = ${options.verbose};` : "",
     typeof options.args === "string"
       ? options.args
@@ -78,14 +92,26 @@ export interface ImportModuleOptions {
 }
 
 export async function importModule(options: ImportModuleOptions) {
-  $.mainModule = options.mainModule;
-  if (options.args) {
-    $.args = options.args;
-  }
+  const mainModule = options.mainModule;
+  Object.defineProperty($, "mainModule", {
+    get: () => mainModule,
+  });
+
+  const args = options.args ? [...options.args] : [];
+  Object.defineProperty($, "args", {
+    get: () => args,
+  });
+
   if (typeof options.verbose !== "undefined") {
     $.verbose = options.verbose;
   }
+
+  Object.defineProperty($, "startTime", {
+    get: (): number => startTime,
+  });
+
   await import($.mainModule);
+
   if ($.verbose) {
     console.log($.bold("time: %ss"), Math.round($.time) / 1000);
   }
