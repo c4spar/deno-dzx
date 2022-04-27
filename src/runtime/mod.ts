@@ -22,7 +22,8 @@ export type $ = typeof exec & typeof colors & {
   shell: string;
   prefix: string;
   mainModule: string;
-  verbose: boolean;
+  get verbose(): number;
+  set verbose(value: boolean | number);
   stdout: NonNullable<Deno.RunOptions["stdout"]>;
   stderr: NonNullable<Deno.RunOptions["stderr"]>;
   args: Array<string>;
@@ -43,13 +44,19 @@ $._stack = [];
 $.shell = "/bin/bash";
 $.prefix = "set -euo pipefail;";
 $.mainModule = Deno.mainModule;
-$.verbose = false;
 $.stdout = "piped";
 $.stderr = "piped";
 $.args = [];
 $.quote = shq;
 $.throwErrors = false;
 $.startTime = Date.now();
+
+let _verbose = 1;
+Object.defineProperty($, "verbose", {
+  get: (): number => _verbose,
+  set: (verbose: boolean | number) => _verbose = Number(verbose),
+});
+
 Object.defineProperty($, "time", {
   get: () => Date.now() - $.startTime,
 });
