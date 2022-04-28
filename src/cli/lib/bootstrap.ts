@@ -15,15 +15,14 @@ export function base64Module(code: string) {
 }
 
 export function stringifyArgs(args: Array<string>) {
-  if (!args?.length) {
-    return "";
-  }
   let code = args?.length
     ? `const args = JSON.parse(decodeURIComponent("${
       encodeURIComponent(JSON.stringify(args))
     }"));\n`
     : "const args = [];\n";
+
   code += `Object.defineProperty($, "args", { get: () => args });`;
+
   return code;
 }
 
@@ -44,9 +43,7 @@ export function bootstrap(options: BootstrapOptions): string {
     options.verbose !== undefined ? `$.verbose = ${options.verbose};` : "",
     typeof options.args === "string"
       ? options.args
-      : options.args
-      ? stringifyArgs(options.args)
-      : "",
+      : stringifyArgs(options.args ?? []),
     "}",
     options.code,
   ].filter((line) => line).join("\n");
