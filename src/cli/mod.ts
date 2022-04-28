@@ -2,19 +2,14 @@ import { VERSION } from "../../version.ts";
 import { path } from "../runtime/mod.ts";
 import { bundleCommand } from "./bundle.ts";
 import { compileCommand } from "./compile.ts";
-import {
-  Command,
-  DenoLandProvider,
-  UpgradeCommand,
-  ValidationError,
-} from "./deps.ts";
+import { Command, DenoLandProvider, UpgradeCommand } from "./deps.ts";
 import { addProtocol } from "../_utils.ts";
 import { evalCommand } from "./eval.ts";
 import { importModule } from "./lib/bootstrap.ts";
 import { getModuleFromStdin } from "./lib/stream.ts";
 import { getMarkdownModule } from "./lib/markdown.ts";
 import { spawnWorker } from "./lib/worker.ts";
-import { replCommand } from "./repl.ts";
+import { repl, replCommand } from "./repl.ts";
 
 export function dzx() {
   return new Command()
@@ -63,8 +58,20 @@ export function dzx() {
       { depends: ["worker"] },
     )
     .option(
+      "--compat",
+      "Node compatibility mode. Currently only enables built-in node modules like 'fs' and globals like 'process'",
+    )
+    .option(
+      "--inspect <host:string>",
+      "Activate inspector on host:port (default: 127.0.0.1:9229)",
+    )
+    .option(
+      "--inspect-brk <host:string>",
+      "Activate inspector on host:port and break at start of user script",
+    )
+    .option(
       "-w, --worker",
-      "Run script in an isolated web worker with it's own permissions.",
+      "Run script in an isolated web worker with it's own permissions. (experimental)",
     )
     .option(
       "-v, --verbose",
@@ -83,12 +90,13 @@ export function dzx() {
     .stopEarly()
     .action(
       async (
-        { worker, verbose, ...perms },
+        { worker, verbose, ...options },
         script?: string,
         args: Array<string> = [],
       ) => {
         if (!script && Deno.isatty(Deno.stdin.rid)) {
-          throw new ValidationError(`Missing argument(s): script`);
+          await repl({ ...options, verbose });
+          return;
         }
 
         let mainModule: string;
@@ -103,7 +111,7 @@ export function dzx() {
 
         if (worker) {
           spawnWorker({
-            perms,
+            perms: options,
             mainModule,
             args,
             verbose,
