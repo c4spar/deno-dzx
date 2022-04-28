@@ -59,15 +59,15 @@ export function dzx() {
     )
     .option(
       "--compat",
-      "Node compatibility mode. Currently only enables built-in node modules like 'fs' and globals like 'process'",
+      "Node compatibility mode. Currently only enables built-in node modules like 'fs' and globals like 'process'.",
     )
     .option(
       "--inspect <host:string>",
-      "Activate inspector on host:port (default: 127.0.0.1:9229)",
+      "Activate inspector on host:port. (default: 127.0.0.1:9229)",
     )
     .option(
       "--inspect-brk <host:string>",
-      "Activate inspector on host:port and break at start of user script",
+      "Activate inspector on host:port and break at start of user script.",
     )
     .option(
       "-w, --worker",
