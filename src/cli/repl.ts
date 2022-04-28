@@ -1,3 +1,4 @@
+import { VERSION } from "../../version.ts";
 import { error } from "../_utils.ts";
 import { Command } from "./deps.ts";
 import { bootstrap } from "./lib/bootstrap.ts";
@@ -54,7 +55,7 @@ export async function repl(
     "repl",
     "--unstable", // dzx requires unstable
     "--eval",
-    `${runtime}\n$.throwErrors = true;`,
+    `${runtime}\n$.throwErrors = true;\nconsole.log("dzx ${VERSION}");`,
   ];
 
   const flags = generateFlags({
