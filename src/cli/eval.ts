@@ -9,16 +9,9 @@ export function evalCommand() {
 Or read from stdin:\n
   echo "console.log($.shell)" | dzx eval
 `)
-    .arguments("<code:string>")
-    .useRawArgs()
+    .arguments("[code]")
     .action(
-      async function (_: void, ...args: Array<string>) {
-        if (["-h", "--help"].includes(args[0])) {
-          this.showHelp();
-          Deno.exit(0);
-        }
-        const code = args.shift();
-
+      async function (_: void, code?: string) {
         if (!code && Deno.isatty(Deno.stdin.rid)) {
           throw new ValidationError(`Missing argument(s): script`);
         }
