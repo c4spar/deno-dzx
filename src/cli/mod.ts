@@ -15,7 +15,7 @@ export function dzx() {
   return new Command()
     .version(VERSION)
     .name("dzx")
-    .description("🦕 A custom deno runtime for fun.")
+    .description("A custom deno runtime for fun.")
     .arguments("[script:string] [args...:string]")
     .option(
       "-A, --allow-all",
