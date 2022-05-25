@@ -21,10 +21,12 @@ export function replCommand() {
     )
     .option(
       "-v, --verbose",
-      "Run repl in verbose mode. This option can appear up to three times.\n" +
-        "-v: Print executed commands and script execution time.\n" +
-        "-vv: Print also stdout and stderr.\n" +
-        "-vvv: Print internal debug information.",
+      `
+      Enable verbose mode. This option can appear up to three times.
+      -v: Print executed commands and script execution time.
+      -vv: Print also stdout and stderr.
+      -vvv: Print internal debug information.
+      `,
       {
         collect: true,
         default: 1,
