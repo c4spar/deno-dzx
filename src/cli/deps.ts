@@ -10,3 +10,7 @@ export {
   ValidationError,
 } from "https://deno.land/x/cliffy@v0.23.1/command/_errors.ts";
 export { tokens } from "https://deno.land/x/rusty_markdown@v0.4.1/mod.ts";
+export {
+  bundle as denoBundle,
+  type BundleOptions as DenoBundleOptions,
+} from "https://deno.land/x/emit@0.1.1/mod.ts";

@@ -32,6 +32,7 @@ export function replCommand() {
         value: (_, previus: number = 0) => ++previus,
       },
     )
+    .option("--check", "Type check modules.")
     .option("--no-check", "Skip type checking modules.")
     .action((options) => repl(options));
 }
