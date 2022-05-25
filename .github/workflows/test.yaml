@@ -1,7 +1,8 @@
 name: Test
-
-on: [push]
-
+on:
+  push:
+    branches: [main]
+  pull_request:
 jobs:
   test:
     name: Test
