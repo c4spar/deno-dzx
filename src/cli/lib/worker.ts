@@ -33,7 +33,6 @@ export function spawnWorker({
       name: mainModule,
       type: "module",
       deno: {
-        namespace: true,
         permissions: {
           env: perms.allowAll || perms.allowEnv || false,
           hrtime: perms.allowAll || perms.allowHrtime || false,

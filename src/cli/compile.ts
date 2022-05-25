@@ -24,6 +24,7 @@ export function compileCommand() {
       "--allow-write [allow-write:string]",
       "Allow file system write access.",
     )
+    .option("--check", "Type check modules.")
     .option("--no-check", "Skip type checking modules.")
     // @see https://github.com/denoland/deno/issues/10507
     // .option("--lite", "Use lite deno runtime.")

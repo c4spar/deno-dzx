@@ -1,4 +1,10 @@
-import { Command, copy, ValidationError } from "./deps.ts";
+import {
+  Command,
+  copy,
+  denoBundle,
+  DenoBundleOptions,
+  ValidationError,
+} from "./deps.ts";
 import { error } from "../_utils.ts";
 import { path } from "../runtime/mod.ts";
 import { bootstrapModule } from "./lib/bootstrap.ts";
@@ -7,6 +13,7 @@ export function bundleCommand() {
   return new Command()
     .description("Bundle a dzx script to a standalone deno script.")
     .arguments("[script:file]")
+    .option("--check", "Type check modules.")
     .option("--no-check", "Skip type checking modules.")
     .action(async ({ check }, script?: string) => {
       if (!script) {
@@ -26,9 +33,13 @@ export function bundleCommand() {
     });
 }
 
+export interface BundleOptions extends DenoBundleOptions {
+  check?: boolean;
+}
+
 export async function bundle(
   script: string,
-  options?: Deno.EmitOptions,
+  options?: BundleOptions,
 ): Promise<string> {
   return bundleFile(
     await preBundle(
@@ -41,7 +52,7 @@ export async function bundle(
 
 export async function preBundle(
   script: string,
-  options?: Deno.EmitOptions,
+  options?: BundleOptions,
 ): Promise<string> {
   const bundleContent = bootstrapModule({
     mainModule: "import.meta.url",
@@ -57,27 +68,34 @@ export async function preBundle(
   return tmpFile;
 }
 
+async function check(file: string) {
+  const { status } = await Deno.spawn(Deno.execPath(), {
+    args: [
+      "check",
+      file,
+    ],
+    stdout: "inherit",
+    stderr: "inherit",
+  });
+  if (!status.success) {
+    Deno.exit(status.code);
+  }
+}
+
 async function bundleFile(
   file: string,
-  options: Deno.EmitOptions = {},
+  options: BundleOptions = {},
 ): Promise<string> {
   try {
-    const result = await Deno.emit(file, {
-      bundle: "module",
-      check: true,
-      compilerOptions: {
-        sourceMap: false, // Set sourcemaps to be false so that the resultant files array only has one entry
-      },
+    if (options.check) {
+      await check(file);
+    }
+    const { code } = await denoBundle(file, {
+      type: "module",
       ...options,
     });
 
-    // TODO - the key order of `result.files` is non-deterministic, so this might
-    // need to be reworked a bit to more selectively pull out the bundled file
-    // result that is desired. In the short term, it is reasonably well known
-    // that the first file will be *the only file* when sourcemaps are turned
-    // off in the compiler options (note that not doing this results in
-    // intermittently failing results on repeated calls to `dzx bundle`)
-    return Object.values(result.files)[0] as string;
+    return code;
   } catch (err: unknown) {
     if (err instanceof Deno.errors.NotFound) {
       throw error(`File not found: ${file}`);
