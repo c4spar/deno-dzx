@@ -1,7 +1,7 @@
 /// <reference path="../../types.d.ts" />
 
 import { Child } from "./child.ts";
-import { ChildStream, Readable, Spawnable } from "./child_stream.ts";
+import { ChildStream, Spawnable } from "./child_stream.ts";
 import { ProcessOutput } from "./process_output.ts";
 import { isTemplateStringArray, parseCmd } from "./lib/utils.ts";
 
