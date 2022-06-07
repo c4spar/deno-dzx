@@ -81,7 +81,7 @@ Deno.test({
   name: "[child] should stop the process if kill is called (zsh)",
   sanitizeResources: false,
   sanitizeOps: false,
-  only: Deno.build.os === "darwin",
+  ignore: Deno.build.os !== "darwin",
   async fn() {
     const start = Date.now();
     await assertRejects(
