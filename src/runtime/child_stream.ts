@@ -62,7 +62,6 @@ export class ChildStream<
     this.#id = options?.id ?? "#child-stream" + ++ChildStream.#count;
     this.#_stream = stream;
     this.#options = options;
-    this.log("create stream...");
   }
 
   [Symbol.toStringTag] = "ChildStream";
@@ -83,17 +82,6 @@ export class ChildStream<
     } else {
       this.#_stream = stream;
     }
-  }
-
-  protected log(arg: unknown, ...args: Array<unknown>): void {
-    if (typeof arg !== "string") {
-      args = [arg, ...args];
-    }
-    console.log(
-      "[%s]" + (typeof arg === "string" ? " " + arg : ""),
-      colors.rgb24(this.#id, toRgb("A" + this.#id)),
-      ...args,
-    );
   }
 
   get #textStream(): ReadableStream<string> {
@@ -322,6 +310,17 @@ export class ChildStream<
   #return(): R extends undefined ? this : R {
     return (this.#options.return?.() ?? this) as (
       R extends undefined ? this : R
+    );
+  }
+
+  protected log(arg: unknown, ...args: Array<unknown>): void {
+    if (typeof arg !== "string") {
+      args = [arg, ...args];
+    }
+    console.log(
+      "[%s]" + (typeof arg === "string" ? " " + arg : ""),
+      colors.rgb24(this.#id, toRgb("A" + this.#id)),
+      ...args,
     );
   }
 
