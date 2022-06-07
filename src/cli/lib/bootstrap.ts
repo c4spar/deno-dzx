@@ -109,7 +109,7 @@ export async function importModule(options: ImportModuleOptions) {
 
   await import($.mainModule);
 
-  if ($.verbose) {
-    console.log($.bold("time: %ss"), Math.round($.time) / 1000);
-  }
+  // if ($.verbose) {
+  //   console.log($.bold("time: %ss"), Math.round($.time) / 1000);
+  // }
 }

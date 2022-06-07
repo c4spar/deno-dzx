@@ -1,66 +1,30 @@
 /// <reference path="../../types.d.ts" />
 
-import { ProcessError } from "./process_error.ts";
+import { Child } from "./child.ts";
+import { ChildStream, Readable, Spawnable } from "./child_stream.ts";
 import { ProcessOutput } from "./process_output.ts";
-import { quote } from "./quote.ts";
+import { isTemplateStringArray, parseCmd } from "./lib/utils.ts";
 
-let runningProcesses = 0;
-
-export async function exec(
-  pieces: TemplateStringsArray,
+export function spawnChild(
+  cmd: TemplateStringsArray,
   ...args: Array<string | number | ProcessOutput>
-): Promise<ProcessOutput> {
-  runningProcesses++;
-  const cmd = quote(
-    pieces,
-    ...args.map((
-      a,
-    ) => (a instanceof ProcessOutput ? a.stdout.replace(/\n$/, "") : a)),
-  );
-
-  if ($.verbose) {
-    console.log($.brightBlue("$ %s"), cmd);
+): Child;
+export function spawnChild(reader: Spawnable): ChildStream;
+export function spawnChild(
+  cmd: TemplateStringsArray | Spawnable,
+  ...args: Array<string | number | ProcessOutput>
+): Child | ChildStream {
+  if (!isTemplateStringArray(cmd)) {
+    return new ChildStream<string, undefined>(
+      cmd instanceof ReadableStream
+        ? cmd
+        : cmd instanceof Deno.Child
+        ? cmd.stdout
+        : cmd.readable,
+    );
   }
 
-  const stdout: Array<string> = [];
-  const stderr: Array<string> = [];
-  const combined: Array<string> = [];
-  const process = Deno.run({
-    cmd: [$.shell, "-c", $.prefix + " " + cmd],
-    env: Deno.env.toObject(),
-    stdout: $.stdout,
-    stderr: $.stderr,
-  });
-
-  const [status] = await Promise.all([
-    process.status(),
-    process.stdout && read(process.stdout, [stdout, combined], Deno.stdout),
-    process.stderr && read(process.stderr, [stderr, combined], Deno.stderr),
-  ]);
-
-  process.stdout?.close();
-  process.stderr?.close();
-  process.close();
-
-  if (--runningProcesses === 0) {
-    $.stdout = "piped";
-  }
-
-  if (status.success) {
-    return new ProcessOutput({
-      stdout: stdout.join(""),
-      stderr: stderr.join(""),
-      combined: combined.join(""),
-      status,
-    });
-  }
-
-  throw new ProcessError({
-    stdout: stdout.join(""),
-    stderr: stderr.join(""),
-    combined: combined.join(""),
-    status,
-  });
+  return Child.spawn(parseCmd(cmd, ...args));
 }
 
 /**
@@ -75,13 +39,12 @@ export async function exec(
  * will throw an error, use `$`
  * @see $
  */
-export const statusOnly = async (
+export function statusOnly(
   pieces: TemplateStringsArray,
   ...args: Array<string | number | ProcessOutput>
-): Promise<number> =>
-  await exec(pieces, ...args)
-    .then((o) => (o instanceof ProcessOutput ? o.status.code : 0))
-    .catch((e) => (e instanceof ProcessError ? e.status.code : 1));
+): Promise<number> {
+  return spawnChild(pieces, ...args).statusCode;
+}
 
 /**
  * Run a command and return only its trimmed stdout
@@ -95,13 +58,15 @@ export const statusOnly = async (
  * will throw an error, use `$`
  * @see $
  */
-export const stdoutOnly = async (
+export function stdoutOnly(
   pieces: TemplateStringsArray,
   ...args: Array<string | number | ProcessOutput>
-): Promise<string> =>
-  await exec(pieces, ...args)
-    .then((o) => (o instanceof ProcessOutput ? o.stdout.trim() : ""))
-    .catch((e) => (e instanceof ProcessError ? e.stdout.trim() : ""));
+): Promise<string> {
+  return spawnChild(pieces, ...args)
+    .noThrow
+    .stdout
+    .then((stdout) => stdout.trim());
+}
 
 /**
  * Run a command and return only its trimmed stderr
@@ -115,28 +80,12 @@ export const stdoutOnly = async (
  * will throw an error, use `$`
  * @see $
  */
-export const stderrOnly = async (
+export function stderrOnly(
   pieces: TemplateStringsArray,
   ...args: Array<string | number | ProcessOutput>
-): Promise<string> =>
-  await exec(pieces, ...args)
-    .then((o) => (o instanceof ProcessOutput ? o.stderr.trim() : ""))
-    .catch((e) => (e instanceof ProcessError ? e.stderr.trim() : ""));
-
-async function read(
-  reader: Deno.Reader,
-  results: Array<Array<string>>,
-  outputStream: Deno.Writer,
-): Promise<Error | void> {
-  for await (const line of io.readLines(reader)) {
-    for (const result of results) {
-      result.push(line + "\n");
-    }
-    if ($.verbose > 1) {
-      await io.writeAll(
-        outputStream,
-        new TextEncoder().encode(line + "\n"),
-      );
-    }
-  }
+): Promise<string> {
+  return spawnChild(pieces, ...args)
+    .noThrow
+    .stderr
+    .then((stderr) => stderr.trim());
 }
