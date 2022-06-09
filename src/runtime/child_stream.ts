@@ -30,7 +30,8 @@ export type Writable =
 export type Transformable =
   | Deno.Reader & Deno.Writer
   | TransformStream<Uint8Array, Uint8Array>
-  | Deno.Child<SpawnOptions>;
+  | Deno.Child<SpawnOptions>
+  | Child;
 
 export interface ChildStreamOptions<
   T = string,
@@ -54,6 +55,8 @@ export class ChildStream<
   #_stream: ReadableStream<Uint8Array> | ChildStream<unknown, unknown>;
   #_textStream?: ReadableStream<string>;
   #_textStreamReader?: ReadableStreamDefaultReader<string>;
+  // #tees: Array<ReadableStream<Uint8Array>> = [];
+  // #asyncOps: Array<Promise<unknown>> = [];
 
   constructor(
     stream: ReadableStream<Uint8Array> | ChildStream<unknown, unknown>,
@@ -163,14 +166,18 @@ export class ChildStream<
 
   get locked(): boolean {
     return this.#stream.locked || !!this.#_textStream?.locked;
+    // this.#tees.some((tee) => tee.locked);
   }
 
   get readable(): ReadableStream<Uint8Array> {
     return this.#stream;
   }
 
-  cancel(reason?: unknown): Promise<void> {
-    return this.#stream.cancel(reason);
+  async cancel(reason?: unknown): Promise<void> {
+    await Promise.all([
+      this.#stream.cancel(reason),
+      // ...this.#tees.map((tee) => tee.cancel(reason)),
+    ]);
   }
 
   getReader(options: { mode: "byob" }): ReadableStreamBYOBReader;
@@ -208,24 +215,19 @@ export class ChildStream<
     dest: TemplateStringsArray | Transformable | Writable | Child,
     ...args: [PipeOptions?] | Array<string | number | ProcessOutput>
   ): (R extends undefined ? this : R) | C | Child {
+    this.checkAlreadyDone();
+
     if (
       dest instanceof WritableStream ||
       ("writable" in dest && !("readable" in dest)) ||
-      ("write" in dest && !("read" in dest))
+      // ("write" in dest && !("read" in dest))
+      ("write" in dest)
     ) {
-      this.checkAlreadyDone();
-
       const [readable1, readable2] = this.#stream.tee();
       this.#stream = readable1;
 
-      readable2.pipeTo(
-        dest instanceof WritableStream
-          ? dest
-          : "writable" in dest
-          ? dest.writable
-          : streams.writableStreamFromWriter(dest),
-        this.getSpawnOptions(dest, args),
-      ).then(() => this.#done());
+      // this.#tees.push(readable2);
+      this.#pipeTo(readable2, dest, args);
 
       return this.#return();
     }
@@ -255,13 +257,13 @@ export class ChildStream<
     ) {
       const options = this.getSpawnOptions(dest, args);
 
-      this.#stream = this.#stream.pipeThrough(
-        "writable" in dest ? dest : {
-          writable: streams.writableStreamFromWriter(dest),
-          readable: streams.readableStreamFromReader(dest),
-        },
-        options,
-      );
+      const stream = "writable" in dest ? dest : {
+        writable: streams.writableStreamFromWriter(dest),
+        readable: streams.readableStreamFromReader(dest),
+      };
+
+      this.pipeTo(stream.writable, options);
+      this.#stream = stream.readable;
 
       return this.#return();
     }
@@ -281,29 +283,59 @@ export class ChildStream<
 
   async pipeTo(dest: Writable, options?: PipeOptions): Promise<void> {
     this.checkAlreadyDone();
-
-    await this.#stream.pipeTo(
-      dest instanceof WritableStream
-        ? dest
-        : "writable" in dest
-        ? dest.writable
-        : streams.writableStreamFromWriter(dest),
-      this.getSpawnOptions(dest, [options]),
-    );
-
-    await this.#done();
+    await this.#pipeTo(this.#stream, dest, [options]);
   }
 
+  #pipeTo(
+    source: ReadableStream<Uint8Array>,
+    dest: Writable,
+    args: [PipeOptions?] | Array<string | number | ProcessOutput> = [],
+  ): Promise<void> {
+    const promise = (async () => {
+      await source.pipeTo(
+        dest instanceof WritableStream
+          ? dest
+          : "writable" in dest
+          ? dest.writable
+          : streams.writableStreamFromWriter(dest),
+        this.getSpawnOptions(dest, args),
+      );
+      this.log("DONEEEEE", this.#options);
+      await this.#done();
+    })();
+    // this.#asyncOps.push(promise);
+    return promise;
+  }
+
+  // #tee(dest: Writable) {
+  //   const [readable1, readable2] = this.#stream.tee();
+  //   this.#stream = readable1;
+  //   this.#tees.push(readable2);
+
+  //   readable2.pipeTo(
+  //     dest instanceof WritableStream
+  //       ? dest
+  //       : "writable" in dest
+  //       ? dest.writable
+  //       : streams.writableStreamFromWriter(dest),
+  //     this.getSpawnOptions(dest, args),
+  //   ).then(() => this.#done());
+
+  //   return this.#return();
+  // }
+
   protected checkAlreadyDone() {
-    if (this.#isDone) {
-      throw new Error("Child is already done.");
-    }
+    // if (this.#isDone) {
+    //   throw new Error("Child is already done.");
+    // }
   }
 
   async #done() {
     if (!this.#isDone) {
       this.#isDone = true;
+      // await this.cancel();
       await this.#options.done?.();
+      // await Promise.all(this.#asyncOps);
     }
   }
 
@@ -329,3 +361,47 @@ export class ChildStream<
   //   return this.#stream.tee();
   // }
 }
+
+// export type Readable<T, R> =
+//   | ReadableStream<Uint8Array>
+//   | TransformStream<Uint8Array, Uint8Array>
+//   | ChildStream<T, R>
+//   | Deno.Child<{ stdout: "piped" }>
+//   | { readonly readable: ReadableStream<Uint8Array> };
+
+// export type Writable =
+//   | Deno.Writer
+//   | WritableStream<Uint8Array>
+//   | { readonly writable: WritableStream<Uint8Array> };
+
+// export type Transformable =
+//   | Deno.Reader & Deno.Writer
+//   | TransformStream<Uint8Array, Uint8Array>
+//   | Deno.Child<SpawnOptions>
+//   | Child;
+
+// function isTransformable(stream: unknown): stream is Transformable {
+//   return !!stream && (
+//     stream instanceof Child || stream instanceof TransformStream ||
+//     stream instanceof Deno.Child || (
+//       typeof stream === "object" && (
+//         ("writable" in stream && "readable" in stream) ||
+//         ("write" in stream && "read" in stream)
+//       )
+//     )
+//   );
+// }
+
+// function isWritable(stream: unknown): stream is Writable {
+//   return !!stream && (
+//     stream instanceof WritableStream || (
+//       typeof stream === "object" && (
+//         "writable" in stream || "write" in stream
+//       )
+//     )
+//   );
+// }
+
+// function isReadable<T, R>(stream: Readable<T, R>): stream is Readable<T, R> {
+//   return true;
+// }

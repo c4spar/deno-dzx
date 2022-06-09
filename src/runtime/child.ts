@@ -3,6 +3,41 @@ import { DelimiterStream } from "./lib/delimiter_stream.ts";
 import { ChildStream } from "./child_stream.ts";
 import { ProcessError } from "./process_error.ts";
 import { ProcessOutput } from "./process_output.ts";
+import { Writer } from "./writer.ts";
+
+// /** A handle for `stdin`. */
+// export const stdin: Reader & ReaderSync & Closer & {
+//   readonly rid: number;
+//   readonly readable: ReadableStream<Uint8Array>;
+// };
+// /** A handle for `stdout`. */
+// export const stdout: Writer & WriterSync & Closer & {
+//   readonly rid: number;
+//   readonly writable: WritableStream<Uint8Array>;
+// };
+// /** A handle for `stderr`. */
+// export const stderr: Writer & WriterSync & Closer & {
+//   readonly rid: number;
+//   readonly writable: WritableStream<Uint8Array>;
+// };
+
+// export class Child<T extends SpawnOptions> {
+//   readonly stdin: T["stdin"] extends "piped" ? WritableStream<Uint8Array>
+//     : null;
+//   readonly stdout: T["stdout"] extends "inherit" | "null" ? null
+//     : ReadableStream<Uint8Array>;
+//   readonly stderr: T["stderr"] extends "inherit" | "null" ? null
+//     : ReadableStream<Uint8Array>;
+
+//   readonly pid: number;
+//   /** Get the status of the child. */
+//   readonly status: Promise<ChildStatus>;
+
+//   /** Waits for the child to exit completely, returning all its output and status. */
+//   output(): Promise<SpawnOutput<T>>;
+//   /** Kills the process with given Signal. */
+//   kill(signo: Signal): void;
+// }
 
 type SpawnOptions = {
   stdin: "piped";
@@ -31,7 +66,8 @@ export class Child extends ChildStream<ProcessOutput, Child>
   implements
     WritableStream<Uint8Array>,
     TransformStream<Uint8Array, Uint8Array>,
-    Omit<Deno.Child<SpawnOptions>, "stdin" | "stdout" | "stderr" | "output"> {
+    Omit<Deno.Child<SpawnOptions>, "stdin" | "stdout" | "stderr" | "output"> // Deno.Writer
+{
   static #count = 0;
   #id: string;
   #child: Deno.Child<SpawnOptions>;
@@ -41,6 +77,8 @@ export class Child extends ChildStream<ProcessOutput, Child>
   #stderr: ChildStream<string, Child>;
   #combined: ChildStream<string, Child>;
   #isDone = false;
+  #writer?: WritableStreamDefaultWriter<Uint8Array>;
+  #stdin: Writer;
 
   static spawn(cmd: string) {
     if ($.verbose) {
@@ -78,6 +116,8 @@ export class Child extends ChildStream<ProcessOutput, Child>
       done: () => this.#done(),
       return: () => this,
     });
+
+    this.#stdin = new Writer(child.pid, child.stdin);
 
     this.#stdout = new ChildStream(this, {
       id: id + colorize(":stdout", Child.#count),
@@ -122,7 +162,8 @@ export class Child extends ChildStream<ProcessOutput, Child>
 
   get stdin() {
     this.#closeStdin = false;
-    return this.#child.stdin;
+    return this.#stdin;
+    // return this.#child.stdin;
   }
 
   get stdout() {
@@ -138,7 +179,8 @@ export class Child extends ChildStream<ProcessOutput, Child>
   }
 
   get writable() {
-    return this.stdin;
+    this.#closeStdin = false;
+    return this.#child.stdin;
   }
 
   async output() {
@@ -152,21 +194,63 @@ export class Child extends ChildStream<ProcessOutput, Child>
     return new ProcessOutput({ status, stdout, stderr, combined });
   }
 
+  // async #done(): Promise<void> {
+  //   if (this.#isDone) {
+  //     return;
+  //   }
+  //   this.#isDone = true;
+  //   this.log("done...", { closeStdin: this.#closeStdin });
+
+  //   this.#closeStdin && !this.stdin.locked && await this.stdin.close();
+
+  //   await Promise.all([
+  //     this.#stdout,
+  //     this.#stderr,
+  //     this.#combined,
+  //   ].map((stream) => !stream.locked && stream.cancel()));
+  // }
+
   async #done(): Promise<void> {
+    this.log("done...");
     if (this.#isDone) {
       return;
     }
-    this.#isDone = true;
-    this.log("done...", { closeStdin: this.#closeStdin });
-
-    this.#closeStdin && !this.stdin.locked && await this.stdin.close();
-
-    await Promise.all([
+    const streams = [
+      this.#stdin,
+      // this.#child.stdin,
       this.#stdout,
       this.#stderr,
       this.#combined,
-    ].map((stream) => !stream.locked && stream.cancel()));
+    ];
+    this.#isDone = streams.every((stream) => !stream.locked);
+
+    if (this.#isDone) {
+      this.log("done...", { closeStdin: this.#closeStdin });
+      await Promise.all(
+        streams.map((stream) =>
+          "cancel" in stream
+            ? stream.cancel()
+            : this.#closeStdin && stream.close()
+        ),
+      );
+    }
   }
+
+  // async #done(): Promise<void> {
+  //   if (this.#isDone) {
+  //     return;
+  //   }
+  //   this.#isDone = true;
+  //   this.log("done...", { closeStdin: this.#closeStdin });
+
+  //   this.#closeStdin && !this.stdin.locked && await this.stdin.close();
+
+  //   await Promise.all([
+  //     this.#stdout,
+  //     this.#stderr,
+  //     this.#combined,
+  //   ].map((stream) => !stream.locked && stream.cancel()));
+  // }
 
   get noThrow() {
     this.#throwErrors = false;
@@ -179,15 +263,25 @@ export class Child extends ChildStream<ProcessOutput, Child>
   }
 
   abort(reason?: unknown): Promise<void> {
-    return this.stdin.abort(reason);
+    return this.#stdin.writable.abort(reason);
   }
 
   async close(): Promise<void> {
-    await this.stdin.close();
+    await this.#stdin.close();
   }
 
   getWriter(): WritableStreamDefaultWriter<Uint8Array> {
     this.#closeStdin = false;
-    return this.stdin.getWriter();
+    // return this.stdin.getWriter();
+    return this.#stdin.writable.getWriter();
   }
+
+  // async write(data: Uint8Array | string): Promise<number> {
+  //   if (!this.#writer) {
+  //     this.#writer = this.stdin.writable.getWriter();
+  //   }
+  //   data = typeof data === "string" ? encoder.encode(data) : data;
+  //   await this.#writer.write(data);
+  //   return data.byteLength;
+  // }
 }
