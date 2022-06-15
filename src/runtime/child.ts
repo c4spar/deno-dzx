@@ -1,9 +1,9 @@
 import { colors, streams } from "./deps.ts";
-import { DelimiterStream } from "./lib/delimiter_stream.ts";
 import { ChildStream } from "./child_stream.ts";
 import { ProcessError } from "./process_error.ts";
 import { ProcessOutput } from "./process_output.ts";
 import { Writer } from "./writer.ts";
+import { LineStream } from "./lib/line_stream.ts";
 
 // /** A handle for `stdin`. */
 // export const stdin: Reader & ReaderSync & Closer & {
@@ -134,7 +134,7 @@ export class Child extends ChildStream<ProcessOutput, Child>
     this.#combined = new ChildStream(
       streams.zipReadableStreams(
         ...[stdoutCombined, stderrCombined].map((stream) =>
-          stream.pipeThrough(new DelimiterStream(encoder.encode("\n")))
+          stream.pipeThrough(new LineStream({ keepLineBreak: true }))
         ),
       ),
       {
