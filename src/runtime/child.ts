@@ -5,47 +5,11 @@ import { ProcessOutput } from "./process_output.ts";
 import { Writer } from "./writer.ts";
 import { LineStream } from "./lib/line_stream.ts";
 
-// /** A handle for `stdin`. */
-// export const stdin: Reader & ReaderSync & Closer & {
-//   readonly rid: number;
-//   readonly readable: ReadableStream<Uint8Array>;
-// };
-// /** A handle for `stdout`. */
-// export const stdout: Writer & WriterSync & Closer & {
-//   readonly rid: number;
-//   readonly writable: WritableStream<Uint8Array>;
-// };
-// /** A handle for `stderr`. */
-// export const stderr: Writer & WriterSync & Closer & {
-//   readonly rid: number;
-//   readonly writable: WritableStream<Uint8Array>;
-// };
-
-// export class Child<T extends SpawnOptions> {
-//   readonly stdin: T["stdin"] extends "piped" ? WritableStream<Uint8Array>
-//     : null;
-//   readonly stdout: T["stdout"] extends "inherit" | "null" ? null
-//     : ReadableStream<Uint8Array>;
-//   readonly stderr: T["stderr"] extends "inherit" | "null" ? null
-//     : ReadableStream<Uint8Array>;
-
-//   readonly pid: number;
-//   /** Get the status of the child. */
-//   readonly status: Promise<ChildStatus>;
-
-//   /** Waits for the child to exit completely, returning all its output and status. */
-//   output(): Promise<SpawnOutput<T>>;
-//   /** Kills the process with given Signal. */
-//   kill(signo: Signal): void;
-// }
-
 type SpawnOptions = {
   stdin: "piped";
   stdout: "piped";
   stderr: "piped";
 };
-
-const encoder = new TextEncoder();
 
 const colorList = [
   colors.blue,
@@ -64,7 +28,6 @@ function colorize(str: string, index: number) {
 
 export class Child extends ChildStream<ProcessOutput, Child>
   implements
-    WritableStream<Uint8Array>,
     TransformStream<Uint8Array, Uint8Array>,
     Omit<Deno.Child<SpawnOptions>, "stdin" | "stdout" | "stderr" | "output"> // Deno.Writer
 {
@@ -193,24 +156,7 @@ export class Child extends ChildStream<ProcessOutput, Child>
     return new ProcessOutput({ status, stdout, stderr, combined });
   }
 
-  // async #done(): Promise<void> {
-  //   if (this.#isDone) {
-  //     return;
-  //   }
-  //   this.#isDone = true;
-  //   this.log("done...", { closeStdin: this.#closeStdin });
-
-  //   this.#closeStdin && !this.stdin.locked && await this.stdin.close();
-
-  //   await Promise.all([
-  //     this.#stdout,
-  //     this.#stderr,
-  //     this.#combined,
-  //   ].map((stream) => !stream.locked && stream.cancel()));
-  // }
-
   async #done(): Promise<void> {
-    this.log("done...");
     if (this.#isDone) {
       return;
     }
@@ -223,7 +169,6 @@ export class Child extends ChildStream<ProcessOutput, Child>
     this.#isDone = streams.every((stream) => !stream.locked);
 
     if (this.#isDone) {
-      this.log("done...", { closeStdin: this.#closeStdin });
       await Promise.all(
         streams.map((stream) =>
           "cancel" in stream
@@ -234,22 +179,6 @@ export class Child extends ChildStream<ProcessOutput, Child>
     }
   }
 
-  // async #done(): Promise<void> {
-  //   if (this.#isDone) {
-  //     return;
-  //   }
-  //   this.#isDone = true;
-  //   this.log("done...", { closeStdin: this.#closeStdin });
-
-  //   this.#closeStdin && !this.stdin.locked && await this.stdin.close();
-
-  //   await Promise.all([
-  //     this.#stdout,
-  //     this.#stderr,
-  //     this.#combined,
-  //   ].map((stream) => !stream.locked && stream.cancel()));
-  // }
-
   get noThrow() {
     this.#throwErrors = false;
     return this;
@@ -257,29 +186,5 @@ export class Child extends ChildStream<ProcessOutput, Child>
 
   kill(signo: Deno.Signal) {
     this.#child.kill(signo);
-    this.stdin.close();
   }
-
-  abort(reason?: unknown): Promise<void> {
-    return this.#stdin.writable.abort(reason);
-  }
-
-  async close(): Promise<void> {
-    await this.#stdin.close();
-  }
-
-  getWriter(): WritableStreamDefaultWriter<Uint8Array> {
-    this.#closeStdin = false;
-    // return this.stdin.getWriter();
-    return this.#stdin.writable.getWriter();
-  }
-
-  // async write(data: Uint8Array | string): Promise<number> {
-  //   if (!this.#writer) {
-  //     this.#writer = this.stdin.writable.getWriter();
-  //   }
-  //   data = typeof data === "string" ? encoder.encode(data) : data;
-  //   await this.#writer.write(data);
-  //   return data.byteLength;
-  // }
 }
