@@ -215,11 +215,10 @@ export class Child extends ChildStream<ProcessOutput, Child>
       return;
     }
     const streams = [
-      this.#stdin,
-      // this.#child.stdin,
-      this.#stdout,
-      this.#stderr,
-      this.#combined,
+      this.#stdin.writable,
+      this.#stdout.readable,
+      this.#stderr.readable,
+      this.#combined.readable,
     ];
     this.#isDone = streams.every((stream) => !stream.locked);
 
