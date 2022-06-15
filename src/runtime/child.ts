@@ -102,7 +102,7 @@ export class Child extends ChildStream<ProcessOutput, Child>
     Child.#count++;
     const [stdout, stdoutCombined] = child.stdout.tee();
     const [stderr, stderrCombined] = child.stderr.tee();
-    const id = colorize("#child" + Child.#count, Child.#count);
+    const id = colorize("#" + Child.#count, Child.#count);
 
     super(stdout, {
       id,
@@ -116,6 +116,9 @@ export class Child extends ChildStream<ProcessOutput, Child>
       done: () => this.#done(),
       return: () => this,
     });
+
+    this.#id = id;
+    this.#child = child;
 
     this.#stdin = new Writer(child.pid, child.stdin);
 
@@ -143,9 +146,6 @@ export class Child extends ChildStream<ProcessOutput, Child>
         return: () => this,
       },
     );
-
-    this.#id = id;
-    this.#child = child;
   }
 
   get pid() {
@@ -163,7 +163,6 @@ export class Child extends ChildStream<ProcessOutput, Child>
   get stdin() {
     this.#closeStdin = false;
     return this.#stdin;
-    // return this.#child.stdin;
   }
 
   get stdout() {
