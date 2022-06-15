@@ -64,9 +64,7 @@ Deno.test({
     const start = Date.now();
     await assertRejects(
       () => {
-        $.shell = "/bin/bash";
-        // @TODO: kill does not work with bash and `set -euo pipefail;`.
-        $.prefix = "";
+        $.shell = "bash";
         const child = Child.spawn("sleep 10");
         child.kill("SIGKILL");
         return child;
@@ -86,7 +84,7 @@ Deno.test({
     const start = Date.now();
     await assertRejects(
       async () => {
-        $.shell = "/bin/zsh";
+        $.shell = "zsh";
         const child = Child.spawn("sleep 10");
         child.kill("SIGKILL");
         await child;

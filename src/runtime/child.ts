@@ -29,8 +29,7 @@ function colorize(str: string, index: number) {
 export class Child extends ChildStream<ProcessOutput, Child>
   implements
     TransformStream<Uint8Array, Uint8Array>,
-    Omit<Deno.Child<SpawnOptions>, "stdin" | "stdout" | "stderr" | "output"> // Deno.Writer
-{
+    Omit<Deno.Child<SpawnOptions>, "stdin" | "stdout" | "stderr" | "output"> {
   static #count = 0;
   readonly #id: string;
   readonly #child: Deno.Child<SpawnOptions>;
@@ -168,15 +167,17 @@ export class Child extends ChildStream<ProcessOutput, Child>
     ];
     this.#isDone = streams.every((stream) => !stream.locked);
 
-    if (this.#isDone) {
-      await Promise.all(
-        streams.map((stream) =>
-          "cancel" in stream
-            ? stream.cancel()
-            : this.#closeStdin && stream.close()
-        ),
-      );
+    if (!this.#isDone) {
+      return;
     }
+
+    await Promise.all(
+      streams.map((stream) =>
+        "cancel" in stream
+          ? stream.cancel()
+          : this.#closeStdin && stream.close()
+      ),
+    );
   }
 
   get noThrow() {
