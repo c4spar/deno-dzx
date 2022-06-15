@@ -69,16 +69,16 @@ export class Child extends ChildStream<ProcessOutput, Child>
     Omit<Deno.Child<SpawnOptions>, "stdin" | "stdout" | "stderr" | "output"> // Deno.Writer
 {
   static #count = 0;
-  #id: string;
-  #child: Deno.Child<SpawnOptions>;
+  readonly #id: string;
+  readonly #child: Deno.Child<SpawnOptions>;
+  readonly #stdout: ChildStream<string, Child>;
+  readonly #stderr: ChildStream<string, Child>;
+  readonly #combined: ChildStream<string, Child>;
+  readonly #stdin: Writer;
+  #writer?: WritableStreamDefaultWriter<Uint8Array>;
   #throwErrors = true;
   #closeStdin = true;
-  #stdout: ChildStream<string, Child>;
-  #stderr: ChildStream<string, Child>;
-  #combined: ChildStream<string, Child>;
   #isDone = false;
-  #writer?: WritableStreamDefaultWriter<Uint8Array>;
-  #stdin: Writer;
 
   static spawn(cmd: string) {
     if ($.verbose) {
@@ -120,7 +120,7 @@ export class Child extends ChildStream<ProcessOutput, Child>
     this.#id = id;
     this.#child = child;
 
-    this.#stdin = new Writer(child.pid, child.stdin);
+    this.#stdin = new Writer(child.stdin);
 
     this.#stdout = new ChildStream(this, {
       id: id + colorize(":stdout", Child.#count),
