@@ -146,9 +146,9 @@ export class Child extends Reader<ProcessOutput, Child>
 
   async output() {
     const [stdout, stderr, combined, status] = await Promise.all([
-      this.stdout.catch(() => ""),
-      this.stderr.catch(() => ""),
-      this.combined.catch(() => ""),
+      this.stdout,
+      this.stderr,
+      this.combined,
       this.#child.status,
     ]);
 
