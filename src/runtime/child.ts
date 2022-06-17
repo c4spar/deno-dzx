@@ -68,7 +68,7 @@ export class Child extends ChildStream<ProcessOutput, Child>
 
     super(stdout, {
       id,
-      output: async () => {
+      then: async () => {
         const output = await this.output();
         if (!output.status.success && this.#throwErrors) {
           throw new ProcessError(output);
@@ -99,7 +99,7 @@ export class Child extends ChildStream<ProcessOutput, Child>
     this.#combined = new ChildStream(
       streams.zipReadableStreams(
         ...[stdoutCombined, stderrCombined].map((stream) =>
-          stream.pipeThrough(new LineStream({ keepLineBreak: true }))
+          stream.pipeThrough(new LineStream({ keepLineBreaks: true }))
         ),
       ),
       {
@@ -146,9 +146,9 @@ export class Child extends ChildStream<ProcessOutput, Child>
 
   async output() {
     const [stdout, stderr, combined, status] = await Promise.all([
-      this.stdout,
-      this.stderr,
-      this.combined,
+      this.stdout.catch(() => ""),
+      this.stderr.catch(() => ""),
+      this.combined.catch(() => ""),
       this.#child.status,
     ]);
 

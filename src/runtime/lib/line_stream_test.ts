@@ -54,7 +54,7 @@ Deno.test("[streams] LineStream with keepLineBreak enabled", async () => {
 
   const lines = textStream
     .pipeThrough(new TextEncoderStream())
-    .pipeThrough(new LineStream({ keepLineBreak: true }))
+    .pipeThrough(new LineStream({ keepLineBreaks: true }))
     .pipeThrough(new TextDecoderStream());
   const reader = lines.getReader();
 

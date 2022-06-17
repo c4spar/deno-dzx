@@ -4,7 +4,7 @@ const CR = "\r".charCodeAt(0);
 const LF = "\n".charCodeAt(0);
 
 export interface LineStreamOptions {
-  keepLineBreak?: boolean;
+  keepLineBreaks?: boolean;
 }
 
 /**
@@ -22,7 +22,7 @@ export class LineStream extends TransformStream<Uint8Array, Uint8Array> {
   #prevHadCR = false;
   #keepLineBreak: boolean;
 
-  constructor({ keepLineBreak = false }: LineStreamOptions = {}) {
+  constructor({ keepLineBreaks = false }: LineStreamOptions = {}) {
     super({
       transform: (chunk, controller) => {
         this.#handle(chunk, controller);
@@ -31,7 +31,7 @@ export class LineStream extends TransformStream<Uint8Array, Uint8Array> {
         controller.enqueue(this.#mergeBufs(false));
       },
     });
-    this.#keepLineBreak = keepLineBreak;
+    this.#keepLineBreak = keepLineBreaks;
   }
 
   #handle(

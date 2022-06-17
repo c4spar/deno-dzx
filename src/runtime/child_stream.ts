@@ -38,7 +38,7 @@ export interface ChildStreamOptions<
   R = undefined,
 > {
   id?: string;
-  output?(): T | Promise<T>;
+  then?(): T | Promise<T>;
   done?(): unknown | Promise<unknown>;
   return?(): R;
 }
@@ -129,8 +129,9 @@ export class ChildStream<
       (async () => {
         try {
           let result: T;
-          if (this.#options.output) {
-            result = await this.#options.output();
+          if (this.#options.then) {
+            result = await this.#options.then();
+            await this.#done();
           } else {
             this.checkAlreadyDone();
             for await (const line of this) {
@@ -138,7 +139,6 @@ export class ChildStream<
             }
             result = lines.join("\n") as unknown as T;
           }
-          await this.#done();
           this.#deferred!.resolve(result);
         } catch (error: unknown) {
           await this.#done();
@@ -276,14 +276,21 @@ export class ChildStream<
     dest: Writable,
     args: [PipeOptions?] | Array<string | number | ProcessOutput> = [],
   ): Promise<void> {
-    await source.pipeTo(
-      dest instanceof WritableStream
-        ? dest
-        : "writable" in dest
-        ? dest.writable
-        : streams.writableStreamFromWriter(dest),
-      this.getSpawnOptions(dest, args),
-    );
+    try {
+      await source.pipeTo(
+        dest instanceof WritableStream
+          ? dest
+          : "writable" in dest
+          ? dest.writable
+          : streams.writableStreamFromWriter(dest),
+        this.getSpawnOptions(dest, args),
+      );
+    } catch (error) {
+      if (error instanceof Deno.errors.BrokenPipe) {
+        // Ignore broken pipe error. Should be handled by target stream.
+        return;
+      }
+    }
   }
 
   protected getSpawnOptions(
