@@ -1,7 +1,7 @@
 /// <reference path="../../types.d.ts" />
 
 import { Child } from "./child.ts";
-import { Reader, Readable } from "./reader.ts";
+import { Readable, Reader } from "./reader.ts";
 import { ProcessOutput } from "./process_output.ts";
 import { isTemplateStringArray, parseCmd } from "./lib/utils.ts";
 
