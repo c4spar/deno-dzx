@@ -9,12 +9,6 @@ export type SpawnOptions = {
   stderr: "piped";
 };
 
-export type Spawnable =
-  | ReadableStream<Uint8Array>
-  | TransformStream<Uint8Array, Uint8Array>
-  | Deno.Child<{ stdout: "piped" }>
-  | { readonly readable: ReadableStream<Uint8Array> };
-
 export type Readable<T, R> =
   | ReadableStream<Uint8Array>
   | TransformStream<Uint8Array, Uint8Array>

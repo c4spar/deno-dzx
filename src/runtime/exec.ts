@@ -1,7 +1,7 @@
 /// <reference path="../../types.d.ts" />
 
 import { Child } from "./child.ts";
-import { ChildStream, Spawnable } from "./child_stream.ts";
+import { ChildStream, Readable } from "./child_stream.ts";
 import { ProcessOutput } from "./process_output.ts";
 import { isTemplateStringArray, parseCmd } from "./lib/utils.ts";
 
@@ -9,9 +9,9 @@ export function spawnChild(
   cmd: TemplateStringsArray,
   ...args: Array<string | number | ProcessOutput>
 ): Child;
-export function spawnChild(reader: Spawnable): ChildStream;
+export function spawnChild(reader: Readable<unknown, unknown>): ChildStream;
 export function spawnChild(
-  cmd: TemplateStringsArray | Spawnable,
+  cmd: TemplateStringsArray | Readable<unknown, unknown>,
   ...args: Array<string | number | ProcessOutput>
 ): Child | ChildStream {
   if (!isTemplateStringArray(cmd)) {
