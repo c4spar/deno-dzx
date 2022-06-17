@@ -23,6 +23,15 @@ jobs:
         with:
           deno-version: ${{ matrix.deno }}
 
+      - name: Print Versions
+        uses: denoland/setup-deno@v1
+        run: |
+          deno --version
+          which bash
+          bash --version
+          which /bin/bash
+          /bin/bash --version
+
       - name: Run tests
         run: deno test --coverage=./cov --unstable --shuffle --allow-all --jobs 8
 
