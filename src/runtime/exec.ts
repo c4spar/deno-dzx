@@ -1,7 +1,7 @@
 /// <reference path="../../types.d.ts" />
 
 import { Child } from "./child.ts";
-import { ChildStream, Readable } from "./child_stream.ts";
+import { Reader, Readable } from "./reader.ts";
 import { ProcessOutput } from "./process_output.ts";
 import { isTemplateStringArray, parseCmd } from "./lib/utils.ts";
 
@@ -9,13 +9,13 @@ export function spawnChild(
   cmd: TemplateStringsArray,
   ...args: Array<string | number | ProcessOutput>
 ): Child;
-export function spawnChild(reader: Readable<unknown, unknown>): ChildStream;
+export function spawnChild(reader: Readable<unknown, unknown>): Reader;
 export function spawnChild(
   cmd: TemplateStringsArray | Readable<unknown, unknown>,
   ...args: Array<string | number | ProcessOutput>
-): Child | ChildStream {
+): Child | Reader {
   if (!isTemplateStringArray(cmd)) {
-    return new ChildStream<string, undefined>(
+    return new Reader<string, undefined>(
       cmd instanceof ReadableStream
         ? cmd
         : cmd instanceof Deno.Child

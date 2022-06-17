@@ -1,5 +1,5 @@
 import { colors, streams } from "./deps.ts";
-import { ChildStream } from "./child_stream.ts";
+import { Reader } from "./reader.ts";
 import { ProcessError } from "./process_error.ts";
 import { ProcessOutput } from "./process_output.ts";
 import { Writer } from "./writer.ts";
@@ -26,16 +26,16 @@ function colorize(str: string, index: number) {
   return colorList[index](str);
 }
 
-export class Child extends ChildStream<ProcessOutput, Child>
+export class Child extends Reader<ProcessOutput, Child>
   implements
     TransformStream<Uint8Array, Uint8Array>,
     Omit<Deno.Child<SpawnOptions>, "stdin" | "stdout" | "stderr" | "output"> {
   static #count = 0;
   readonly #id: string;
   readonly #child: Deno.Child<SpawnOptions>;
-  readonly #stdout: ChildStream<string, Child>;
-  readonly #stderr: ChildStream<string, Child>;
-  readonly #combined: ChildStream<string, Child>;
+  readonly #stdout: Reader<string, Child>;
+  readonly #stderr: Reader<string, Child>;
+  readonly #combined: Reader<string, Child>;
   readonly #stdin: Writer;
   #writer?: WritableStreamDefaultWriter<Uint8Array>;
   #throwErrors = true;
@@ -84,19 +84,19 @@ export class Child extends ChildStream<ProcessOutput, Child>
 
     this.#stdin = new Writer(child.stdin);
 
-    this.#stdout = new ChildStream(this, {
+    this.#stdout = new Reader(this, {
       id: id + colorize(":stdout", Child.#count),
       done: () => this.#done(),
       return: () => this,
     });
 
-    this.#stderr = new ChildStream(stderr, {
+    this.#stderr = new Reader(stderr, {
       id: id + colorize(":stderr", Child.#count),
       done: () => this.#done(),
       return: () => this,
     });
 
-    this.#combined = new ChildStream(
+    this.#combined = new Reader(
       streams.zipReadableStreams(
         ...[stdoutCombined, stderrCombined].map((stream) =>
           stream.pipeThrough(new LineStream({ keepLineBreaks: true }))

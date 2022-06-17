@@ -12,7 +12,7 @@ export type SpawnOptions = {
 export type Readable<T, R> =
   | ReadableStream<Uint8Array>
   | TransformStream<Uint8Array, Uint8Array>
-  | ChildStream<T, R>
+  | Reader<T, R>
   | Deno.Child<{ stdout: "piped" }>
   | { readonly readable: ReadableStream<Uint8Array> };
 
@@ -27,7 +27,7 @@ export type Transformable =
   | Deno.Child<SpawnOptions>
   | Child;
 
-export interface ChildStreamOptions<
+export interface ReaderOptions<
   T = string,
   R = undefined,
 > {
@@ -37,43 +37,43 @@ export interface ChildStreamOptions<
   return?(): R;
 }
 
-export class ChildStream<
+export class Reader<
   T = string,
   R = undefined,
 > implements AsyncIterableIterator<string>, Promise<T> {
   static #count = 0;
-  readonly #options: ChildStreamOptions<T, R>;
+  readonly #options: ReaderOptions<T, R>;
   readonly #id: string;
-  #parent?: ChildStream<unknown, unknown>;
+  #parent?: Reader<unknown, unknown>;
   #deferred?: async.Deferred<T>;
   #isDone = false;
-  #_stream: ReadableStream<Uint8Array> | ChildStream<unknown, unknown>;
+  #_stream: ReadableStream<Uint8Array> | Reader<unknown, unknown>;
   #_textStream?: ReadableStream<string>;
   #_textStreamReader?: ReadableStreamDefaultReader<string>;
 
   constructor(
-    stream: ReadableStream<Uint8Array> | ChildStream<unknown, unknown>,
-    options: ChildStreamOptions<T, R> = {},
+    stream: ReadableStream<Uint8Array> | Reader<unknown, unknown>,
+    options: ReaderOptions<T, R> = {},
   ) {
-    this.#id = options?.id ?? "#child-stream" + ++ChildStream.#count;
+    this.#id = options?.id ?? "#child-stream" + ++Reader.#count;
     this.#_stream = stream;
     this.#options = options;
   }
 
-  [Symbol.toStringTag] = "ChildStream";
+  [Symbol.toStringTag] = "Reader";
 
   [Symbol.asyncIterator](): AsyncIterableIterator<string> {
     return this;
   }
 
   get #stream(): ReadableStream<Uint8Array> {
-    return this.#_stream instanceof ChildStream
+    return this.#_stream instanceof Reader
       ? this.#_stream.#stream
       : this.#_stream;
   }
 
   set #stream(stream: ReadableStream<Uint8Array>) {
-    if (this.#_stream instanceof ChildStream) {
+    if (this.#_stream instanceof Reader) {
       this.#_stream.#stream = stream;
     } else {
       this.#_stream = stream;
