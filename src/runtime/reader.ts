@@ -180,38 +180,6 @@ export class Reader<
     return this.#stream.getReader({ mode: mode as "byob" });
   }
 
-  pipe(
-    dest: TemplateStringsArray,
-    ...args: Array<string | number | ProcessOutput>
-  ): Child;
-  pipe<C extends Child>(dest: C, options?: PipeOptions): C;
-  pipe(dest: Deno.Child<SpawnOptions>, options?: PipeOptions): Child;
-  pipe(dest: Transformable, options?: PipeOptions): R;
-  pipe(dest: Writable, options?: PipeOptions): this;
-  pipe<C extends Child>(
-    dest: TemplateStringsArray | Transformable | Writable | Child,
-    ...args: [PipeOptions?] | Array<string | number | ProcessOutput>
-  ): (R extends undefined ? this : R) | C | Child {
-    this.checkAlreadyDone();
-
-    if (
-      dest instanceof WritableStream ||
-      ("writable" in dest && !("readable" in dest)) ||
-      // ("write" in dest && !("read" in dest))
-      ("write" in dest)
-    ) {
-      const [readable1, readable2] = this.#stream.tee();
-      this.#stream = readable1;
-
-      this.#pipeTo(readable2, dest, args);
-
-      return this.#return();
-    }
-
-    // deno-lint-ignore no-explicit-any
-    return this.pipeThrough(dest as any, ...args as any);
-  }
-
   pipeThrough(
     dest: TemplateStringsArray,
     ...args: Array<string | number | ProcessOutput>

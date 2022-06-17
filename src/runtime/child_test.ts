@@ -113,7 +113,7 @@ Deno.test({
   async fn() {
     const buffer = new io.Buffer();
     await Child.spawn("echo -n 1; echo -n 2 >&2; echo -n 3; echo -n 4 >&2")
-      .pipe(buffer);
+      .pipeThrough(buffer);
     assertEquals(new TextDecoder().decode(buffer.bytes()), "13");
   },
 });
@@ -123,7 +123,7 @@ Deno.test({
   async fn() {
     const buffer = new io.Buffer();
     await Child.spawn("echo -n 1; echo -n 2 >&2; echo -n 3; echo -n 4 >&2")
-      .stdout.pipe(buffer);
+      .stdout.pipeThrough(buffer);
     assertEquals(new TextDecoder().decode(buffer.bytes()), "13");
   },
 });
@@ -133,7 +133,7 @@ Deno.test({
   async fn() {
     const buffer = new io.Buffer();
     await Child.spawn("echo -n 1; echo -n 2 >&2; echo -n 3; echo -n 4 >&2")
-      .stderr.pipe(buffer);
+      .stderr.pipeTo(buffer);
     assertEquals(new TextDecoder().decode(buffer.bytes()), "24");
   },
 });
@@ -161,9 +161,7 @@ Deno.test({
   name: "[child] should pipe stdout to cat",
   async fn() {
     const output = await Child.spawn(`echo foo; echo bar >&2`).stdout
-      .pipe(
-        Child.spawn("cat"),
-      );
+      .pipeThrough(Child.spawn("cat"));
     assertEquals(output.toString(), "foo\n");
   },
 });
@@ -172,9 +170,7 @@ Deno.test({
   name: "[child] should pipe stderr to cat",
   async fn() {
     const output = await Child.spawn(`echo foo; echo bar >&2`).stderr
-      .pipe(
-        Child.spawn("cat"),
-      );
+      .pipeThrough(Child.spawn("cat"));
     assertEquals(output.toString(), "bar\n");
   },
 });
@@ -183,9 +179,7 @@ Deno.test({
   name: "[child] should pipe combined to cat",
   async fn() {
     const output = await Child.spawn(`echo foo; echo bar >&2`).combined
-      .pipe(
-        Child.spawn("cat"),
-      );
+      .pipeThrough(Child.spawn("cat"));
     assertEquals(output.toString(), "foo\nbar\n");
   },
 });
@@ -194,7 +188,7 @@ Deno.test({
   name: "[child] pipe should accept template string",
   async fn() {
     const output = await Child.spawn(`echo foo; echo bar >&2`)
-      .pipe`cat`;
+      .pipeThrough`cat`;
     assertEquals(output.toString(), "foo\n");
   },
 });
