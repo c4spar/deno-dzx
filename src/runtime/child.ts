@@ -1,30 +1,16 @@
-import { colors, streams } from "./deps.ts";
+import { streams } from "./deps.ts";
 import { Reader } from "./reader.ts";
 import { ProcessError } from "./process_error.ts";
 import { ProcessOutput } from "./process_output.ts";
 import { Writer } from "./writer.ts";
 import { LineStream } from "./lib/line_stream.ts";
+import { getId, getLabel } from "./lib/utils.ts";
 
 type SpawnOptions = {
   stdin: "piped";
   stdout: "piped";
   stderr: "piped";
 };
-
-const colorList = [
-  colors.blue,
-  colors.yellow,
-  colors.magenta,
-  colors.red,
-  colors.green,
-];
-
-function colorize(str: string, index: number) {
-  while (index >= colorList.length) {
-    index -= colorList.length;
-  }
-  return colorList[index](str);
-}
 
 export class Child extends Reader<ProcessOutput, Child>
   implements
@@ -37,10 +23,10 @@ export class Child extends Reader<ProcessOutput, Child>
   readonly #stderr: Reader<string, Child>;
   readonly #combined: Reader<string, Child>;
   readonly #stdin: Writer;
-  #writer?: WritableStreamDefaultWriter<Uint8Array>;
   #throwErrors = true;
-  #closeStdin = true;
+  #autoCloseStdin = true;
   #isDone = false;
+  #stdinClosePromise?: Promise<void>;
 
   static spawn(cmd: string) {
     if ($.verbose) {
@@ -64,7 +50,7 @@ export class Child extends Reader<ProcessOutput, Child>
     Child.#count++;
     const [stdout, stdoutCombined] = child.stdout.tee();
     const [stderr, stderrCombined] = child.stderr.tee();
-    const id = colorize("#" + Child.#count, Child.#count);
+    const id = getId();
 
     super(stdout, {
       id,
@@ -75,6 +61,7 @@ export class Child extends Reader<ProcessOutput, Child>
         }
         return output;
       },
+      flush: () => this.#closeStdin(),
       done: () => this.#done(),
       return: () => this,
     });
@@ -85,13 +72,15 @@ export class Child extends Reader<ProcessOutput, Child>
     this.#stdin = new Writer(child.stdin);
 
     this.#stdout = new Reader(this, {
-      id: id + colorize(":stdout", Child.#count),
+      id: id + getLabel(":stdout"),
+      flush: () => this.#closeStdin(),
       done: () => this.#done(),
       return: () => this,
     });
 
     this.#stderr = new Reader(stderr, {
-      id: id + colorize(":stderr", Child.#count),
+      id: id + getLabel(":stderr"),
+      flush: () => this.#closeStdin(),
       done: () => this.#done(),
       return: () => this,
     });
@@ -103,11 +92,19 @@ export class Child extends Reader<ProcessOutput, Child>
         ),
       ),
       {
-        id: id + colorize(":combined", Child.#count),
+        id: id + getLabel(":combined"),
         done: () => this.#done(),
         return: () => this,
       },
     );
+  }
+
+  #closeStdin(): Promise<void> | void {
+    if (this.#autoCloseStdin && !this.#stdinClosePromise) {
+      this.log("closeStdin");
+      this.#stdinClosePromise = this.#stdin.close();
+    }
+    return this.#stdinClosePromise;
   }
 
   get pid() {
@@ -123,7 +120,6 @@ export class Child extends Reader<ProcessOutput, Child>
   }
 
   get stdin() {
-    this.#closeStdin = false;
     return this.#stdin;
   }
 
@@ -140,7 +136,7 @@ export class Child extends Reader<ProcessOutput, Child>
   }
 
   get writable() {
-    this.#closeStdin = false;
+    this.#autoCloseStdin = false;
     return this.#child.stdin;
   }
 
@@ -159,25 +155,23 @@ export class Child extends Reader<ProcessOutput, Child>
     if (this.#isDone) {
       return;
     }
-    const streams = [
-      this.#stdin.writable,
+    const readables = [
       this.#stdout.readable,
       this.#stderr.readable,
       this.#combined.readable,
     ];
-    this.#isDone = streams.every((stream) => !stream.locked);
+
+    this.#isDone = readables.every((stream) => !stream.locked) &&
+      !this.#stdin.writable.locked;
 
     if (!this.#isDone) {
       return;
     }
 
-    await Promise.all(
-      streams.map((stream) =>
-        "cancel" in stream
-          ? stream.cancel()
-          : this.#closeStdin && stream.close()
-      ),
-    );
+    await Promise.all([
+      this.#closeStdin(),
+      ...readables.map((stream) => stream.cancel()),
+    ]);
   }
 
   get noThrow() {

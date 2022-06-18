@@ -1,3 +1,4 @@
+import { colors } from "../deps.ts";
 import { ProcessOutput } from "../process_output.ts";
 
 export function isTemplateStringArray(
@@ -35,3 +36,29 @@ export function toRgb(str: string): { r: number; g: number; b: number } {
   }
   return { r: rgb[0], g: rgb[1], b: rgb[2] };
 }
+
+let count = 0;
+
+const colorList = [
+  colors.blue,
+  colors.yellow,
+  colors.magenta,
+  colors.red,
+  colors.green,
+];
+
+function colorize(str: string, index: number) {
+  while (index >= colorList.length) {
+    index -= colorList.length;
+  }
+  return colorList[index](str);
+}
+
+export function getId() {
+  return colorize("#" + ++count, count);
+}
+
+export function getLabel(label: string) {
+  return colorize(label, count);
+}
+

@@ -18,8 +18,10 @@ export class Writer implements Deno.Writer, Deno.Closer {
   }
 
   async write(data: Uint8Array | string): Promise<number> {
+    const writer = this.#stream.getWriter();
     data = typeof data === "string" ? encoder.encode(data) : data;
-    await this.#writer.write(data);
+    await writer.write(data);
+    writer.releaseLock();
     return data.byteLength;
   }
 
@@ -27,7 +29,7 @@ export class Writer implements Deno.Writer, Deno.Closer {
     return this.#stream;
   }
 
-  async close(): Promise<void> {
-    await this.#stream.close();
+  close(): Promise<void> {
+    return this.#stream.close();
   }
 }

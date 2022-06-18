@@ -1,7 +1,7 @@
 import { async, colors, streams } from "./deps.ts";
 import { Child } from "./child.ts";
 import { ProcessOutput } from "./process_output.ts";
-import { isTemplateStringArray, parseCmd, toRgb } from "./lib/utils.ts";
+import { getId, isTemplateStringArray, parseCmd, toRgb } from "./lib/utils.ts";
 
 export type SpawnOptions = {
   stdin: "piped";
@@ -34,6 +34,7 @@ export interface ReaderOptions<
   id?: string;
   then?(): T | Promise<T>;
   done?(): unknown | Promise<unknown>;
+  flush?(): unknown | Promise<unknown>;
   return?(): R;
 }
 
@@ -44,7 +45,6 @@ export class Reader<
   static #count = 0;
   readonly #options: ReaderOptions<T, R>;
   readonly #id: string;
-  #parent?: Reader<unknown, unknown>;
   #deferred?: async.Deferred<T>;
   #isDone = false;
   #_stream: ReadableStream<Uint8Array> | Reader<unknown, unknown>;
@@ -55,8 +55,14 @@ export class Reader<
     stream: ReadableStream<Uint8Array> | Reader<unknown, unknown>,
     options: ReaderOptions<T, R> = {},
   ) {
-    this.#id = options?.id ?? "#child-stream" + ++Reader.#count;
-    this.#_stream = stream;
+    this.#id = options?.id ?? getId();
+    this.#_stream = stream instanceof Reader ? stream : stream.pipeThrough(
+      new TransformStream({
+        flush: async () => {
+          await this.#options.flush?.();
+        },
+      }),
+    );
     this.#options = options;
   }
 
@@ -158,7 +164,7 @@ export class Reader<
   }
 
   get locked(): boolean {
-    return this.#stream.locked || !!this.#_textStream?.locked;
+    return this.#stream.locked;
   }
 
   get readable(): ReadableStream<Uint8Array> {
@@ -220,8 +226,6 @@ export class Reader<
       ? new Child(dest)
       : dest;
 
-    child.#parent = this;
-
     this.#pipeTo(this.#stream, child);
 
     return child;
@@ -230,7 +234,6 @@ export class Reader<
   async pipeTo(dest: Writable, options?: PipeOptions): Promise<void> {
     this.checkAlreadyDone();
     await this.#pipeTo(this.#stream, dest, [options]);
-    await this.#done();
   }
 
   async #pipeTo(
@@ -239,19 +242,21 @@ export class Reader<
     args: [PipeOptions?] | Array<string | number | ProcessOutput> = [],
   ): Promise<void> {
     try {
-      await source.pipeTo(
-        dest instanceof WritableStream
-          ? dest
-          : "writable" in dest
-          ? dest.writable
-          : streams.writableStreamFromWriter(dest),
-        this.getSpawnOptions(dest, args),
-      );
+      const writeable = dest instanceof WritableStream
+        ? dest
+        : "writable" in dest
+        ? dest.writable
+        : streams.writableStreamFromWriter(dest);
+
+      await source.pipeTo(writeable, this.getSpawnOptions(dest, args));
+
+      await this.#done();
     } catch (error) {
       if (error instanceof Deno.errors.BrokenPipe) {
         // Ignore broken pipe error. Should be handled by target stream.
         return;
       }
+      throw error;
     }
   }
 
@@ -276,9 +281,6 @@ export class Reader<
   async #done() {
     if (!this.#isDone) {
       this.#isDone = true;
-      if (this.#parent) {
-        await this.#parent;
-      }
       await this.#options.done?.();
     }
   }
