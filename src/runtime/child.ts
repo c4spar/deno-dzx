@@ -101,7 +101,6 @@ export class Child extends Reader<ProcessOutput, Child>
 
   #closeStdin(): Promise<void> | void {
     if (this.#autoCloseStdin && !this.#stdinClosePromise) {
-      this.log("closeStdin");
       this.#stdinClosePromise = this.#stdin.close();
     }
     return this.#stdinClosePromise;
