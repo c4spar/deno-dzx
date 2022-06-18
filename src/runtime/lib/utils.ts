@@ -61,4 +61,3 @@ export function getId() {
 export function getLabel(label: string) {
   return colorize(label, count);
 }
-
