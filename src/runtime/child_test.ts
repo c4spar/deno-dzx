@@ -60,6 +60,8 @@ Deno.test({
 
 Deno.test({
   name: "[child] should stop the process if kill is called (bash)",
+  // @TODO: kill() is flaky with `set -o pipefile` on mac with old bash version.
+  ignore: Deno.build.os === "darwin",
   async fn() {
     const start = Date.now();
     await assertRejects(
@@ -88,7 +90,7 @@ Deno.test({
       },
       ProcessError,
     );
-    assert(Date.now() - start < 5000, "process.kill() took too long");
+    assert(Date.now() - start < 100, "process.kill() took too long");
   },
 });
 
