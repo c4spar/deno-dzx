@@ -64,7 +64,7 @@ Deno.test({
     const start = Date.now();
     await assertRejects(
       () => {
-        $.shell = "bash";
+        $.shell = "/bin/bash";
         const child = Child.spawn("sleep 10");
         child.kill("SIGKILL");
         return child;
@@ -77,14 +77,11 @@ Deno.test({
 
 Deno.test({
   name: "[child] should stop the process if kill is called (zsh)",
-  sanitizeResources: false,
-  sanitizeOps: false,
-  ignore: Deno.build.os !== "darwin",
   async fn() {
     const start = Date.now();
     await assertRejects(
       async () => {
-        $.shell = "zsh";
+        $.shell = "/bin/zsh";
         const child = Child.spawn("sleep 10");
         child.kill("SIGKILL");
         await child;

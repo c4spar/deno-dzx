@@ -26,13 +26,17 @@ jobs:
         with:
           deno-version: ${{ matrix.deno }}
 
+      - name: Setup zsh
+        run: sudo apt-get update && sudo apt-get install zsh -y
+
       - name: Print Versions
         run: |
+          which deno
           deno --version
           which bash
           bash --version
-          which /bin/bash
-          /bin/bash --version
+          which zsh
+          zsh --version
 
       - name: Run tests
         run: deno test --coverage=./cov --unstable --shuffle --allow-all --jobs 8
