@@ -70,13 +70,16 @@ Deno.test("escape and quote arguments", async () => {
 
 Deno.test("create a directory with a space in the name", async () => {
   const now = Date.now();
-  const path = `./.tmp/test_${now}/foo bar`;
+  const path = `/tmp/test_${now}/foo bar`;
 
   try {
     await $`mkdir -p ${path}`;
     assert((await Deno.stat(path)).isDirectory);
+  } catch (error) {
+    console.error(error);
+    assert(false, "create directory failed");
   } finally {
-    await Deno.remove(`./.tmp`, { recursive: true });
+    await Deno.remove(`/tmp/test_${now}`, { recursive: true });
   }
 });
 
