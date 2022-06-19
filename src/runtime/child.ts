@@ -12,6 +12,11 @@ type SpawnOptions = {
   stderr: "piped";
 };
 
+export interface ChildOptions {
+  // deno-lint-ignore ban-types
+  context?: Function;
+}
+
 export class Child extends Reader<ProcessOutput, Child>
   implements
     TransformStream<Uint8Array, Uint8Array>,
@@ -28,7 +33,10 @@ export class Child extends Reader<ProcessOutput, Child>
   #isDone = false;
   #stdinClosePromise?: Promise<void>;
 
-  static spawn(cmd: string) {
+  static spawn(
+    cmd: string,
+    { context = Child.spawn, ...options }: ChildOptions = {},
+  ) {
     if ($.verbose) {
       console.log($.brightBlue("$ %s"), cmd);
     }
@@ -41,23 +49,32 @@ export class Child extends Reader<ProcessOutput, Child>
       stderr: "piped",
     });
 
-    return new Child(child);
+    return new Child(child, { context, ...options });
   }
 
   constructor(
     child: Deno.Child<SpawnOptions>,
+    { context = new.target }: ChildOptions = {},
   ) {
     Child.#count++;
     const [stdout, stdoutCombined] = child.stdout.tee();
     const [stderr, stderrCombined] = child.stderr.tee();
     const id = getId();
 
+    const baseError = new ProcessError({
+      combined: "",
+      stderr: "",
+      stdout: "",
+      status: { code: 1, success: false, signal: null },
+    });
+    Error.captureStackTrace(baseError, context);
+
     super(stdout, {
       id,
       then: async () => {
         const output = await this.output();
         if (!output.status.success && this.#throwErrors) {
-          throw new ProcessError(output);
+          throw ProcessError.merge(baseError, new ProcessError(output));
         }
         return output;
       },
@@ -168,6 +185,7 @@ export class Child extends Reader<ProcessOutput, Child>
     }
 
     await Promise.all([
+      this.#child.status,
       this.#closeStdin(),
       ...readables.map((stream) => stream.cancel()),
     ]);

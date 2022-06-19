@@ -32,15 +32,13 @@ Deno.test({
   name: "[process error] should have all properties defined",
   fn() {
     const error = createError();
-    assertObjectMatch(error, {
-      stdout: "foo",
-      stderr: "bar",
-      combined: "baz",
-      status: {
-        code: 1,
-        success: false,
-        signal: null,
-      },
+    assertEquals(error.stdout, "foo");
+    assertEquals(error.stderr, "bar");
+    assertEquals(error.combined, "baz");
+    assertObjectMatch(error.status, {
+      code: 1,
+      success: false,
+      signal: null,
     });
   },
 });
@@ -66,5 +64,19 @@ Deno.test({
       error instanceof ProcessError ? error.status.code : null
     );
     assertEquals(statusCode, 2);
+  },
+});
+
+Deno.test({
+  name: "[process error] should throw an error if source fails when piping",
+  async fn() {
+    await assertRejects(() => $`exit 1`.pipeThrough`grep foo`, ProcessError);
+  },
+});
+
+Deno.test({
+  name: "[process error] should throw an error if target fails when piping",
+  async fn() {
+    await assertRejects(() => $`echo foo`.pipeThrough`exit 1`, ProcessError);
   },
 });
