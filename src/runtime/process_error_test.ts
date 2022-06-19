@@ -66,3 +66,17 @@ Deno.test({
     assertEquals(statusCode, 2);
   },
 });
+
+Deno.test({
+  name: "[process error] should throw an error if source fails when piping",
+  async fn() {
+    await assertRejects(() => $`exit 1`.pipeThrough`grep foo`, ProcessError);
+  },
+});
+
+Deno.test({
+  name: "[process error] should throw an error if target fails when piping",
+  async fn() {
+    await assertRejects(() => $`echo foo`.pipeThrough`exit 1`, ProcessError);
+  },
+});
