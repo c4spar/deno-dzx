@@ -5,13 +5,13 @@
     <img alt="Version" src="https://img.shields.io/github/v/release/c4spar/deno-dzx?logo=github&color=F86F00" />
   </a>
   <a href="https://codecov.io/gh/c4spar/deno-dzx">
-    <img src="https://codecov.io/gh/c4spar/deno-dzx/branch/main/graph/badge.svg"/>
+    <img alt="codecov" src="https://codecov.io/gh/c4spar/deno-dzx/branch/main/graph/badge.svg"/>
   </a>
   <a href="https://github.com/c4spar/deno-dzx/issues">
     <img alt="issues" src="https://img.shields.io/github/issues/c4spar/deno-dzx?label=issues&logo=github">
   </a>
-  <a href="https://deno.land/">
-    <img alt="Deno version" src="https://img.shields.io/badge/deno-^1.13.0-blue?logo=deno&color=blue" />
+  <a href="https://doc.deno.land/https/deno.land%2Fx%2Fdzx%400.2.4%2Fmod.ts">
+    <img alt="Deno docs" src="https://img.shields.io/badge/deno-doc-blue?logo=deno&color=blue" />
   </a>
   <a href="https://github.com/c4spar/deno-dzx/blob/main/LICENSE">
     <img alt="Licence" src="https://img.shields.io/github/license/c4spar/deno-dzx?logo=github" />
@@ -37,9 +37,6 @@ console.log(`Hello from ${$.blue.bold("dzx")}!`);
 const branch = await $`git branch --show-current`;
 await $`dep deploy --branch=${branch}`;
 
-// Print command output to stdout. Will be reverted to "piped" after all async ops are done.
-$.stdout = "inherit";
-$.stderr = "inherit";
 await Promise.all([
   $`deno lint`,
   $`deno fmt --check`,
@@ -180,7 +177,7 @@ notes.
     readonly stdout: string;
     readonly stderr: string;
     readonly combined: string;
-    readonly status: Deno.ProcessStatus;
+    readonly status: Deno.ChildStatus;
     toString(): string;
   }
   ```
@@ -334,12 +331,6 @@ notes.
 - **$.mainModule:** The executed dzx script.
 - **$.verbose:** Enable debugging output (log shell commands and execution
   time).
-- **$.stdout:** Change stdout mode of `` $`command` ``. Can be `"inherit"`,
-  `"piped"`, `"null"` or `number`. Will be reverted to default after all async
-  ops are done. Default: `"piped"`
-- **$.stderr:** Change stderr mode of `` $`command` ``. Can be `"inherit"`,
-  `"piped"`, `"null"` or `number`. Will be reverted to default after all async
-  ops are done. Default: `"piped"`
 - **$.throwErrors:** Throw errors instead of calling `Deno.exit`.
 - **$.args:** Equivalent to `Deno.args`, but without the script name as first
   argument.

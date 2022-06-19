@@ -2,14 +2,14 @@ export interface ProcessOutputOptions {
   stdout: string;
   stderr: string;
   combined: string;
-  status: Deno.ProcessStatus;
+  status: Deno.ChildStatus;
 }
 
 export class ProcessOutput {
   readonly stdout: string;
   readonly stderr: string;
   readonly combined: string;
-  readonly status: Deno.ProcessStatus;
+  readonly status: Deno.ChildStatus;
 
   constructor({ stdout, stderr, combined, status }: ProcessOutputOptions) {
     this.stdout = stdout;
