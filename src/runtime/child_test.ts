@@ -60,12 +60,13 @@ Deno.test({
 
 Deno.test({
   name: "[child] should stop the process if kill is called (bash)",
-  // @TODO: kill() is flaky with `set -o pipefile` on mac with old bash version.
   ignore: Deno.build.os === "darwin",
   async fn() {
     const start = Date.now();
     await assertRejects(
       () => {
+        // @TODO: kill() is flaky with `set -o pipefile` and old bash versions.
+        $.prefix = "";
         $.shell = "/bin/bash";
         const child = Child.spawn("sleep 10");
         child.kill("SIGKILL");
