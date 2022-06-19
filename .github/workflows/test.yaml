@@ -7,6 +7,9 @@ jobs:
   test:
     name: Test
     runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
     strategy:
       fail-fast: false
       matrix:
@@ -23,8 +26,21 @@ jobs:
         with:
           deno-version: ${{ matrix.deno }}
 
+      - name: Setup zsh
+        if: matrix.os == 'ubuntu-latest'
+        run: sudo apt-get update && sudo apt-get install zsh -y
+
+      - name: Print Versions
+        run: |
+          which deno
+          deno --version
+          which bash
+          bash --version
+          which zsh
+          zsh --version
+
       - name: Run tests
-        run: deno test --coverage=./cov --unstable --shuffle --allow-all --jobs 8
+        run: deno test --coverage=./cov --unstable --shuffle --allow-all --jobs 8 --trace-ops
 
       - name: Generate lcov
         run: deno coverage --unstable --lcov ./cov > cov.lcov
