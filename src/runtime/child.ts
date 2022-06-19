@@ -185,6 +185,7 @@ export class Child extends Reader<ProcessOutput, Child>
     }
 
     await Promise.all([
+      this.#child.status,
       this.#closeStdin(),
       ...readables.map((stream) => stream.cancel()),
     ]);
