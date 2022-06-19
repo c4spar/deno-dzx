@@ -24,7 +24,9 @@ export function spawnChild(
     );
   }
 
-  return Child.spawn(parseCmd(cmd, ...args));
+  return Child.spawn(parseCmd(cmd, ...args), {
+    context: spawnChild,
+  });
 }
 
 /**

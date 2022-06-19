@@ -32,15 +32,13 @@ Deno.test({
   name: "[process error] should have all properties defined",
   fn() {
     const error = createError();
-    assertObjectMatch(error, {
-      stdout: "foo",
-      stderr: "bar",
-      combined: "baz",
-      status: {
-        code: 1,
-        success: false,
-        signal: null,
-      },
+    assertEquals(error.stdout, "foo");
+    assertEquals(error.stderr, "bar");
+    assertEquals(error.combined, "baz");
+    assertObjectMatch(error.status, {
+      code: 1,
+      success: false,
+      signal: null,
     });
   },
 });
