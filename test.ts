@@ -9,6 +9,17 @@ import {
 
 import { $, $e, $o, $s, cd, path, ProcessError } from "./mod.ts";
 
+Deno.test({
+  name: "$ should have a pid",
+  // @TODO: test trows on linux with: No such file or directory (os error 2)
+  ignore: Deno.build.os === "linux",
+  async fn() {
+    const proc = $`echo hello`;
+    assert(proc.pid > 0);
+    await proc;
+  },
+});
+
 Deno.test("$ works", async () => {
   const result = await $`echo hello`;
 
