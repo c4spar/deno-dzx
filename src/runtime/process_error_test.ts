@@ -12,9 +12,8 @@ function createError(): ProcessError {
     stderr: "bar",
     combined: "baz",
     status: {
-      code: 1,
-      success: false,
-      signal: null,
+      code: 0,
+      success: true,
     },
   });
 }
@@ -37,9 +36,8 @@ Deno.test({
       stderr: "bar",
       combined: "baz",
       status: {
-        code: 1,
-        success: false,
-        signal: null,
+        code: 0,
+        success: true,
       },
     });
   },
@@ -62,9 +60,7 @@ Deno.test({
 Deno.test({
   name: "[process error] should have correct exit code",
   async fn() {
-    const statusCode = await $`exit 2`.catch((error) =>
-      error instanceof ProcessError ? error.status.code : null
-    );
+    const statusCode = await $`exit 2`.catch((error) => error.status.code);
     assertEquals(statusCode, 2);
   },
 });

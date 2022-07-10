@@ -12,13 +12,13 @@ import {
   streams,
 } from "./deps.ts";
 import { cd } from "./cd.ts";
-import { spawnChild, statusOnly, stderrOnly, stdoutOnly } from "./exec.ts";
+import { exec, statusOnly, stderrOnly, stdoutOnly } from "./exec.ts";
 import { quote } from "./quote.ts";
 
 export { ProcessError } from "./process_error.ts";
 export { ProcessOutput } from "./process_output.ts";
 
-export type $ = typeof spawnChild & typeof colors & {
+export type $ = typeof exec & typeof colors & {
   get mainModule(): string;
   get args(): Array<string>;
   get verbose(): number;
@@ -26,12 +26,14 @@ export type $ = typeof spawnChild & typeof colors & {
   get startTime(): number;
   shell: string;
   prefix: string;
+  stdout: NonNullable<Deno.RunOptions["stdout"]>;
+  stderr: NonNullable<Deno.RunOptions["stderr"]>;
   quote: typeof shq;
   throwErrors: boolean;
   time: number;
 };
 
-export const $: $ = spawnChild as $;
+export const $: $ = exec as $;
 export const $s: typeof statusOnly = statusOnly;
 export const $o: typeof stdoutOnly = stdoutOnly;
 export const $e: typeof stderrOnly = stderrOnly;
@@ -41,6 +43,8 @@ Object.setPrototypeOf($, Object.getPrototypeOf(colors));
 $._stack = [];
 $.shell = "/bin/bash";
 $.prefix = "set -euo pipefail;";
+$.stdout = "piped";
+$.stderr = "piped";
 $.quote = shq;
 $.throwErrors = false;
 

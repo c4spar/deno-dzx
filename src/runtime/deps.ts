@@ -42,7 +42,5 @@ export type {
   Args,
   ParseOptions,
 } from "https://deno.land/std@0.140.0/flags/mod.ts";
-export { BytesList } from "https://deno.land/std@0.140.0/bytes/bytes_list.ts";
-
 export { colors } from "https://deno.land/x/cliffy@v0.24.2/ansi/colors.ts";
 export { default as shq } from "https://esm.sh/shq@1.0.2";
