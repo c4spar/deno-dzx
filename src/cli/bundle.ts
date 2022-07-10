@@ -1,7 +1,6 @@
 import {
   Command,
   copy,
-  denoBundle,
   DenoBundleOptions,
   ValidationError,
 } from "./deps.ts";
@@ -90,6 +89,9 @@ async function bundleFile(
     if (options.check) {
       await check(file);
     }
+    const { bundle: denoBundle } = await import(
+      "https://deno.land/x/emit@0.2.0/mod.ts"
+    );
     const { code } = await denoBundle(file, {
       type: "module",
       ...options,
