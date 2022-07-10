@@ -21,6 +21,7 @@ export class Process implements Promise<ProcessOutput> {
   #maxRetries = 0;
   #retries = 0;
   #throwErrors = true;
+  #isKilled = false;
 
   constructor(cmd: string, { errorContext }: ProcessOptions = {}) {
     this.#cmd = cmd;
@@ -66,6 +67,7 @@ export class Process implements Promise<ProcessOutput> {
   }
 
   kill(signo: Deno.Signal): void {
+    this.#isKilled = true;
     this.#process.kill(signo);
   }
 
@@ -117,9 +119,19 @@ export class Process implements Promise<ProcessOutput> {
       const [status] = await Promise.all([
         this.#process.status(),
         this.#process.stdout &&
-        read(this.#process.stdout, [stdout, combined], Deno.stdout),
+        read(
+          this.#process.stdout,
+          [stdout, combined],
+          Deno.stdout,
+          () => this.#isKilled,
+        ),
         this.#process.stderr &&
-        read(this.#process.stderr, [stderr, combined], Deno.stderr),
+        read(
+          this.#process.stderr,
+          [stderr, combined],
+          Deno.stderr,
+          () => this.#isKilled,
+        ),
       ]);
 
       let output = new ProcessOutput({
@@ -169,8 +181,9 @@ async function read(
   reader: Deno.Reader,
   results: Array<Array<string>>,
   outputStream: Deno.Writer,
+  isCanceld: () => boolean,
 ): Promise<Error | void> {
-  for await (const line of io.readLines(reader)) {
+  for await (const line of readLines(reader, isCanceld)) {
     for (const result of results) {
       result.push(line + "\n");
     }
