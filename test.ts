@@ -11,8 +11,8 @@ import { $, $e, $o, $s, cd, path, ProcessError } from "./mod.ts";
 
 Deno.test({
   name: "$ should have a pid",
-  // @TODO: test trows on linux with: No such file or directory (os error 2)
-  ignore: Deno.build.os === "linux",
+  // @TODO: test trows on macos ci: No such file or directory (os error 2)
+  ignore: Deno.build.os === "darwin",
   async fn() {
     const proc = $`echo hello`;
     assert(proc.pid > 0);
