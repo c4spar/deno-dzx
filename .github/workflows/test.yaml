@@ -40,7 +40,7 @@ jobs:
           zsh --version
 
       - name: Run tests
-        run: deno test --coverage=./cov --unstable --shuffle --allow-all --jobs 8 --trace-ops
+        run: deno test --coverage=./cov --unstable --shuffle --allow-all --jobs 8 --trace-ops --filter="should not throw with statusCode
 
       - name: Generate lcov
         run: deno coverage --unstable --lcov ./cov > cov.lcov
