@@ -57,7 +57,10 @@ export class Process implements Promise<ProcessOutput> {
   }
 
   get statusCode(): Promise<number> {
-    return this.noThrow.#resolve().then(({ status }) => status.code);
+    return this.noThrow.#resolve().then((output) => {
+      console.log("output: %s", output);
+      return output.status.code;
+    });
   }
 
   retry(retries: number): this {
