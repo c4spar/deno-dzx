@@ -1,6 +1,6 @@
 /// <reference path="../../types.d.ts" />
 
-import { Deferred, deferred } from "./deps.ts";
+import { Deferred, deferred, delay } from "./deps.ts";
 import { ProcessError } from "./process_error.ts";
 import { ProcessOutput } from "./process_output.ts";
 
@@ -120,8 +120,9 @@ export class Process implements Promise<ProcessOutput> {
         this.#process.stderr &&
         read(this.#process.stderr, [stderr, combined], Deno.stderr),
       ]);
+      console.log("process done...", status);
 
-      const output = new ProcessOutput({
+      let output = new ProcessOutput({
         stdout: stdout.join(""),
         stderr: stderr.join(""),
         combined: combined.join(""),
@@ -130,17 +131,15 @@ export class Process implements Promise<ProcessOutput> {
       });
 
       if (!status.success) {
-        const error = ProcessError.merge(
+        output = ProcessError.merge(
           this.#baseError,
           new ProcessError(output),
         );
 
         if (this.#throwErrors) {
-          throw error;
+          console.error("ERROR:", output);
+          throw output;
         }
-        this.#close();
-
-        return error;
       }
       this.#close();
 
@@ -160,10 +159,11 @@ export class Process implements Promise<ProcessOutput> {
   }
 
   #close() {
-    this.#process.close();
-    this.#process.stdin?.close();
-    this.#process.stdout?.close();
-    this.#process.stderr?.close();
+    console.log("close...");
+    this.#proc?.close();
+    this.#proc?.stdin?.close();
+    this.#proc?.stdout?.close();
+    this.#proc?.stderr?.close();
   }
 }
 
