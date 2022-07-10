@@ -12,7 +12,7 @@ import { $, $e, $o, $s, cd, path, ProcessError } from "./mod.ts";
 Deno.test({
   name: "$ should have a pid",
   async fn() {
-    const proc = $`sleep 0.2`;
+    const proc = $`sleep 1`;
     assert(proc.pid > 0);
     await proc;
   },
