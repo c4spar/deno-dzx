@@ -90,7 +90,7 @@ async function bundleFile(
       await check(file);
     }
     const { bundle: denoBundle } = await import(
-      "https://deno.land/x/emit@0.2.0/mod.ts"
+      "https://deno.land/x/emit@0.3.0/mod.ts"
     );
     const { code } = await denoBundle(file, {
       type: "module",
