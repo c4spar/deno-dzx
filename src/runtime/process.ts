@@ -47,13 +47,17 @@ export class Process implements Promise<ProcessOutput> {
     return this.#proc;
   }
 
-  get pid() {
+  get pid(): number {
     return this.#process.pid;
   }
 
   get noThrow(): this {
     this.#throwErrors = false;
     return this;
+  }
+
+  get statusCode(): Promise<number> {
+    return this.noThrow.#resolve().then(({ status }) => status.code);
   }
 
   retry(retries: number): this {
@@ -114,7 +118,7 @@ export class Process implements Promise<ProcessOutput> {
         read(this.#process.stderr, [stderr, combined], Deno.stderr),
       ]);
 
-      const output = new ProcessOutput({
+      let output = new ProcessOutput({
         stdout: stdout.join(""),
         stderr: stderr.join(""),
         combined: combined.join(""),
@@ -123,17 +127,14 @@ export class Process implements Promise<ProcessOutput> {
       });
 
       if (!status.success) {
-        const error = ProcessError.merge(
+        output = ProcessError.merge(
           this.#baseError,
           new ProcessError(output),
         );
 
         if (this.#throwErrors) {
-          throw error;
+          throw output;
         }
-        this.#close();
-
-        return error;
       }
       this.#close();
 
@@ -153,10 +154,10 @@ export class Process implements Promise<ProcessOutput> {
   }
 
   #close() {
-    this.#process.close();
-    this.#process.stdin?.close();
-    this.#process.stdout?.close();
-    this.#process.stderr?.close();
+    this.#proc?.close();
+    this.#proc?.stdin?.close();
+    this.#proc?.stdout?.close();
+    this.#proc?.stderr?.close();
   }
 }
 
