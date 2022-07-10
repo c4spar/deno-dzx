@@ -9,8 +9,10 @@ import {
 
 import { $, $e, $o, $s, cd, path, ProcessError } from "./mod.ts";
 
-// @TODO: tests are flaky on github actions and throws: No such file or directory (os error 2)
-// But they don't fail if while uncommenting all other tests. Locally they work fine.
+// @TODO: tests are flaky on github actions.
+// Test runner is green but throws: No such file or directory (os error 2)
+// But they don't fail while uncommenting all other tests. Locally all tests
+// work fine.
 Deno.test({
   name: "$ should have a pid",
   ignore: !!Deno.env.get("CI"),
