@@ -9,38 +9,6 @@ import {
 
 import { $, $e, $o, $s, cd, path, ProcessError } from "./mod.ts";
 
-// @TODO: tests are flaky on github actions.
-// Test runner is green but throws: No such file or directory (os error 2)
-// But they don't fail while uncommenting all other tests. Locally all tests
-// work fine.
-Deno.test({
-  name: "$ should have a pid",
-  ignore: !!Deno.env.get("CI"),
-  async fn() {
-    const proc = $`sleep 1`;
-    assert(proc.pid > 0);
-    await proc;
-  },
-});
-
-Deno.test({
-  name: "$ should resolve statusCode",
-  ignore: !!Deno.env.get("CI"),
-  async fn() {
-    const statusCode = await $`echo foo`.statusCode;
-    assertEquals(statusCode, 0);
-  },
-});
-
-Deno.test({
-  name: "$ should not throw with statusCode",
-  ignore: !!Deno.env.get("CI"),
-  async fn() {
-    const statusCode = await $`exit 1`.statusCode;
-    assertEquals(statusCode, 1);
-  },
-});
-
 Deno.test("$ works", async () => {
   const result = await $`echo hello`;
 
@@ -149,4 +117,36 @@ Deno.test("$ should not throw with noThrow", async () => {
   const result = await $`exit 1`.noThrow;
 
   assertEquals(result.status.code, 1);
+});
+
+// @TODO: tests are flaky on github actions.
+// Test runner is green but throws: No such file or directory (os error 2)
+// But they don't fail while uncommenting all other tests. Locally all tests
+// work fine.
+Deno.test({
+  name: "$ should have a pid",
+  ignore: !!Deno.env.get("CI"),
+  async fn() {
+    const proc = $`sleep 1`;
+    assert(proc.pid > 0);
+    await proc;
+  },
+});
+
+Deno.test({
+  name: "$ should resolve statusCode",
+  ignore: !!Deno.env.get("CI"),
+  async fn() {
+    const statusCode = await $`echo foo`.statusCode;
+    assertEquals(statusCode, 0);
+  },
+});
+
+Deno.test({
+  name: "$ should not throw with statusCode",
+  ignore: !!Deno.env.get("CI"),
+  async fn() {
+    const statusCode = await $`exit 1`.statusCode;
+    assertEquals(statusCode, 1);
+  },
 });
