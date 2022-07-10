@@ -20,6 +20,7 @@ export class Process implements Promise<ProcessOutput> {
   #baseError: ProcessError;
   #maxRetries = 0;
   #retries = 0;
+  #throwErrors = true;
 
   constructor(cmd: string, { errorContext }: ProcessOptions = {}) {
     this.#cmd = cmd;
@@ -48,6 +49,11 @@ export class Process implements Promise<ProcessOutput> {
 
   get pid() {
     return this.#process.pid;
+  }
+
+  get noThrow(): this {
+    this.#throwErrors = false;
+    return this;
   }
 
   retry(retries: number): this {
@@ -117,21 +123,31 @@ export class Process implements Promise<ProcessOutput> {
       });
 
       if (!status.success) {
-        throw ProcessError.merge(
+        const error = ProcessError.merge(
           this.#baseError,
           new ProcessError(output),
         );
+
+        if (this.#throwErrors) {
+          throw error;
+        }
+        this.#close();
+
+        return error;
       }
       this.#close();
 
       return output;
     } catch (error) {
       this.#close();
+
       if (this.#retries < this.#maxRetries) {
         this.#retries++;
         this.#proc = null;
+
         return this.#run();
       }
+
       throw error;
     }
   }
