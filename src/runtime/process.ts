@@ -46,6 +46,10 @@ export class Process implements Promise<ProcessOutput> {
     return this.#proc;
   }
 
+  get pid() {
+    return this.#process.pid;
+  }
+
   retry(retries: number): this {
     this.#maxRetries = retries;
     return this;
