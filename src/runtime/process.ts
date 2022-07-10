@@ -12,12 +12,14 @@ export interface ProcessOptions {
 export class Process implements Promise<ProcessOutput> {
   readonly [Symbol.toStringTag] = "Process";
   readonly #cmd: string;
-  #proc?: Deno.Process;
+  #proc: Deno.Process | null = null;
   #deferred?: Deferred<ProcessOutput>;
   #stdin: Deno.RunOptions["stdin"] = "inherit";
   #stdout: Deno.RunOptions["stdout"] = $.stdout;
   #stderr: Deno.RunOptions["stderr"] = $.stderr;
   #baseError: ProcessError;
+  #maxRetries = 0;
+  #retries = 0;
 
   constructor(cmd: string, { errorContext }: ProcessOptions = {}) {
     this.#cmd = cmd;
@@ -26,6 +28,7 @@ export class Process implements Promise<ProcessOutput> {
       stderr: "",
       stdout: "",
       status: { code: 1, success: false, signal: undefined },
+      retries: 0,
     });
     Error.captureStackTrace(this.#baseError, errorContext);
   }
@@ -41,6 +44,11 @@ export class Process implements Promise<ProcessOutput> {
       });
     }
     return this.#proc;
+  }
+
+  retry(retries: number): this {
+    this.#maxRetries = retries;
+    return this;
   }
 
   then<TResult1 = ProcessOutput, TResult2 = never>(
@@ -82,7 +90,7 @@ export class Process implements Promise<ProcessOutput> {
     return this.#deferred;
   }
 
-  async #run() {
+  async #run(): Promise<ProcessOutput> {
     const stdout: Array<string> = [];
     const stderr: Array<string> = [];
     const combined: Array<string> = [];
@@ -95,24 +103,40 @@ export class Process implements Promise<ProcessOutput> {
         this.#process.stderr &&
         read(this.#process.stderr, [stderr, combined], Deno.stderr),
       ]);
+
       const output = new ProcessOutput({
         stdout: stdout.join(""),
         stderr: stderr.join(""),
         combined: combined.join(""),
         status,
+        retries: this.#retries,
       });
 
       if (!status.success) {
-        throw ProcessError.merge(this.#baseError, new ProcessError(output));
+        throw ProcessError.merge(
+          this.#baseError,
+          new ProcessError(output),
+        );
       }
+      this.#close();
 
       return output;
-    } finally {
-      this.#process.close();
-      this.#process.stdin?.close();
-      this.#process.stdout?.close();
-      this.#process.stderr?.close();
+    } catch (error) {
+      this.#close();
+      if (this.#retries < this.#maxRetries) {
+        this.#retries++;
+        this.#proc = null;
+        return this.#run();
+      }
+      throw error;
     }
+  }
+
+  #close() {
+    this.#process.close();
+    this.#process.stdin?.close();
+    this.#process.stdout?.close();
+    this.#process.stderr?.close();
   }
 }
 
