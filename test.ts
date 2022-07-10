@@ -173,6 +173,15 @@ Deno.test({
   },
 });
 
+Deno.test({
+  name: "$ should retry command with delay if it fails",
+  async fn() {
+    const result = await $`exit 1`.noThrow.delay(100).retry(3);
+    assertEquals(result.retries, 3);
+    assertEquals(result.status.code, 1);
+  },
+});
+
 // @TODO: tests are flaky on github actions.
 // Test runner is green but throws: No such file or directory (os error 2)
 // But they don't fail while uncommenting all other tests.
