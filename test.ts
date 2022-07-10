@@ -125,14 +125,18 @@ Deno.test({
     const start = Date.now();
     await assertRejects(
       async () => {
+        // @TODO: kill is not working with old bash and pipefail -euo.
+        const prefix = $.prefix;
+        $.prefix = "";
         $.shell = "/bin/bash";
         const child = $`sleep 10`;
-        child.kill("SIGKILL");
+        setTimeout(() => child.kill("SIGKILL"), 10);
         await child;
+        $.prefix = prefix;
       },
       ProcessError,
     );
-    assert(Date.now() - start < 100, "process.kill() took too long");
+    assert(Date.now() - start < 200, "process.kill() took too long");
   },
 });
 
@@ -144,12 +148,12 @@ Deno.test({
       async () => {
         $.shell = "/bin/zsh";
         const child = $`sleep 10`;
-        child.kill("SIGKILL");
+        setTimeout(() => child.kill("SIGKILL"), 10);
         await child;
       },
       ProcessError,
     );
-    assert(Date.now() - start < 100, "process.kill() took too long");
+    assert(Date.now() - start < 200, "process.kill() took too long");
   },
 });
 

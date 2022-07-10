@@ -13,6 +13,7 @@ export type {
   ParsedPath,
 } from "https://deno.land/std@0.140.0/path/mod.ts";
 export * as io from "https://deno.land/std@0.140.0/io/mod.ts";
+export { BufReader } from "https://deno.land/std@0.140.0/io/buffer.ts";
 export type {
   ReadableStreamFromReaderOptions as IOReadableStreamFromReaderOptions,
   ReadLineResult,
@@ -45,3 +46,4 @@ export type {
 } from "https://deno.land/std@0.140.0/flags/mod.ts";
 export { colors } from "https://deno.land/x/cliffy@v0.24.2/ansi/colors.ts";
 export { default as shq } from "https://esm.sh/shq@1.0.2";
+export { concat } from "https://deno.land/std@0.140.0/bytes/mod.ts";
