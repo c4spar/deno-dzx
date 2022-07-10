@@ -57,10 +57,7 @@ export class Process implements Promise<ProcessOutput> {
   }
 
   get statusCode(): Promise<number> {
-    return this.noThrow.#resolve().then((output) => {
-      console.log("output: %s", output);
-      return output.status.code;
-    });
+    return this.noThrow.#resolve().then(({ status }) => status.code);
   }
 
   retry(retries: number): this {
@@ -120,7 +117,6 @@ export class Process implements Promise<ProcessOutput> {
         this.#process.stderr &&
         read(this.#process.stderr, [stderr, combined], Deno.stderr),
       ]);
-      console.log("process done...", status);
 
       let output = new ProcessOutput({
         stdout: stdout.join(""),
@@ -137,7 +133,6 @@ export class Process implements Promise<ProcessOutput> {
         );
 
         if (this.#throwErrors) {
-          console.error("ERROR:", output);
           throw output;
         }
       }
@@ -159,7 +154,6 @@ export class Process implements Promise<ProcessOutput> {
   }
 
   #close() {
-    console.log("close...");
     this.#proc?.close();
     this.#proc?.stdin?.close();
     this.#proc?.stdout?.close();
