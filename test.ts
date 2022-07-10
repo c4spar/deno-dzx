@@ -122,3 +122,9 @@ Deno.test("markdown files can be executed as scripts", async () => {
   assertStringIncludes(output.stdout, `$ echo "Hello World!"`);
   assertStringIncludes(output.stdout, `$ echo "Hello again World!"`);
 });
+
+Deno.test("$ should not throw with noThrow", async () => {
+  const result = await $`exit 1`.noThrow;
+
+  assertEquals(result.status.code, 1);
+});
