@@ -2,6 +2,7 @@ export * as async from "https://deno.land/std@0.140.0/async/mod.ts";
 export type {
   DebouncedFunction,
   Deferred,
+  deferred,
   DelayOptions,
 } from "https://deno.land/std@0.140.0/async/mod.ts";
 export * as path from "https://deno.land/std@0.140.0/path/mod.ts";
