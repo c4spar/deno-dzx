@@ -1,3 +1,70 @@
+# [0.3.2](https://github.com/c4spar/deno-dzx/compare/0.3.1...0.3.2) (Jul 11, 2022)
+
+### Features
+
+- **cli:** start repl by default and print dzx version on start (#34)
+  ([ce2a1c7](https://github.com/c4spar/deno-dzx/commit/ce2a1c7))
+- **cli:** add `--verbose` option and change `$.verbose` type from `boolean` to
+  `boolean | number` (#30)
+  ([c253d77](https://github.com/c4spar/deno-dzx/commit/c253d77))
+- **runtime:** add `.delay()` method (#68)
+  ([a05e1ab](https://github.com/c4spar/deno-dzx/commit/a05e1ab))
+- **runtime:** add `.timeout()` method (#67)
+  ([8219581](https://github.com/c4spar/deno-dzx/commit/8219581))
+- **runtime:** add `kill` method (#64)
+  ([0d0044b](https://github.com/c4spar/deno-dzx/commit/0d0044b))
+- **runtime:** add `statusCode` property (#63)
+  ([eb85a1b](https://github.com/c4spar/deno-dzx/commit/eb85a1b))
+- **runtime:** add `noThrow` property (#62)
+  ([dcaa0e8](https://github.com/c4spar/deno-dzx/commit/dcaa0e8))
+- **runtime:** add `pid` property (#61)
+  ([66d9c6a](https://github.com/c4spar/deno-dzx/commit/66d9c6a))
+- **runtime:** add `.retry()` method and print retries on error (#58)
+  ([a04d370](https://github.com/c4spar/deno-dzx/commit/a04d370))
+- **runtime:** capture stack trace from `$` call's (#44)
+  ([7c06a04](https://github.com/c4spar/deno-dzx/commit/7c06a04))
+- **runtime:** print exit code info and signal on error (#43)
+  ([9cc7ec9](https://github.com/c4spar/deno-dzx/commit/9cc7ec9))
+
+### Bug Fixes
+
+- **cli:** fix base64 module bootstrapping (#31)
+  ([3292575](https://github.com/c4spar/deno-dzx/commit/3292575))
+- **runtime:** make readlines aboartable (#65)
+  ([b737487](https://github.com/c4spar/deno-dzx/commit/b737487))
+
+### Code Refactoring
+
+- **bundle:** use deno_emit for bundling (#36)
+  ([3050c89](https://github.com/c4spar/deno-dzx/commit/3050c89))
+- **cli:** remove useRawArgs from eval command (#35)
+  ([0bf9a2e](https://github.com/c4spar/deno-dzx/commit/0bf9a2e))
+- **cli:** refactor repl options handling (#33)
+  ([607b12a](https://github.com/c4spar/deno-dzx/commit/607b12a))
+- **runtime:** use dynamic import for emit module to improve cli performance
+  (#70) ([fa9e52f](https://github.com/c4spar/deno-dzx/commit/fa9e52f))
+- **runtime:** implement process class (#42)
+  ([2059567](https://github.com/c4spar/deno-dzx/commit/2059567))
+- **runtime:** make `$.mainModule`, `$.args` & `$.startTime` readonly (#32)
+  ([bcb02fd](https://github.com/c4spar/deno-dzx/commit/bcb02fd))
+
+### Chore
+
+- **ci:** install zsh on canary gh action (#41)
+  ([a464b58](https://github.com/c4spar/deno-dzx/commit/a464b58))
+- **ci:** setup zsh in gh action
+  ([615f826](https://github.com/c4spar/deno-dzx/commit/615f826))
+- **ci:** run workflows on pull request (#37)
+  ([6d1699c](https://github.com/c4spar/deno-dzx/commit/6d1699c))
+- **ci:** re-enable coverage and upgrade codecov/codecov-action to v3 (#15)
+  ([2668379](https://github.com/c4spar/deno-dzx/commit/2668379))
+- **ci:** upgrade checkout action to v3 (#29)
+  ([006c8ce](https://github.com/c4spar/deno-dzx/commit/006c8ce))
+- **upgrade:** deno/std@0.140.0, cliffy@0.24.2 (#38)
+  ([27923c6](https://github.com/c4spar/deno-dzx/commit/27923c6))
+- **upgrade:** deno/std@v0.136.0, cliffy@v0.23.1 (#28)
+  ([0d70bc7](https://github.com/c4spar/deno-dzx/commit/0d70bc7))
+
 # [0.3.1](https://github.com/c4spar/deno-dzx/compare/0.3.0...0.3.1) (Mar 20, 2022)
 
 ### Features
