@@ -119,6 +119,40 @@ Deno.test("$ should not throw with noThrow", async () => {
   assertEquals(result.status.code, 1);
 });
 
+Deno.test({
+  name: "$ should kill the process (bash)",
+  async fn() {
+    const start = Date.now();
+    await assertRejects(
+      async () => {
+        $.shell = "/bin/bash";
+        const child = $`sleep 10`;
+        child.kill("SIGKILL");
+        await child;
+      },
+      ProcessError,
+    );
+    assert(Date.now() - start < 100, "process.kill() took too long");
+  },
+});
+
+Deno.test({
+  name: "$ should kill the process (zsh)",
+  async fn() {
+    const start = Date.now();
+    await assertRejects(
+      async () => {
+        $.shell = "/bin/zsh";
+        const child = $`sleep 10`;
+        child.kill("SIGKILL");
+        await child;
+      },
+      ProcessError,
+    );
+    assert(Date.now() - start < 100, "process.kill() took too long");
+  },
+});
+
 // @TODO: tests are flaky on github actions.
 // Test runner is green but throws: No such file or directory (os error 2)
 // But they don't fail while uncommenting all other tests.
@@ -127,7 +161,7 @@ Deno.test({
   name: "$ should have a pid",
   ignore: !!Deno.env.get("CI"),
   async fn() {
-    const proc = $`sleep 1`;
+    const proc = $`echo foo`;
     assert(proc.pid > 0);
     await proc;
   },
