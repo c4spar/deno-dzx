@@ -21,6 +21,8 @@ export class Process implements Promise<ProcessOutput> {
   #baseError: ProcessError;
   #maxRetries = 0;
   #retries = 0;
+  #timeout = 0;
+  #timer = 0;
   #throwErrors = true;
   #isKilled = false;
 
@@ -45,6 +47,10 @@ export class Process implements Promise<ProcessOutput> {
         stdout: this.#stdout,
         stderr: this.#stderr,
       });
+
+      if (this.#timeout) {
+        this.#timer = setTimeout(() => this.kill("SIGABRT"), this.#timeout);
+      }
     }
     return this.#proc;
   }
@@ -64,6 +70,11 @@ export class Process implements Promise<ProcessOutput> {
 
   retry(retries: number): this {
     this.#maxRetries = retries;
+    return this;
+  }
+
+  timeout(timeout: number): this {
+    this.#timeout = timeout;
     return this;
   }
 
@@ -154,6 +165,7 @@ export class Process implements Promise<ProcessOutput> {
         }
       }
       this.#close();
+      this.#closeTimer();
 
       return output;
     } catch (error) {
@@ -165,6 +177,7 @@ export class Process implements Promise<ProcessOutput> {
 
         return this.#run();
       }
+      this.#closeTimer();
 
       throw error;
     }
@@ -175,6 +188,10 @@ export class Process implements Promise<ProcessOutput> {
     this.#proc?.stdin?.close();
     this.#proc?.stdout?.close();
     this.#proc?.stderr?.close();
+  }
+
+  #closeTimer() {
+    this.#timer && clearTimeout(this.#timer);
   }
 }
 
