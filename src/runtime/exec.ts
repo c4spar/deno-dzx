@@ -1,12 +1,13 @@
 /// <reference path="../../types.d.ts" />
 
+import { Process } from "./process.ts";
 import { ProcessError } from "./process_error.ts";
 import { ProcessOutput } from "./process_output.ts";
 import { quote } from "./quote.ts";
 
 let runningProcesses = 0;
 
-export async function exec(
+export function exec(
   pieces: TemplateStringsArray,
   ...args: Array<string | number | ProcessOutput>
 ): Promise<ProcessOutput> {
@@ -22,45 +23,7 @@ export async function exec(
     console.log($.brightBlue("$ %s"), cmd);
   }
 
-  const stdout: Array<string> = [];
-  const stderr: Array<string> = [];
-  const combined: Array<string> = [];
-  const process = Deno.run({
-    cmd: [$.shell, "-c", $.prefix + " " + cmd],
-    env: Deno.env.toObject(),
-    stdout: $.stdout,
-    stderr: $.stderr,
-  });
-
-  const [status] = await Promise.all([
-    process.status(),
-    process.stdout && read(process.stdout, [stdout, combined], Deno.stdout),
-    process.stderr && read(process.stderr, [stderr, combined], Deno.stderr),
-  ]);
-
-  process.stdout?.close();
-  process.stderr?.close();
-  process.close();
-
-  if (--runningProcesses === 0) {
-    $.stdout = "piped";
-  }
-
-  if (status.success) {
-    return new ProcessOutput({
-      stdout: stdout.join(""),
-      stderr: stderr.join(""),
-      combined: combined.join(""),
-      status,
-    });
-  }
-
-  throw new ProcessError({
-    stdout: stdout.join(""),
-    stderr: stderr.join(""),
-    combined: combined.join(""),
-    status,
-  });
+  return new Process(cmd);
 }
 
 /**
@@ -122,21 +85,3 @@ export const stderrOnly = async (
   await exec(pieces, ...args)
     .then((o) => (o instanceof ProcessOutput ? o.stderr.trim() : ""))
     .catch((e) => (e instanceof ProcessError ? e.stderr.trim() : ""));
-
-async function read(
-  reader: Deno.Reader,
-  results: Array<Array<string>>,
-  outputStream: Deno.Writer,
-): Promise<Error | void> {
-  for await (const line of io.readLines(reader)) {
-    for (const result of results) {
-      result.push(line + "\n");
-    }
-    if ($.verbose > 1) {
-      await io.writeAll(
-        outputStream,
-        new TextEncoder().encode(line + "\n"),
-      );
-    }
-  }
-}
