@@ -9,6 +9,16 @@ import {
 
 import { $, $e, $o, $s, cd, path, ProcessError } from "./mod.ts";
 
+// @TODO: test is flaky
+// Deno.test({
+//   name: "$ should have a pid",
+//   async fn() {
+//     const proc = $`sleep 1`;
+//     assert(proc.pid > 0);
+//     await proc;
+//   },
+// });
+
 Deno.test("$ works", async () => {
   const result = await $`echo hello`;
 
