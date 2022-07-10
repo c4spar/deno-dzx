@@ -9,16 +9,14 @@ import {
 
 import { $, $e, $o, $s, cd, path, ProcessError } from "./mod.ts";
 
-// @TODO: test is flacy on ci and throws: No such file or directory (os error 2)
-// Deno.test({
-//   name: "$ should have a pid",
-//   ignore: Deno.build.os === "darwin",
-//   async fn() {
-//     const proc = $`echo hello`;
-//     assert(proc.pid > 0);
-//     await proc;
-//   },
-// });
+Deno.test({
+  name: "$ should have a pid",
+  async fn() {
+    const proc = $`sleep 0.2`;
+    assert(proc.pid > 0);
+    await proc;
+  },
+});
 
 Deno.test("$ works", async () => {
   const result = await $`echo hello`;
