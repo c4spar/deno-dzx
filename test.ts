@@ -19,10 +19,10 @@ import { $, $e, $o, $s, cd, path, ProcessError } from "./mod.ts";
 //   },
 // });
 
-// Deno.test("$ should return status code", async () => {
-//   const statusCode = await $`echo foo`.statusCode;
-//   assertEquals(statusCode, 0);
-// });
+Deno.test("$ should resolve statusCode", async () => {
+  const statusCode = await $`echo foo`.statusCode;
+  assertEquals(statusCode, 0);
+});
 
 Deno.test("$ should not throw with statusCode", async () => {
   const statusCode = await $`exit 1`.statusCode;
