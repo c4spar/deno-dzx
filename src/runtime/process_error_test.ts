@@ -11,6 +11,7 @@ function createError(): ProcessError {
     stdout: "foo",
     stderr: "bar",
     combined: "baz",
+    retries: 0,
     status: {
       code: 1,
       success: false,
@@ -35,6 +36,7 @@ Deno.test({
     assertEquals(error.stdout, "foo");
     assertEquals(error.stderr, "bar");
     assertEquals(error.combined, "baz");
+    assertEquals(error.retries, 0);
     assertObjectMatch(error.status, {
       code: 1,
       success: false,

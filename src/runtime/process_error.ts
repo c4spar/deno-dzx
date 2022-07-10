@@ -10,6 +10,7 @@ export class ProcessError extends Error {
   #stderr!: string;
   #combined!: string;
   #status!: Deno.ProcessStatus;
+  #retries!: number;
 
   static merge(target: ProcessError, source: ProcessError): ProcessError {
     target.#name = source.name;
@@ -43,13 +44,18 @@ export class ProcessError extends Error {
     return this.#status;
   }
 
+  get retries(): number {
+    return this.#retries;
+  }
+
   #merge(
-    { stdout, stderr, combined, status }: ProcessErrorOptions,
+    { stdout, stderr, combined, status, retries }: ProcessErrorOptions,
   ): void {
     this.#stdout = stdout;
     this.#stderr = stderr;
     this.#combined = combined;
     this.#status = status;
+    this.#retries = retries;
     this.message = this.#getErrorMessage();
   }
 
@@ -74,6 +80,14 @@ export class ProcessError extends Error {
       message += colors.bold(
         `\n${colors.white("Signal:")} ${
           colors.yellow(this.#status.signal.toString())
+        }`,
+      );
+    }
+
+    if (this.#retries > 0) {
+      message += colors.bold(
+        `\n${colors.white("Retries:")} ${
+          colors.yellow(this.#retries.toString())
         }`,
       );
     }

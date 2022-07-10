@@ -5,13 +5,10 @@ import { ProcessError } from "./process_error.ts";
 import { ProcessOutput } from "./process_output.ts";
 import { quote } from "./quote.ts";
 
-let runningProcesses = 0;
-
 export function exec(
   pieces: TemplateStringsArray,
   ...args: Array<string | number | ProcessOutput>
-): Promise<ProcessOutput> {
-  runningProcesses++;
+): Process {
   const cmd = quote(
     pieces,
     ...args.map((

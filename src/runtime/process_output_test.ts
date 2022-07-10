@@ -6,6 +6,7 @@ function createOutput(): ProcessOutput {
     stdout: "foo",
     stderr: "bar",
     combined: "foobaz",
+    retries: 0,
     status: {
       code: 0,
       success: true,
@@ -21,6 +22,7 @@ Deno.test({
       stdout: "foo",
       stderr: "bar",
       combined: "foobaz",
+      retries: 0,
       status: {
         code: 0,
         success: true,
@@ -45,6 +47,7 @@ Deno.test({
       stdout: "foo\n",
       stderr: "bar\n",
       combined: "foo\nbar\n",
+      retries: 0,
       status: {
         code: 0,
         success: true,
