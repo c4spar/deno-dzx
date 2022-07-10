@@ -11,14 +11,16 @@ export class ProcessError extends Error {
   #combined!: string;
   #status!: Deno.ProcessStatus;
 
+  static merge(target: ProcessError, source: ProcessError): ProcessError {
+    target.#name = source.name;
+    target.#merge(source);
+    return target;
+  }
+
   constructor(options: ProcessErrorOptions) {
     super();
     Object.setPrototypeOf(this, ProcessError.prototype);
-    this.#stdout = options.stdout;
-    this.#stderr = options.stderr;
-    this.#combined = options.combined;
-    this.#status = options.status;
-    this.message = this.#getErrorMessage();
+    this.#merge(options);
   }
 
   get name(): string {
@@ -39,6 +41,16 @@ export class ProcessError extends Error {
 
   get status(): Deno.ProcessStatus {
     return this.#status;
+  }
+
+  #merge(
+    { stdout, stderr, combined, status }: ProcessErrorOptions,
+  ): void {
+    this.#stdout = stdout;
+    this.#stderr = stderr;
+    this.#combined = combined;
+    this.#status = status;
+    this.message = this.#getErrorMessage();
   }
 
   #getErrorMessage(): string {

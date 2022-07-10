@@ -23,7 +23,9 @@ export function exec(
     console.log($.brightBlue("$ %s"), cmd);
   }
 
-  return new Process(cmd);
+  return new Process(cmd, {
+    errorContext: exec,
+  });
 }
 
 /**

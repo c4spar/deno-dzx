@@ -4,6 +4,11 @@ import { Deferred, deferred } from "./deps.ts";
 import { ProcessError } from "./process_error.ts";
 import { ProcessOutput } from "./process_output.ts";
 
+export interface ProcessOptions {
+  // deno-lint-ignore ban-types
+  errorContext?: Function;
+}
+
 export class Process implements Promise<ProcessOutput> {
   readonly [Symbol.toStringTag] = "Process";
   readonly #cmd: string;
@@ -12,9 +17,17 @@ export class Process implements Promise<ProcessOutput> {
   #stdin: Deno.RunOptions["stdin"] = "inherit";
   #stdout: Deno.RunOptions["stdout"] = $.stdout;
   #stderr: Deno.RunOptions["stderr"] = $.stderr;
+  #baseError: ProcessError;
 
-  constructor(cmd: string) {
+  constructor(cmd: string, { errorContext }: ProcessOptions = {}) {
     this.#cmd = cmd;
+    this.#baseError = new ProcessError({
+      combined: "",
+      stderr: "",
+      stdout: "",
+      status: { code: 1, success: false, signal: undefined },
+    });
+    Error.captureStackTrace(this.#baseError, errorContext);
   }
 
   get #process(): Deno.Process {
@@ -82,22 +95,18 @@ export class Process implements Promise<ProcessOutput> {
         this.#process.stderr &&
         read(this.#process.stderr, [stderr, combined], Deno.stderr),
       ]);
-
-      if (!status.success) {
-        throw new ProcessError({
-          stdout: stdout.join(""),
-          stderr: stderr.join(""),
-          combined: combined.join(""),
-          status,
-        });
-      }
-
-      return new ProcessOutput({
+      const output = new ProcessOutput({
         stdout: stdout.join(""),
         stderr: stderr.join(""),
         combined: combined.join(""),
         status,
       });
+
+      if (!status.success) {
+        throw ProcessError.merge(this.#baseError, new ProcessError(output));
+      }
+
+      return output;
     } finally {
       this.#process.close();
       this.#process.stdin?.close();
