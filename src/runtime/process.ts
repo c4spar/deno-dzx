@@ -1,6 +1,7 @@
 /// <reference path="../../types.d.ts" />
 
 import { Deferred, deferred } from "./deps.ts";
+import { readLines } from "./lib/readline.ts";
 import { ProcessError } from "./process_error.ts";
 import { ProcessOutput } from "./process_output.ts";
 
