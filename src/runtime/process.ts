@@ -65,6 +65,10 @@ export class Process implements Promise<ProcessOutput> {
     return this;
   }
 
+  kill(signo: Deno.Signal): void {
+    this.#process.kill(signo);
+  }
+
   then<TResult1 = ProcessOutput, TResult2 = never>(
     onfulfilled?:
       | ((value: ProcessOutput) => TResult1 | PromiseLike<TResult1>)
