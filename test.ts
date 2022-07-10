@@ -9,12 +9,6 @@ import {
 
 import { $, $e, $o, $s, cd, path, ProcessError } from "./mod.ts";
 
-Deno.test("$ should have a pid", async () => {
-  const proc = $`echo hello`;
-  assert(proc.pid > 0);
-  await proc;
-});
-
 Deno.test("$ works", async () => {
   const result = await $`echo hello`;
 
