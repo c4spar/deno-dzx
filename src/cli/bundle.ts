@@ -1,9 +1,4 @@
-import {
-  Command,
-  copy,
-  DenoBundleOptions,
-  ValidationError,
-} from "./deps.ts";
+import { Command, copy, DenoBundleOptions, ValidationError } from "./deps.ts";
 import { error } from "../_utils.ts";
 import { path } from "../runtime/mod.ts";
 import { bootstrapModule } from "./lib/bootstrap.ts";
