@@ -119,6 +119,22 @@ Deno.test("$ should not throw with noThrow", async () => {
   assertEquals(result.status.code, 1);
 });
 
+Deno.test("$ should throw on timeout (zsh)", async () => {
+  $.shell = "/bin/zsh";
+  await assertRejects(
+    () => $`sleep 10`.timeout(100),
+    ProcessError,
+  );
+  $.shell = "/bin/bash";
+});
+
+Deno.test("$ should not throw if timeout is not reached (zsh)", async () => {
+  $.shell = "/bin/zsh";
+  const { status } = await $`sleep 0.1`.timeout(10000);
+  assertEquals(status.code, 0);
+  $.shell = "/bin/bash";
+});
+
 Deno.test({
   name: "$ should kill the process (bash)",
   async fn() {
