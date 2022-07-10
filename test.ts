@@ -121,8 +121,8 @@ Deno.test("$ should not throw with noThrow", async () => {
 
 // @TODO: tests are flaky on github actions.
 // Test runner is green but throws: No such file or directory (os error 2)
-// But they don't fail while uncommenting all other tests. Locally all tests
-// work fine.
+// But they don't fail while uncommenting all other tests.
+//  Locally all tests pass.
 Deno.test({
   name: "$ should have a pid",
   ignore: !!Deno.env.get("CI"),
