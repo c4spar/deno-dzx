@@ -9,7 +9,7 @@ import {
 
 import { $, $e, $o, $s, cd, path, ProcessError } from "./mod.ts";
 
-// @TODO: test is flaky
+// @TODO: test is flaky on github actions
 // Deno.test({
 //   name: "$ should have a pid",
 //   async fn() {
@@ -18,6 +18,16 @@ import { $, $e, $o, $s, cd, path, ProcessError } from "./mod.ts";
 //     await proc;
 //   },
 // });
+
+Deno.test("$ should return status code", async () => {
+  const statusCode = await $`echo foo`.statusCode;
+  assertEquals(statusCode, 0);
+});
+
+Deno.test("$ should not throw with statusCode", async () => {
+  const statusCode = await $`exit 1`.statusCode;
+  assertEquals(statusCode, 1);
+});
 
 Deno.test("$ works", async () => {
   const result = await $`echo hello`;

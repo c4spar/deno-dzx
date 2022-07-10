@@ -47,13 +47,17 @@ export class Process implements Promise<ProcessOutput> {
     return this.#proc;
   }
 
-  get pid() {
+  get pid(): number {
     return this.#process.pid;
   }
 
   get noThrow(): this {
     this.#throwErrors = false;
     return this;
+  }
+
+  get statusCode(): Promise<number> {
+    return this.noThrow.#resolve().then(({ status }) => status.code);
   }
 
   retry(retries: number): this {
