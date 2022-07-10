@@ -221,10 +221,9 @@ export class Reader<
     const child: Child = isTemplateStringArray(dest)
       ? Child.spawn(
         parseCmd(dest, ...args as Array<string | number | ProcessOutput>),
-        { context: Reader.prototype.pipeThrough },
       )
       : dest instanceof Deno.Child
-      ? new Child(dest, { context: Reader.prototype.pipeThrough })
+      ? new Child(dest)
       : dest;
 
     this.#pipeTo(this.#stream, child);
