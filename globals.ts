@@ -1,3 +1,5 @@
 /// <reference path="./types.d.ts" />
 
-import "./src/runtime/globals.ts";
+import { initGlobals } from "./src/runtime/globals.ts";
+
+initGlobals();

@@ -1,3 +1,5 @@
 import * as globals from "./mod.ts";
 
-Object.assign(self, globals);
+export function initGlobals() {
+  Object.assign(self, globals);
+}
