@@ -1,5 +1,5 @@
 import { error } from "../_utils.ts";
-import { path } from "./deps.ts";
+import { colors, path } from "./deps.ts";
 import { $ } from "./shell.ts";
 
 const cwd = Deno.cwd();
@@ -8,23 +8,35 @@ export function cd(dir: string) {
   if ($.verbose) {
     console.log($.brightBlue("$ %s"), `cd ${dir}`);
   }
+  let realPath = dir;
+
   try {
     if (dir[0] === "~") {
-      dir = path.join(homedir() as string, dir.slice(1));
+      realPath = path.join(homedir() as string, dir.slice(1));
     } else if (dir[0] !== path.sep) {
-      dir = path.join(cwd, dir);
+      realPath = path.join(cwd, dir);
     }
-    Deno.chdir(dir);
+
+    Deno.chdir(realPath);
   } catch (err: unknown) {
+    const opts = { context: cd };
+
     if (err instanceof Deno.errors.NotFound) {
-      const stack: string = (new Error().stack!.split("at ")[2]).trim();
-      throw error(`cd: ${dir}: No such directory\n    at ${stack}`);
+      throw error(
+        `cd: No such directory: ${dir}\n${
+          colors.bold(
+            colors.white(`Directory:`),
+          )
+        } ${colors.brightYellow(realPath)}`,
+        opts,
+      );
     } else if (err instanceof Deno.errors.PermissionDenied) {
-      const stack: string = (new Error().stack!.split("at ")[2]).trim();
-      throw error(`cd: ${dir}: Permission denied\n    at ${stack}`);
+      throw error(`cd: Permission denied`, opts);
     }
+
     throw error(
       err instanceof Error ? err : new Error(`[non-error-thrown] ${err}`),
+      opts,
     );
   }
 }
