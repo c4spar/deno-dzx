@@ -66,11 +66,12 @@ await fs.ensureDir("./tmp");
 - [Install](#install)
 - [Usage](#usage)
   - [Permissions](#permissions)
-  - [Worker](#worker)
   - [Markdown](#markdown)
   - [Methods](#methods)
   - [Modules](#modules)
   - [Variables](#variables)
+- [Experimental](#experimental)
+  - [Worker](#worker)
 - [CLI](#cli)
 - [Contributing](#contributing)
 - [License](#license)
@@ -120,7 +121,7 @@ you can simply run it with:
 ./script.ts
 ```
 
-## Permissions
+### Permissions
 
 You can use `dzx` without installation by using next shebang. This also allows
 you to explicitly set the permissions for your script.
@@ -132,23 +133,7 @@ you to explicitly set the permissions for your script.
 console.log(`Hello ${$.blue.bold("world")}!`);
 ```
 
-## Worker
-
-> This is currently an exerminental feature. Permission flags doens't support
-> values currently. Read permissions are required by default.
-
-If `dzx` is called with `-w` or `--worker`, the script is executed inside an
-isolated web worker. If enabled, you can pass explicit permissions directly to
-the `dzx` cli.
-
-```typescript
-#!/usr/bin/env dzx --worker --allow-read
-/// <reference path="https://deno.land/x/dzx@0.3.1/types.d.ts" />
-
-console.log(`Hello from ${$.blue.bold("worker")}!`);
-```
-
-## Markdown
+### Markdown
 
 With `dzx` you can run the `js`/`ts` code blocks from a Markdown file as if they
 were a regular script. This is very convenient when you want to blend some
@@ -163,9 +148,10 @@ dzx ./examples/markdown.md
 See the [markdown example](./examples/markdown.md) for further documentation and
 notes.
 
-## Methods
+### Methods
 
-- `` $`command` ``: Executes a shell command.
+- `` $`command` ``: Executes a shell command and returns a `Process` instance.
+  The [`Process`](#process) class has several chainable methods.
 
   ```ts
   const count = parseInt(await $`ls -1 | wc -l`);
@@ -253,7 +239,33 @@ notes.
 - `` quote`string` ``: The quote methods quotes safly a string. by default the
   `shq` package is used. Can be overidden with `$.quote`.
 
-## Modules
+### Process
+
+Methods and properties of the `Process` class which implements
+`Promise<ProcessOutput>`.
+
+- `.pid`: Returns the process id of the executed command.
+
+- `.noThrow`: If invoked the command doesn't throw an error if the command
+  returns a none-zero exit code.
+
+- `.statusCode`: Returns the status code of the executed command and calls
+
+- `.noThrow` internally to catch the error and return the status code.
+
+- `.stdout` Returns `Promise<string>` and resolve with the stdout.
+
+- `.stderr` Returns `Promise<string>` and resolve with the stderr.
+
+- `.retry(retries: number)` Set a number of maximum retries if the command
+  fails.
+
+- `.timeout(timeout: number)` Throws an error if the command takes longer than
+  the provided `timeout` in milliseconds.
+
+- `.kill(signal: Deno.Signal)` Kills the running process.
+
+### Modules
 
 - **$.\[style]:** Cliffy's color module. A chainable wrapper for Deno's
   `std/fmt/colors` module. Available on the global `$` symbol.
@@ -309,7 +321,7 @@ notes.
   const args: flags.Args = flags.parse($.args);
   ```
 
-## Variables
+### Variables
 
 - **$.shell:** Set the shell that is used by `` $`command` ``. Default:
   `/bin/bash`
@@ -328,37 +340,64 @@ notes.
 - **$.quote:** Parser method that is used to safely quote strings. Used by:
   `` $`command` ``
 
-# CLI
+## Experimental
+
+### Worker
+
+> This is currently an exerminental feature. Permission flags doesn't support
+> values currently. Read permissions are required by default.
+
+If `dzx` is called with `-w` or `--worker`, the script is executed inside an
+isolated web worker. If enabled, you can pass explicit permissions directly to
+the `dzx` cli.
+
+```typescript
+#!/usr/bin/env dzx --worker --allow-read
+/// <reference path="https://deno.land/x/dzx@0.3.1/types.d.ts" />
+
+console.log(`Hello from ${$.blue.bold("worker")}!`);
+```
+
+## CLI
 
 ```
-Usage:   dzx [script] [args...]
-Version: 0.3.1
+  Usage:   dzx [script] [args...]
+  Version: 0.3.1  (New version available: 0.3.2. Run 'dzx upgrade' to upgrade to the latest version!)
 
-Description:
+  Description:
 
-  🦕 A custom deno runtime for fun.
+    A custom deno runtime for fun.
 
-Options:
+  Options:
 
-  -h, --help       - Show this help.
-  -V, --version    - Show the version number for this program.
-  -A, --allow-all  - Allow all permissions.                                           (Depends: --worker)
-  --allow-env      - Allow environment access.                                        (Depends: --worker)
-  --allow-hrtime   - Allow high resolution time measurement.                          (Depends: --worker)
-  --allow-net      - Allow network access.                                            (Depends: --worker)
-  --allow-ffi      - Allow loading dynamic libraries.                                 (Depends: --worker)
-  --allow-read     - Allow file system read access.                                   (Depends: --worker)
-  --allow-run      - Allow running subprocesses.                                      (Depends: --worker)
-  --allow-write    - Allow file system write access.                                  (Depends: --worker)
-  -w, --worker     - Run script in an isolated web worker with it's own permissions.
+    -h, --help               - Show this help.
+    -V, --version            - Show the version number for this program.
+    -A, --allow-all          - Allow all permissions.                                                           (Depends: --worker)
+    --allow-env              - Allow environment access.                                                        (Depends: --worker)
+    --allow-hrtime           - Allow high resolution time measurement.                                          (Depends: --worker)
+    --allow-net              - Allow network access.                                                            (Depends: --worker)
+    --allow-ffi              - Allow loading dynamic libraries.                                                 (Depends: --worker)
+    --allow-read             - Allow file system read access.                                                   (Depends: --worker)
+    --allow-run              - Allow running subprocesses.                                                      (Depends: --worker)
+    --allow-write            - Allow file system write access.                                                  (Depends: --worker)
+    --compat                 - Node compatibility mode. Currently only enables built-in node modules like 'fs'
+                               and globals like 'process'.
+    --inspect        <host>  - Activate inspector on host:port. (default: 127.0.0.1:9229)
+    --inspect-brk    <host>  - Activate inspector on host:port and break at start of user script.
+    -w, --worker             - Run script in an isolated web worker with it's own permissions. (experimental)
+    -v, --verbose            - Enable verbose mode. This option can appear up to three times.                   (Default: 1)
+                               -v: Print executed commands and script execution time.
+                               -vv: Print also stdout and stderr.
+                               -vvv: Print internal debug information.
+    --no-verbose             - Disable stdout output.
 
-Commands:
+  Commands:
 
-  bundle   [script]                                           - Bundle an dzx script to a standalone deno sript.
-  compile  [compile-options...] [script] [script-options...]  - Combile an dzx script to a standalone binary.
-  eval     <code>                                             - Evaluate a dzx script from the command line.
-  repl                                                        - Start a dzx repl.
-  upgrade                                                     - Upgrade dzx executable to latest or given version.
+    bundle   [script]  - Bundle a dzx script to a standalone deno script.
+    compile  [script]  - Compile a dzx script to a standalone binary.
+    eval     [code]    - Evaluate a dzx script from the command line.
+    repl               - Start a dzx repl.
+    upgrade            - Upgrade dzx executable to latest or given version.
 ```
 
 - **dzx** `[script] [...args]`: Run a local or remote dzx script (optional in a
