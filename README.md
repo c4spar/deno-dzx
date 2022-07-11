@@ -275,9 +275,9 @@ Methods and properties of the `Process` class which implements
 - `.statusCode`: Returns the status code of the executed command and calls
   `.noThrow` internally to catch the error and return the status code.
 
-- `.stdout` Returns `Promise<string>` and resolve with the stdout.
+- `.stdout` Returns `Promise<string>` and resolves with the stdout output.
 
-- `.stderr` Returns `Promise<string>` and resolve with the stderr.
+- `.stderr` Returns `Promise<string>` and resolves with the stderr output.
 
 - `.retry(retries: number)` Set a number of maximum retries if the command
   fails.
