@@ -26,8 +26,14 @@
 </p>
 
 ```typescript
-#!/usr/bin/env dzx
-/// <reference path="https://deno.land/x/dzx@0.3.1/types.d.ts" />
+import {
+  $,
+  asny,
+  cd,
+  fs,
+  io,
+  path,
+} from "https://deno.land/x/dzx@0.3.2/mod.ts";
 
 $.verbose = true;
 $.shell = "/usr/local/bin/zsh";
@@ -37,9 +43,10 @@ console.log(`Hello from ${$.blue.bold("dzx")}!`);
 const branch = await $`git branch --show-current`;
 await $`dep deploy --branch=${branch}`;
 
-// Print command output to stdout. Will be reverted to "piped" after all async ops are done.
+// Print command output to stdout and stderr.
 $.stdout = "inherit";
 $.stderr = "inherit";
+
 await Promise.all([
   $`deno lint`,
   $`deno fmt --check`,
@@ -67,6 +74,7 @@ await fs.ensureDir("./tmp");
 - [Usage](#usage)
   - [Permissions](#permissions)
   - [Markdown](#markdown)
+- [Shell](#shell)
   - [Methods](#methods)
   - [Modules](#modules)
   - [Variables](#variables)
@@ -79,7 +87,7 @@ await fs.ensureDir("./tmp");
 ## Install
 
 ```
-deno install --allow-all --unstable -f https://deno.land/x/dzx@0.3.1/dzx.ts
+deno install --allow-all --unstable -f https://deno.land/x/dzx@0.3.2/dzx.ts
 ```
 
 > `--unstable` is required for the `bundle` command which uses `Deno.emit`, for
@@ -87,38 +95,56 @@ deno install --allow-all --unstable -f https://deno.land/x/dzx@0.3.1/dzx.ts
 
 ## Usage
 
+### Module usage
+
+The default way is to just import the modules you need from the `dzx/mod.ts`
+module. This doesn't inject any globals into your script.
+
+```ts
+import { $, cd, fs, io, log, path } from "https://deno.land/x/dzx@0.3.2/mod.ts";
+```
+
+### Globals usage
+
+To avoid importing modules you can also import the `globals.ts` file. This makes
+all exports from `mod.ts` globally available.
+
+```ts
+import from "https://deno.land/x/dzx@0.3.2/globals.ts";
+```
+
+### CLI usage
+
+When a dzx script is executed via CLI, you don't need to import anything. All
+exports are automatically global available. This applies also to commands like
+`dzx eval "console.log($)"`.
+
 To start writing a dzx script, add next shebang at the beginning of your script:
 
 ```
 #!/usr/bin/env dzx
 ```
 
-To enable typings for typescript in your IDE, you can add a tripple slash
-reference to the top of the file,
-
-```
-#!/usr/bin/env dzx
-/// <reference path="https://deno.land/x/dzx@0.3.1/types.d.ts" />
-```
-
-or you can import all symbol directly from the `dzx/mod.ts` module instead of
-using globals.
-
-```ts
-#!/usr/bin/env dzx
-import { $, cd, fs, io, log, path } from "https://deno.land/x/dzx@0.3.1/mod.ts";
-```
-
 After making your script executable,
 
 ```shell
-chmod +x ./script.ts
+chmod +x ./script.js
 ```
 
 you can simply run it with:
 
 ```shell
-./script.ts
+./script.js
+```
+
+#### Typscript
+
+To enable typescript support in your IDE, you can optionally add a tripple slash
+reference to the top of the file.
+
+```
+#!/usr/bin/env dzx
+/// <reference path="https://deno.land/x/dzx@0.3.2/types.d.ts" />
 ```
 
 ### Permissions
@@ -127,8 +153,8 @@ You can use `dzx` without installation by using next shebang. This also allows
 you to explicitly set the permissions for your script.
 
 ```typescript
-#!/usr/bin/env deno run --allow-run --allow-read --allow-env https://deno.land/x/dzx@0.3.1/dzx.ts
-/// <reference path="https://deno.land/x/dzx@0.3.1/types.d.ts" />
+#!/usr/bin/env deno run --allow-run --allow-read --allow-env https://deno.land/x/dzx@0.3.2/dzx.ts
+/// <reference path="https://deno.land/x/dzx@0.3.2/types.d.ts" />
 
 console.log(`Hello ${$.blue.bold("world")}!`);
 ```
@@ -353,7 +379,7 @@ the `dzx` cli.
 
 ```typescript
 #!/usr/bin/env dzx --worker --allow-read
-/// <reference path="https://deno.land/x/dzx@0.3.1/types.d.ts" />
+/// <reference path="https://deno.land/x/dzx@0.3.2/types.d.ts" />
 
 console.log(`Hello from ${$.blue.bold("worker")}!`);
 ```
@@ -475,3 +501,27 @@ Any kind of contribution is welcome!
 ## License
 
 [MIT](LICENSE)
+
+## Class names
+
+- Child
+- Reader
+- Writer
+- ProcessOutput
+- ProcessError
+
+## Class names 2
+
+- Child
+- Reader
+- Writer
+- ProcessOutput
+- ProcessError
+
+## Class names 3
+
+- Child
+- Reader
+- Writer
+- ChildOutput
+- ChildError
