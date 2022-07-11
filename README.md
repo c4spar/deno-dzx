@@ -273,8 +273,7 @@ Methods and properties of the `Process` class which implements
   returns a none-zero exit code.
 
 - `.statusCode`: Returns the status code of the executed command and calls
-
-- `.noThrow` internally to catch the error and return the status code.
+  `.noThrow` internally to catch the error and return the status code.
 
 - `.stdout` Returns `Promise<string>` and resolve with the stdout.
 
