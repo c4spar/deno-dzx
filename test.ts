@@ -171,6 +171,22 @@ Deno.test({
   },
 });
 
+Deno.test({
+  name: "$ should resolve stdout promise",
+  async fn() {
+    const stdout = await $`echo foo; echo bar >&2`.stdout;
+    assertEquals(stdout, "foo\n");
+  },
+});
+
+Deno.test({
+  name: "$ should resolve stderr promise",
+  async fn() {
+    const stderr = await $`echo foo; echo bar >&2`.stderr;
+    assertEquals(stderr, "bar\n");
+  },
+});
+
 // @TODO: tests are flaky on github actions.
 // Test runner is green but throws: No such file or directory (os error 2)
 // But they don't fail while uncommenting all other tests.

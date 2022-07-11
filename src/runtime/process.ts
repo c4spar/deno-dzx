@@ -89,6 +89,30 @@ export class Process implements Promise<ProcessOutput> {
     return this.noThrow.#resolve().then(({ status }) => status.code);
   }
 
+  /**
+   * Execute the shell command and return the output.
+   *
+   * ```ts
+   * const output = await $`echo Hello; echo world >&2`.stdout;
+   * console.log(output); // -> "Hello\n"
+   * ```
+   */
+  get stdout(): Promise<string> {
+    return this.#resolve().then(({ stdout }) => stdout);
+  }
+
+  /**
+   * Execute the shell command and return the output.
+   *
+   * ```ts
+   * const errorOutput = await $`echo Hello; echo world >&2`.stderr;
+   * console.log(errorOutput); // -> "World\n"
+   * ```
+   */
+  get stderr(): Promise<string> {
+    return this.#resolve().then(({ stderr }) => stderr);
+  }
+
   retry(retries: number): this {
     this.#maxRetries = retries;
     return this;
