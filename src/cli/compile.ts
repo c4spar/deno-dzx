@@ -1,5 +1,5 @@
 import { preBundle } from "./bundle.ts";
-import { error } from "../_utils.ts";
+import { createError } from "../_utils.ts";
 import { Command, copy, parse, ValidationError } from "./deps.ts";
 
 export function compileCommand() {
@@ -72,7 +72,7 @@ export async function compile(
   p.close();
 
   if (!success) {
-    throw error(`Failed to compile: ${script}`);
+    throw createError(`Failed to compile: ${script}`);
   }
 }
 

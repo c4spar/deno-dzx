@@ -1,7 +1,22 @@
 import { colors, path } from "./runtime/deps.ts";
 
-export function error(message: string | Error): Error {
-  return (message instanceof Error ? message : new Error(colors.red(message)));
+export interface DzxErrorOptions {
+  // deno-lint-ignore ban-types
+  context?: Function;
+}
+export function createError(
+  message: string | Error,
+  { context }: DzxErrorOptions = {},
+): Error {
+  const err = message instanceof Error
+    ? message
+    : new Error(colors.red(message));
+
+  if (context) {
+    Error.captureStackTrace(err, context);
+  }
+
+  return err;
 }
 
 export function addProtocol(script: string): string {
