@@ -10,11 +10,8 @@ import { getModuleFromStdin } from "./lib/stream.ts";
 import { getMarkdownModule } from "./lib/markdown.ts";
 import { spawnWorker } from "./lib/worker.ts";
 import { repl, replCommand } from "./repl.ts";
-import { initGlobals } from "../runtime/globals.ts";
 
 export function dzx() {
-  initGlobals();
-
   return new Command()
     .version(VERSION)
     .name("dzx")

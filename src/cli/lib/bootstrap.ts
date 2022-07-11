@@ -1,3 +1,4 @@
+import { initGlobals } from "../../runtime/globals.ts";
 import { $ } from "../../runtime/mod.ts";
 
 const startTime = Date.now();
@@ -89,6 +90,8 @@ export interface ImportModuleOptions {
 }
 
 export async function importModule(options: ImportModuleOptions) {
+  initGlobals();
+
   const mainModule = options.mainModule;
   Object.defineProperty($, "mainModule", {
     get: () => mainModule,
