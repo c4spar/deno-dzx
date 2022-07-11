@@ -1,12 +1,12 @@
 import { colors, path } from "./runtime/deps.ts";
 
-interface ErrorOptions {
+export interface DzxErrorOptions {
   // deno-lint-ignore ban-types
   context?: Function;
 }
 export function error(
   message: string | Error,
-  { context }: ErrorOptions = {},
+  { context }: DzxErrorOptions = {},
 ): Error {
   const err =
     (message instanceof Error ? message : new Error(colors.red(message)));
