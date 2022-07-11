@@ -1,5 +1,5 @@
 import { colors, shq } from "./deps.ts";
-import { exec, statusOnly, stderrOnly, stdoutOnly } from "./exec.ts";
+import { exec, stderrOnly, stdoutOnly } from "./exec.ts";
 
 export type $ = typeof exec & typeof colors & {
   get mainModule(): string;
@@ -18,7 +18,6 @@ export type $ = typeof exec & typeof colors & {
 };
 
 export const $: $ = exec as $;
-export const $s: typeof statusOnly = statusOnly;
 export const $o: typeof stdoutOnly = stdoutOnly;
 export const $e: typeof stderrOnly = stderrOnly;
 
