@@ -137,8 +137,6 @@ you can simply run it with:
 ./script.js
 ```
 
-#### Typscript
-
 To enable typescript support in your IDE, you can optionally add a tripple slash
 reference to the top of the file.
 
@@ -501,27 +499,3 @@ Any kind of contribution is welcome!
 ## License
 
 [MIT](LICENSE)
-
-## Class names
-
-- Child
-- Reader
-- Writer
-- ProcessOutput
-- ProcessError
-
-## Class names 2
-
-- Child
-- Reader
-- Writer
-- ProcessOutput
-- ProcessError
-
-## Class names 3
-
-- Child
-- Reader
-- Writer
-- ChildOutput
-- ChildError
