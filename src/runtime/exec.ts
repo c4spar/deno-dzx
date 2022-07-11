@@ -1,5 +1,3 @@
-/// <reference path="../../types.d.ts" />
-
 import { Process } from "./process.ts";
 import { ProcessError } from "./process_error.ts";
 import { ProcessOutput } from "./process_output.ts";
@@ -15,10 +13,6 @@ export function exec(
       a,
     ) => (a instanceof ProcessOutput ? a.stdout.replace(/\n$/, "") : a)),
   );
-
-  if ($.verbose) {
-    console.log($.brightBlue("$ %s"), cmd);
-  }
 
   return new Process(cmd, {
     errorContext: exec,

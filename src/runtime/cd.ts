@@ -1,5 +1,6 @@
 import { error } from "../_utils.ts";
-import { path } from "./mod.ts";
+import { path } from "./deps.ts";
+import { $ } from "./shell.ts";
 
 const cwd = Deno.cwd();
 

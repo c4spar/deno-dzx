@@ -1,3 +1,4 @@
+import "../../runtime/globals.ts";
 import { $ } from "../../runtime/mod.ts";
 
 const startTime = Date.now();
@@ -36,7 +37,7 @@ export function stringifyStartTime(startTime: number) {
 
 export function bootstrap(options: BootstrapOptions): string {
   const code = [
-    `import "${new URL("../../../mod.ts", import.meta.url)}";`,
+    `import "${new URL("../../runtime/globals.ts", import.meta.url)}";`,
     "{",
     stringifyStartTime(startTime),
     options.mainModule ? stringifyMainModule(options.mainModule) : "",

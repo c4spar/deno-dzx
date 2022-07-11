@@ -1,4 +1,4 @@
-/// <reference path="../../types.d.ts" />
+import { shq } from "./deps.ts";
 
 export function quote(
   pieces: TemplateStringsArray,
@@ -8,7 +8,7 @@ export function quote(
   let i = 0;
   for (; i < args.length; i++) {
     if (typeof args[i] === "string") {
-      parsed += $.quote(args[i] as string) + pieces[i + 1];
+      parsed += shq(args[i] as string) + pieces[i + 1];
     } else {
       parsed += args[i] + pieces[i + 1];
     }

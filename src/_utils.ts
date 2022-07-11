@@ -1,4 +1,5 @@
-import { path } from "./runtime/deps.ts";
+import { colors, path } from "./runtime/deps.ts";
+import { $ } from "./runtime/shell.ts";
 
 export function error(message: string | Error, exitCode = 1): Error {
   if ($.throwErrors) {
@@ -11,7 +12,7 @@ export function error(message: string | Error, exitCode = 1): Error {
 }
 
 function getErrorMessage(message: string) {
-  return $.red(`${$.bold("error:")} ${message}`);
+  return colors.red(`${colors.bold("error:")} ${message}`);
 }
 
 export function addProtocol(script: string): string {
