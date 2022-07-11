@@ -1,4 +1,4 @@
-import { DzxErrorOptions, error } from "../_utils.ts";
+import { createError, DzxErrorOptions } from "../_utils.ts";
 import { colors, path } from "./deps.ts";
 import { $ } from "./shell.ts";
 
@@ -27,14 +27,14 @@ export function cd(dir: string) {
       throw fmtError(`Permission denied`, opts);
     }
 
-    throw error(
+    throw createError(
       err instanceof Error ? err : `[non-error-thrown] ${err}`,
       opts,
     );
   }
 
   function fmtError(message: string, opts: DzxErrorOptions) {
-    return error(
+    return createError(
       `cd: ${message}: ${dir}\n${
         colors.bold(
           colors.white(`Directory:`),
@@ -53,6 +53,6 @@ function homedir(): string | null {
     case "darwin":
       return Deno.env.get("HOME") || null;
     default:
-      throw error("Failed to retrieve home directory.");
+      throw createError("Failed to retrieve home directory.");
   }
 }

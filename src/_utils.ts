@@ -4,13 +4,18 @@ export interface DzxErrorOptions {
   // deno-lint-ignore ban-types
   context?: Function;
 }
-export function error(
+export function createError(
   message: string | Error,
   { context }: DzxErrorOptions = {},
 ): Error {
-  const err =
-    (message instanceof Error ? message : new Error(colors.red(message)));
-  Error.captureStackTrace(err, context);
+  const err = message instanceof Error
+    ? message
+    : new Error(colors.red(message));
+
+  if (context) {
+    Error.captureStackTrace(err, context);
+  }
+
   return err;
 }
 

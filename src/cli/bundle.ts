@@ -1,5 +1,5 @@
 import { Command, copy, DenoBundleOptions, ValidationError } from "./deps.ts";
-import { error } from "../_utils.ts";
+import { createError } from "../_utils.ts";
 import { path } from "../runtime/mod.ts";
 import { bootstrapModule } from "./lib/bootstrap.ts";
 
@@ -95,11 +95,11 @@ async function bundleFile(
     return code;
   } catch (err: unknown) {
     if (err instanceof Deno.errors.NotFound) {
-      throw error(`File not found: ${file}`);
+      throw createError(`File not found: ${file}`);
     } else if (err instanceof Deno.errors.PermissionDenied) {
-      throw error(`Permission denied: ${file}`);
+      throw createError(`Permission denied: ${file}`);
     }
-    throw error(
+    throw createError(
       err instanceof Error ? err : new Error(`[non-error-thrown] ${err}`),
     );
   }
