@@ -74,7 +74,6 @@ await fs.ensureDir("./tmp");
 - [Usage](#usage)
   - [Permissions](#permissions)
   - [Markdown](#markdown)
-- [Shell](#shell)
   - [Methods](#methods)
   - [Modules](#modules)
   - [Variables](#variables)
@@ -266,7 +265,7 @@ notes.
 ### Process
 
 Methods and properties of the `Process` class which implements
-`Promise<ProcessOutput>`.
+`Promise<ProcessOutput>` and is returned by the `$` method.
 
 - `.pid`: Returns the process id of the executed command.
 
