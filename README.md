@@ -28,7 +28,7 @@
 ```typescript
 import {
   $,
-  asny,
+  async,
   cd,
   fs,
   io,
