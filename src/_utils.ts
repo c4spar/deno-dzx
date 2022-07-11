@@ -1,13 +1,7 @@
 import { colors, path } from "./runtime/deps.ts";
 
 export function error(message: string | Error): Error {
-  return (message instanceof Error
-    ? message
-    : new Error(getErrorMessage(message)));
-}
-
-function getErrorMessage(message: string) {
-  return colors.red(`${colors.bold("error:")} ${message}`);
+  return (message instanceof Error ? message : new Error(colors.red(message)));
 }
 
 export function addProtocol(script: string): string {
