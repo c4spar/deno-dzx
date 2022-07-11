@@ -1,9 +1,8 @@
-/// <reference path="../../types.d.ts" />
-
 import { Deferred, deferred } from "./deps.ts";
 import { readLines } from "./lib/readline.ts";
 import { ProcessError } from "./process_error.ts";
 import { ProcessOutput } from "./process_output.ts";
+import { $ } from "./shell.ts";
 
 export interface ProcessOptions {
   // deno-lint-ignore ban-types
@@ -37,6 +36,10 @@ export class Process implements Promise<ProcessOutput> {
       retries: 0,
     });
     Error.captureStackTrace(this.#baseError, errorContext);
+
+    if ($.verbose) {
+      console.log($.brightBlue("$ %s"), cmd);
+    }
   }
 
   get #process(): Deno.Process {
