@@ -2,7 +2,6 @@ import type {
   $ as _$,
   $e as _$e,
   $o as _$o,
-  $s as _$s,
   async as _async,
   cd as _cd,
   flags as _flags,
@@ -46,20 +45,6 @@ declare global {
    * as details about the process exit status.
    */
   const $: _$;
-
-  /**
-   * Run a command and return only its exit code.
-   *
-   * If the command throws an error or fails in some way,
-   * this method will not re-throw that error. It will
-   * either return the exit code from the process, or `1`
-   * if no exit code is produced (due to an error).
-   *
-   * If you want assurance that a failure in the child process
-   * will throw an error, use `$`.
-   * @see $
-   */
-  const $s: typeof _$s;
 
   /**
    * Run a command and return only its trimmed stdout.
@@ -151,7 +136,6 @@ declare global {
   interface Window {
     // dzx
     $: _$;
-    $s: typeof _$s;
     $o: typeof _$o;
     $e: typeof _$e;
     cd: typeof _cd;
@@ -170,7 +154,6 @@ declare global {
   interface WorkerGlobalScope {
     // dzx
     $: _$;
-    $s: typeof _$s;
     $o: typeof _$o;
     $e: typeof _$e;
     cd: typeof _cd;

@@ -200,23 +200,6 @@ notes.
   }
   ```
 
-- `` $s`command` ``: Executes a shell command and _only returns its exit code_
-  (without throwing an error)
-
-  ```ts
-  const trueStatus = await $s`true`);
-  console.log(trueStatus); // -> 0
-  ```
-
-  If the executed program returns a non-zero exit code, no error will be thrown.
-  Either the non-zero code will be the return value, or a `1` will be returned
-  by default.
-
-  ```ts
-  const falseStatus = await $s`false`);
-  console.log(falseStatus); // -> 1
-  ```
-
 - `` $o`command` ``: Executes a shell command and _only returns its trimmed
   stdout_ (without throwing an error)
 

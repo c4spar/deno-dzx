@@ -7,23 +7,12 @@ import {
   assertStringIncludes,
 } from "./dev_deps.ts";
 
-import { $, $e, $o, $s, cd, path, ProcessError } from "./mod.ts";
+import { $, $e, $o, cd, path, ProcessError } from "./mod.ts";
 
 Deno.test("$ works", async () => {
   const result = await $`echo hello`;
 
   assertEquals(result.stdout, "hello\n");
-});
-
-Deno.test("$s works", async () => {
-  const result1 = await $s`echo hello`;
-  assertEquals(result1, 0);
-
-  const result2 = await $s`echo hello >&2`;
-  assertEquals(result2, 0);
-
-  const result3 = await $s`echo hello; exit 1;`;
-  assertEquals(result3, 1);
 });
 
 Deno.test("$o works", async () => {
@@ -185,7 +174,7 @@ Deno.test({
 // @TODO: tests are flaky on github actions.
 // Test runner is green but throws: No such file or directory (os error 2)
 // But they don't fail while uncommenting all other tests.
-//  Locally all tests pass.
+// Locally all tests pass.
 Deno.test({
   name: "$ should have a pid",
   ignore: !!Deno.env.get("CI"),

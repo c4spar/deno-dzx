@@ -20,26 +20,6 @@ export function exec(
 }
 
 /**
- * Run a command and return only its exit code
- *
- * If the command throws an error or fails in some way,
- * this method will not re-throw that error. It will
- * either return the exit code from the process, or `1`
- * if no exit code is produced (due to an error)
- *
- * If you want assurance that a failure in the child process
- * will throw an error, use `$`
- * @see $
- */
-export const statusOnly = async (
-  pieces: TemplateStringsArray,
-  ...args: Array<string | number | ProcessOutput>
-): Promise<number> =>
-  await exec(pieces, ...args)
-    .then((o) => (o instanceof ProcessOutput ? o.status.code : 0))
-    .catch((e) => (e instanceof ProcessError ? e.status.code : 1));
-
-/**
  * Run a command and return only its trimmed stdout
  *
  * If the command throws an error or fails in some way,
