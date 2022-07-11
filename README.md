@@ -279,8 +279,10 @@ Methods and properties of the `Process` class which implements
 
 - `.stderr` Returns `Promise<string>` and resolves with the stderr output.
 
-- `.retry(retries: number)` Set a number of maximum retries if the command
-  fails.
+- `.retry(retries: number)` Retry the command `n` times if it fails.
+
+- `.delay(delay: number)` Number of milliseconds to delay the retry of a failed
+  command. Default: `500`
 
 - `.timeout(timeout: number)` Throws an error if the command takes longer than
   the provided `timeout` in milliseconds.
