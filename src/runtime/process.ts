@@ -70,6 +70,21 @@ export class Process implements Promise<ProcessOutput> {
     return this;
   }
 
+  /**
+   * Execute the shell command and _only returns its exit code_.
+   * This calls internally `.noThrow` to catch the error and return the exit code.
+   *
+   * ```ts
+   * const trueStatus = await $`true`.statusCode;
+   * console.log(trueStatus); // -> 0
+   *
+   * const falseStatus = await $`false`.statusCode;
+   * console.log(falseStatus); // -> 1
+   *
+   * const exitStatus = await $`exit 2`.statusCode;
+   * console.log(exitStatus); // -> 2
+   * ```
+   */
   get statusCode(): Promise<number> {
     return this.noThrow.#resolve().then(({ status }) => status.code);
   }
