@@ -13,7 +13,6 @@ export type $ = typeof exec & typeof colors & {
   stdout: NonNullable<Deno.RunOptions["stdout"]>;
   stderr: NonNullable<Deno.RunOptions["stderr"]>;
   quote: typeof shq;
-  throwErrors: boolean;
   time: number;
 };
 
@@ -30,7 +29,6 @@ $.stdin = "inherit";
 $.stdout = "piped";
 $.stderr = "piped";
 $.quote = shq;
-$.throwErrors = false;
 
 let _verbose = 1;
 Object.defineProperty($, "verbose", {

@@ -1,14 +1,9 @@
 import { colors, path } from "./runtime/deps.ts";
-import { $ } from "./runtime/shell.ts";
 
-export function error(message: string | Error, exitCode = 1): Error {
-  if ($.throwErrors) {
-    return (message instanceof Error
-      ? message
-      : new Error(getErrorMessage(message)));
-  }
-  console.error(message instanceof Error ? message : getErrorMessage(message));
-  Deno.exit(exitCode);
+export function error(message: string | Error): Error {
+  return (message instanceof Error
+    ? message
+    : new Error(getErrorMessage(message)));
 }
 
 function getErrorMessage(message: string) {

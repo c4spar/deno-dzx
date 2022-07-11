@@ -58,7 +58,7 @@ export async function repl(
     "repl",
     "--unstable", // dzx requires unstable
     "--eval",
-    `${runtime}\n$.throwErrors = true;\nconsole.log("dzx ${VERSION}");`,
+    `${runtime}\nconsole.log("dzx ${VERSION}");`,
   ];
 
   const flags = generateFlags({
