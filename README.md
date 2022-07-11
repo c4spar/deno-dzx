@@ -318,12 +318,9 @@ notes.
 - **$.verbose:** Enable debugging output (log shell commands and execution
   time).
 - **$.stdout:** Change stdout mode of `` $`command` ``. Can be `"inherit"`,
-  `"piped"`, `"null"` or `number`. Will be reverted to default after all async
-  ops are done. Default: `"piped"`
+  `"piped"`, `"null"` or `number`. Default: `"piped"`
 - **$.stderr:** Change stderr mode of `` $`command` ``. Can be `"inherit"`,
-  `"piped"`, `"null"` or `number`. Will be reverted to default after all async
-  ops are done. Default: `"piped"`
-- **$.throwErrors:** Throw errors instead of calling `Deno.exit`.
+  `"piped"`, `"null"` or `number`. Default: `"piped"`
 - **$.args:** Equivalent to `Deno.args`, but without the script name as first
   argument.
 - **$.startTime:** The execution start time in ms.
