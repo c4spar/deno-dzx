@@ -1,4 +1,4 @@
-import { error } from "../_utils.ts";
+import { DzxErrorOptions, error } from "../_utils.ts";
 import { colors, path } from "./deps.ts";
 import { $ } from "./shell.ts";
 
@@ -19,23 +19,27 @@ export function cd(dir: string) {
 
     Deno.chdir(realPath);
   } catch (err: unknown) {
-    const opts = { context: cd };
+    const opts: DzxErrorOptions = { context: cd };
 
     if (err instanceof Deno.errors.NotFound) {
-      throw error(
-        `cd: No such directory: ${dir}\n${
-          colors.bold(
-            colors.white(`Directory:`),
-          )
-        } ${colors.brightYellow(realPath)}`,
-        opts,
-      );
+      throw fmtError(`No such directory`, opts);
     } else if (err instanceof Deno.errors.PermissionDenied) {
-      throw error(`cd: Permission denied`, opts);
+      throw fmtError(`Permission denied`, opts);
     }
 
     throw error(
-      err instanceof Error ? err : new Error(`[non-error-thrown] ${err}`),
+      err instanceof Error ? err : `[non-error-thrown] ${err}`,
+      opts,
+    );
+  }
+
+  function fmtError(message: string, opts: DzxErrorOptions) {
+    return error(
+      `cd: ${message}: ${dir}\n${
+        colors.bold(
+          colors.white(`Directory:`),
+        )
+      } ${colors.brightYellow(realPath)}`,
       opts,
     );
   }
