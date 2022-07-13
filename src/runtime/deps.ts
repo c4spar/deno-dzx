@@ -20,6 +20,7 @@ export type {
   WritableStreamFromWriterOptions as IOWritableStreamFromWriterOptions,
 } from "https://deno.land/std@0.140.0/io/mod.ts";
 export * as streams from "https://deno.land/std@0.140.0/streams/mod.ts";
+export { writeAll } from "https://deno.land/std@0.140.0/streams/mod.ts";
 export type {
   ReadableStreamFromReaderOptions,
   WritableStreamFromWriterOptions,

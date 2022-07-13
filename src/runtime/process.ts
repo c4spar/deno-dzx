@@ -1,4 +1,4 @@
-import { Deferred, deferred } from "./deps.ts";
+import { Deferred, deferred, writeAll } from "./deps.ts";
 import { readLines } from "./lib/readline.ts";
 import { ProcessError } from "./process_error.ts";
 import { ProcessOutput } from "./process_output.ts";
@@ -262,7 +262,7 @@ async function read(
       result.push(line + "\n");
     }
     if ($.verbose > 1) {
-      await io.writeAll(
+      await writeAll(
         outputStream,
         new TextEncoder().encode(line + "\n"),
       );
