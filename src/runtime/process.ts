@@ -4,6 +4,8 @@ import { ProcessError } from "./process_error.ts";
 import { ProcessOutput } from "./process_output.ts";
 import { $ } from "./shell.ts";
 
+export type RetryCallback = (error: ProcessError) => boolean | Promise<boolean>;
+
 export interface ProcessOptions {
   // deno-lint-ignore ban-types
   errorContext?: Function;
@@ -18,13 +20,13 @@ export class Process implements Promise<ProcessOutput> {
   #stdout: Deno.RunOptions["stdout"] = $.stdout;
   #stderr: Deno.RunOptions["stderr"] = $.stderr;
   #baseError: ProcessError;
-  #maxRetries = 0;
   #retries = 0;
   #timeout = 0;
   #timers: Array<number> = [];
   #delay = 500;
   #throwErrors = true;
   #isKilled = false;
+  #shouldRetry?: RetryCallback;
 
   constructor(cmd: string, { errorContext }: ProcessOptions = {}) {
     this.#cmd = cmd;
@@ -113,8 +115,11 @@ export class Process implements Promise<ProcessOutput> {
     return this.#resolve().then(({ stderr }) => stderr);
   }
 
-  retry(retries: number): this {
-    this.#maxRetries = retries;
+  retry(retries: number | RetryCallback): this {
+    this.#shouldRetry = typeof retries === "number"
+      ? (error) => error.retries < retries
+      : (error) => retries(error);
+
     return this;
   }
 
@@ -205,14 +210,26 @@ export class Process implements Promise<ProcessOutput> {
       });
 
       if (!status.success) {
-        output = ProcessError.merge(
+        const error = ProcessError.merge(
           this.#baseError,
           new ProcessError(output),
         );
 
-        if (this.#throwErrors || this.#retries < this.#maxRetries) {
-          throw output;
+        if (await this.#shouldRetry?.(error)) {
+          if (this.#delay) {
+            await new Promise((resolve) =>
+              this.#timers.push(setTimeout(resolve, this.#delay))
+            );
+          }
+          this.#close();
+          this.#proc = null;
+          this.#retries++;
+
+          return this.#run();
+        } else if (this.#throwErrors) {
+          throw error;
         }
+        output = error;
       }
       this.#close();
       this.#closeTimer();
@@ -220,19 +237,6 @@ export class Process implements Promise<ProcessOutput> {
       return output;
     } catch (error) {
       this.#close();
-
-      if (this.#retries < this.#maxRetries) {
-        this.#retries++;
-        this.#proc = null;
-
-        if (this.#delay) {
-          await new Promise((resolve) =>
-            this.#timers.push(setTimeout(resolve, this.#delay))
-          );
-        }
-
-        return this.#run();
-      }
       this.#closeTimer();
 
       throw error;
