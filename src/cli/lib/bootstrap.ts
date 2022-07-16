@@ -1,4 +1,4 @@
-import { initGlobals } from "../../runtime/globals.ts";
+import { initGlobals } from "../globals.ts";
 import { $ } from "../../runtime/mod.ts";
 
 const startTime = Date.now();
@@ -66,7 +66,7 @@ export type BootstrapModuleOptions = BootstrapOptions;
 export function bootstrapScript(code: string) {
   return base64Module(`
       /// <reference path="${new URL(
-    "../../../types.d.ts",
+    "../globals.d.ts",
     import.meta.url,
   )}" />
       {\n${code}\n}

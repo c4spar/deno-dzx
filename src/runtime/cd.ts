@@ -1,20 +1,20 @@
-import { createError, DzxErrorOptions } from "../_utils.ts";
-import { colors, path } from "./deps.ts";
+import { bold, brightBlue, brightYellow, join, sep, white } from "./deps.ts";
+import { createError, DzxErrorOptions } from "./lib/error.ts";
 import { $ } from "./shell.ts";
 
 const cwd = Deno.cwd();
 
 export function cd(dir: string) {
   if ($.verbose) {
-    console.log($.brightBlue("$ %s"), `cd ${dir}`);
+    console.log(brightBlue("$ %s"), `cd ${dir}`);
   }
   let realPath = dir;
 
   try {
     if (dir[0] === "~") {
-      realPath = path.join(homedir() as string, dir.slice(1));
-    } else if (dir[0] !== path.sep) {
-      realPath = path.join(cwd, dir);
+      realPath = join(homedir() as string, dir.slice(1));
+    } else if (dir[0] !== sep) {
+      realPath = join(cwd, dir);
     }
 
     Deno.chdir(realPath);
@@ -35,11 +35,9 @@ export function cd(dir: string) {
 
   function fmtError(message: string, opts: DzxErrorOptions) {
     return createError(
-      `cd: ${message}: ${dir}\n${
-        colors.bold(
-          colors.white(`Directory:`),
-        )
-      } ${colors.brightYellow(realPath)}`,
+      `cd: ${message}: ${dir}\n${bold(white(`Directory:`))} ${
+        brightYellow(realPath)
+      }`,
       opts,
     );
   }

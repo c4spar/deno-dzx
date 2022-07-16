@@ -1,6 +1,15 @@
 /** std */
-export { copy } from "https://deno.land/std@0.140.0/streams/conversion.ts";
+export {
+  copy,
+  readAll,
+} from "https://deno.land/std@0.140.0/streams/conversion.ts";
 export { parse } from "https://deno.land/std@0.130.0/flags/mod.ts";
+export {
+  basename,
+  extname,
+  isAbsolute,
+  join,
+} from "https://deno.land/std@0.130.0/path/mod.ts";
 
 /** 3rd party */
 export { Command } from "https://deno.land/x/cliffy@v0.24.2/command/command.ts";

@@ -1,4 +1,3 @@
-export { async, flags, fs, io, log, path, streams } from "./deps.ts";
 export { $, $e, $o } from "./shell.ts";
 export { cd } from "./cd.ts";
 export { quote } from "./quote.ts";
