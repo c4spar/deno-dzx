@@ -4,6 +4,7 @@ import {
   assert,
   assertEquals,
   assertRejects,
+  assertSpyCalls,
   assertStringIncludes,
   spy,
 } from "./dev_deps.ts";
@@ -179,6 +180,7 @@ Deno.test({
     const result = await $`exit 1`.noThrow.delay(100).retry(retrySpy);
     assertEquals(result.retries, 3);
     assertEquals(result.status.code, 1);
+    assertSpyCalls(retrySpy, 4);
   },
 });
 
