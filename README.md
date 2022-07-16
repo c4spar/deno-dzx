@@ -75,6 +75,7 @@ await fs.ensureDir("./tmp");
   - [Permissions](#permissions)
   - [Markdown](#markdown)
   - [Methods](#methods)
+  - [Process](#process)
   - [Modules](#modules)
   - [Variables](#variables)
 - [Experimental](#experimental)
@@ -269,25 +270,78 @@ Methods and properties of the `Process` class which implements
 
 - `.pid`: Returns the process id of the executed command.
 
+  ```ts
+  // Get the process id.
+  const child = $`echo foo`;
+  console.log("pid:", child.pid);
+  await child;
+  ```
+
 - `.noThrow`: If invoked the command doesn't throw an error if the command
   returns a none-zero exit code.
+
+  ```ts
+  // Don't throw an error for none-zero exit codes.
+  const { status } = await $`exit 1`.noThrow;
+  ```
 
 - `.statusCode`: Returns the status code of the executed command and calls
   `.noThrow` internally to catch the error and return the status code.
 
+  ```ts
+  // Get only the status code.
+  const statusCode: number = await $`exit 1`.statusCode;
+  ```
+
 - `.stdout` Returns `Promise<string>` and resolves with the stdout output.
+
+  ```ts
+  // Get only stdout.
+  const foo: string = await $`echo foo; echo bar >&2`.stdout;
+  ```
 
 - `.stderr` Returns `Promise<string>` and resolves with the stderr output.
 
-- `.retry(retries: number)` Retry the command `n` times if it fails.
+  ```ts
+  // Get only stderr.
+  const bar: string = await $`echo foo; echo bar >&2`.stderr;
+  ```
+
+- `.retry(retries: number | RetryCallback)` Retry the command `n` times if it
+  fails.
+
+  ```ts
+  // Retry the command 3 times.
+  await $`exit 1`.retry(3);
+
+  // Retry the command 3 times using a callback handler.
+  await $`exit 1`.retry(({ retries }: ProcessError) => retries < 3);
+  ```
 
 - `.delay(delay: number)` Number of milliseconds to delay the retry of a failed
   command. Default: `500`
 
+  ```ts
+  // Retry the command 3 times but wait 1sec before executing it again.
+  await $`exit 1`.retry(3).delay(1000);
+  ```
+
 - `.timeout(timeout: number)` Throws an error if the command takes longer than
   the provided `timeout` in milliseconds.
 
+  ```ts
+  // Kill the command if it takes longer than one second.
+  await $`sleep 10`.timeout(1000);
+  ```
+
 - `.kill(signal: Deno.Signal)` Kills the running process.
+
+  ```ts
+  // Manually kill the command.
+  const child = $`sleep 10`;
+  setTimout(() => child.kill("SIGINT"), 100);
+  await child;
+  ```
 
 ### Modules
 
