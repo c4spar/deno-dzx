@@ -1,15 +1,14 @@
 import { VERSION } from "../../version.ts";
-import { path } from "../runtime/mod.ts";
 import { bundleCommand } from "./bundle.ts";
 import { compileCommand } from "./compile.ts";
-import { Command, DenoLandProvider, UpgradeCommand } from "./deps.ts";
-import { addProtocol } from "../_utils.ts";
+import { Command, DenoLandProvider, extname, UpgradeCommand } from "./deps.ts";
 import { evalCommand } from "./eval.ts";
 import { importModule } from "./lib/bootstrap.ts";
 import { getModuleFromStdin } from "./lib/stream.ts";
 import { getMarkdownModule } from "./lib/markdown.ts";
 import { spawnWorker } from "./lib/worker.ts";
 import { repl, replCommand } from "./repl.ts";
+import { addProtocol } from "./lib/url.ts";
 
 export function dzx() {
   return new Command()
@@ -103,7 +102,7 @@ export function dzx() {
 
         let mainModule: string;
         if (script) {
-          const scriptExt = path.extname(script);
+          const scriptExt = extname(script);
           mainModule = [".md", ".markdown"].includes(scriptExt)
             ? await getMarkdownModule(script)
             : addProtocol(script);

@@ -2,42 +2,42 @@ import type {
   $ as _$,
   $e as _$e,
   $o as _$o,
-  async as _async,
   cd as _cd,
-  flags as _flags,
-  fs as _fs,
-  io as _io,
-  log as _log,
-  path as _path,
   quote as _quote,
-  streams as _streams,
-} from "./src/runtime/mod.ts";
+} from "../runtime/mod.ts";
 
 import type {
   Args as _Args,
+  async as _async,
   CopyOptions as _CopyOptions,
   DebouncedFunction as _DebouncedFunction,
   Deferred as _Deferred,
   DelayOptions as _DelayOptions,
   ExpandGlobOptions as _ExpandGlobOptions,
+  flags as _flags,
   FormatInputPathObject as _FormatInputPathObject,
   FormatterFunction as _FormatterFunction,
+  fs as _fs,
   GlobOptions as _GlobOptions,
   GlobToRegExpOptions as _GlobToRegExpOptions,
   HandlerOptions as _HandlerOptions,
+  io as _io,
   IOReadableStreamFromReaderOptions as _IOReadableStreamFromReaderOptions,
   IOWritableStreamFromWriterOptions as _IOWritableStreamFromWriterOptions,
   LevelName as _LevelName,
+  log as _log,
   LogConfig as _LogConfig,
   LogMode as _LogMode,
   ParsedPath as _ParsedPath,
   ParseOptions as _ParseOptions,
+  path as _path,
   ReadableStreamFromReaderOptions as _ReadableStreamFromReaderOptions,
   ReadLineResult as _ReadLineResult,
+  streams as _streams,
   WalkEntry as _WalkEntry,
   WalkOptions as _WalkOptions,
   WritableStreamFromWriterOptions as _WritableStreamFromWriterOptions,
-} from "./src/runtime/deps.ts";
+} from "../std/mod.ts";
 
 declare global {
   /**

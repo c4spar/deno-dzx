@@ -1,6 +1,12 @@
-import { Command, copy, DenoBundleOptions, ValidationError } from "./deps.ts";
-import { createError } from "../_utils.ts";
-import { path } from "../runtime/mod.ts";
+import { createError } from "../runtime/lib/error.ts";
+import {
+  basename,
+  Command,
+  copy,
+  DenoBundleOptions,
+  join,
+  ValidationError,
+} from "./deps.ts";
 import { bootstrapModule } from "./lib/bootstrap.ts";
 
 export function bundleCommand() {
@@ -55,7 +61,7 @@ export async function preBundle(
   });
 
   const tmpDir = await Deno.makeTempDir();
-  const tmpFile = path.join(tmpDir, path.basename(script));
+  const tmpFile = join(tmpDir, basename(script));
   const data = new TextEncoder().encode(bundleContent);
   await Deno.writeFile(tmpFile, data, { create: true });
 

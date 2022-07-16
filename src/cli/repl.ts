@@ -1,5 +1,5 @@
 import { VERSION } from "../../version.ts";
-import { createError } from "../_utils.ts";
+import { createError } from "../runtime/lib/error.ts";
 import { Command } from "./deps.ts";
 import { bootstrap } from "./lib/bootstrap.ts";
 import { generateFlags } from "./lib/flags.ts";
