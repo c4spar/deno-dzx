@@ -94,10 +94,28 @@ await fs.ensureDir("./tmp");
 `dzx` has multiple entry points.
 
 - `./mod.ts`: Exports the shell and all std modules.
+
+  ```ts
+  import { $, cd, path } from "https://deno.land/x/dzx@0.3.2/mod.ts";
+  // or
+  import $ from "https://deno.land/x/dzx@0.3.2/mod.ts";
+  ```
+
 - `./shell.ts`: Exports only the shell.
+
+  ```ts
+  import { $ } from "https://deno.land/x/dzx@0.3.2/shell.ts";
+  // or
+  import $ from "https://deno.land/x/dzx@0.3.2/shell.ts";
+  ```
+
 - `./globals.ts`: Registers global types and assigns all members exported by
   `./mod.ts` to `self` if imported as module. Globals are mostly used in
   combination with the cli.
+
+  ```ts
+  import "https://deno.land/x/dzx@0.3.2/mod.ts";
+  ```
 
 ### Shell
 
