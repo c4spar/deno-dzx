@@ -198,6 +198,23 @@ Deno.test({
   },
 });
 
+Deno.test({
+  name: "$ should set env var",
+  async fn() {
+    const stdout = await $`echo $FOO_BAR`.env("FOO_BAR", "baz").stdout;
+    assertEquals(stdout, "baz\n");
+  },
+});
+
+Deno.test({
+  name: "$ should set json as env var",
+  async fn() {
+    const stdout = await $`echo $FOO_BAR`.env("FOO_BAR", { foo: "bar", baz: 1 })
+      .stdout;
+    assertEquals(stdout, '{"foo":"bar","baz":1}\n');
+  },
+});
+
 // @TODO: tests are flaky on github actions.
 // Test runner is green but throws: No such file or directory (os error 2)
 // But they don't fail while uncommenting all other tests.
