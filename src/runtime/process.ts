@@ -31,6 +31,7 @@ export class Process extends Reader<ProcessOutput> {
   #shouldRetry?: RetryCallback;
   #stdoutReader: Reader<string>;
   #stderrReader: Reader<string>;
+  #cwd?: string;
 
   constructor(cmd: string, { errorContext }: ProcessOptions = {}) {
     super({
@@ -71,6 +72,7 @@ export class Process extends Reader<ProcessOutput> {
         stdin: this.#stdin,
         stdout: this.#stdout,
         stderr: this.#stderr,
+        cwd: this.#cwd,
       });
 
       if (this.#timeout) {
@@ -150,6 +152,11 @@ export class Process extends Reader<ProcessOutput> {
 
   timeout(timeout: number): this {
     this.#timeout = timeout;
+    return this;
+  }
+
+  cwd(path: string): this {
+    this.#cwd = path;
     return this;
   }
 
