@@ -199,7 +199,15 @@ Deno.test({
 });
 
 Deno.test({
-  name: "$ should set env var",
+  name: "$ should set cwd for current process",
+  async fn() {
+    const stdout = await $`pwd`.cwd("examples").stdout;
+    assertEquals(stdout, `${Deno.cwd()}/examples\n`);
+  },
+});
+
+Deno.test({
+  name: "$ should set env var current process",
   async fn() {
     const stdout = await $`echo $FOO_BAR`.env("FOO_BAR", "baz").stdout;
     assertEquals(stdout, "baz\n");
@@ -207,7 +215,7 @@ Deno.test({
 });
 
 Deno.test({
-  name: "$ should set json as env var",
+  name: "$ should set json as env var current process",
   async fn() {
     const stdout = await $`echo $FOO_BAR`.env("FOO_BAR", { foo: "bar", baz: 1 })
       .stdout;
