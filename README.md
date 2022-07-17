@@ -388,11 +388,8 @@ available.
 ### Install
 
 ```
-deno install --allow-all --unstable -f https://deno.land/x/dzx@0.3.2/dzx.ts
+deno install --allow-all -f https://deno.land/x/dzx@0.3.2/dzx.ts
 ```
-
-> **Warning** `--unstable` is required for the `bundle` command which uses
-> `Deno.emit`, for `std/fs/copy` and for web workers.
 
 ### Commands
 
