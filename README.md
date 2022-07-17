@@ -352,14 +352,16 @@ Methods and properties of the `Process` class which implements
 
 ### Globals
 
-To avoid importing modules you can also import the `globals.ts` file. This makes
-all exports from `mod.ts` globally available.
+> **Note** Globals are mostly used by the cli. In most cases you don't need
+> globals and you can just import all members from `./mod.ts` or `./shell.ts`.
 
-> **Note** This feature is mostly used by the cli and in most cases you
-> shouldn't use globals.
+When impoting `./globals.ts`, all members exported by `./mod.ts` are globally
+available.
 
 ```ts
 import "https://deno.land/x/dzx@0.3.2/globals.ts";
+
+await $`ls | wc -l`;
 ```
 
 ## CLI
