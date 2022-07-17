@@ -5,6 +5,7 @@
 [![Coverage](https://img.shields.io/codecov/c/github/c4spar/deno-dzx?style=for-the-badge)](https://codecov.io/gh/c4spar/deno-dzx)
 [![Issues](https://img.shields.io/github/issues/c4spar/deno-dzx?style=for-the-badge)](https://github.com/c4spar/deno-dzx/issues)
 [![License](https://img.shields.io/github/license/c4spar/deno-dzx?style=for-the-badge)](https://github.com/c4spar/deno-dzx/blob/main/LICENSE)
+
 [![deno.land/x](https://img.shields.io/badge/deno.land/x/dzx-blue?style=for-the-badge&logo=deno&logoColor=959DA6&color=272727)](https://deno.land/x/dzx)
 
 Deno shell tools inspired by [zx](https://github.com/google/zx)
@@ -342,7 +343,7 @@ all exports from `mod.ts` globally available.
 > shouldn't use globals.
 
 ```ts
-import from "https://deno.land/x/dzx@0.3.2/globals.ts";
+import "https://deno.land/x/dzx@0.3.2/globals.ts";
 ```
 
 ## CLI
