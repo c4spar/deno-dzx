@@ -153,8 +153,14 @@ export class Process extends Reader<ProcessOutput> {
     return this;
   }
 
-  env(name: string, value: string | number | boolean): this {
-    this.#env[name] = value.toString();
+  env(
+    name: string,
+    value: string | number | boolean | Record<string, unknown>,
+  ): this {
+    this.#env[name] = typeof value === "object"
+      ? JSON.stringify(value)
+      : value.toString();
+
     return this;
   }
 
