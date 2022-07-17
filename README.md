@@ -91,14 +91,19 @@ await fs.ensureDir("./tmp");
 
 ## Usage
 
-All symbols can be imported from `dzx/mod.ts`. This doesn't inject any globals
-into your script.
+`dzx` has multiple entry points.
 
-```ts
-import { $, cd, fs, io, log, path } from "https://deno.land/x/dzx@0.3.2/mod.ts";
-```
+- `./mod.ts`: Exports the shell and all std modules.
+- `./shell.ts`: Exports only the shell.
+- `./globals.ts`: Registers global types and assigns all members exported by
+  `./mod.ts` to `self` if imported as module. Globals are mostly used in
+  combination with the cli.
 
 ### Shell
+
+```ts
+import { $ } from "https://deno.land/x/dzx@0.3.2/mod.ts";
+```
 
 #### Variables
 
@@ -360,6 +365,8 @@ available.
 
 ```ts
 import "https://deno.land/x/dzx@0.3.2/globals.ts";
+
+cd("foo/bar");
 
 await $`ls | wc -l`;
 ```
