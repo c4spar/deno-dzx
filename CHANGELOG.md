@@ -1,3 +1,51 @@
+# [0.4.0](https://github.com/c4spar/deno-dzx/compare/0.3.2...0.4.0) (Jul 17, 2022)
+
+### BREAKING CHANGES
+
+- **runtime:** remove `$.throwErrors` (#77)
+  ([0fc54c8](https://github.com/c4spar/deno-dzx/commit/0fc54c8))
+- **runtime:** remove `$s` shorthand in favor of `statusCode` (#75)
+  ([5a8a218](https://github.com/c4spar/deno-dzx/commit/5a8a218))
+
+### Features
+
+- **runtime:** add `.cwd()` method (#95)
+  ([4b88438](https://github.com/c4spar/deno-dzx/commit/4b88438))
+- **runtime:** add `.env()` method (#94)
+  ([ca64927](https://github.com/c4spar/deno-dzx/commit/ca64927))
+- **runtime:** add `.retry()` callback handler (#89)
+  ([34984c2](https://github.com/c4spar/deno-dzx/commit/34984c2))
+- **runtime:** add `stdout` and `stderr` properties (#83, #92)
+  ([7a216e6](https://github.com/c4spar/deno-dzx/commit/7a216e6),
+  [6f93d58](https://github.com/c4spar/deno-dzx/commit/6f93d58))
+- **runtime:** capture stack trace for `cd` method and fmt error message (#78)
+  ([b59e737](https://github.com/c4spar/deno-dzx/commit/b59e737))
+
+### Bug Fixes
+
+- **runtime:** add missing import (#87)
+  ([3e52bfb](https://github.com/c4spar/deno-dzx/commit/3e52bfb))
+- **runtime:** don't inject globals by default (#72)
+  ([ff9910e](https://github.com/c4spar/deno-dzx/commit/ff9910e))
+
+### Code Refactoring
+
+- **runtime:** move `std` modules to a separate sub-folder and add `shell.ts`
+  entry file (#91)
+  ([76b9e72](https://github.com/c4spar/deno-dzx/commit/76b9e72))
+
+### Documentation Updates
+
+- refactor docs (#93)
+  ([5b7fe67](https://github.com/c4spar/deno-dzx/commit/5b7fe67))
+- fix typo ([6082c1d](https://github.com/c4spar/deno-dzx/commit/6082c1d))
+- update readme (#84)
+  ([0082131](https://github.com/c4spar/deno-dzx/commit/0082131))
+- **runtime:** add `.cwd()` docs
+  ([917b90a](https://github.com/c4spar/deno-dzx/commit/917b90a))
+- **runtime:** improve `Process` docs (#90)
+  ([5e4d818](https://github.com/c4spar/deno-dzx/commit/5e4d818))
+
 # [0.3.2](https://github.com/c4spar/deno-dzx/compare/0.3.1...0.3.2) (Jul 11, 2022)
 
 ### Features
