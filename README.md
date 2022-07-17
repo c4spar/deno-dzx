@@ -77,8 +77,8 @@ await fs.ensureDir("./tmp");
     - [Variables](#variables)
     - [Methods](#methods)
     - [Process](#process)
-- [Std modules](#std-modules)
-- [Globals](#globals)
+  - [Std modules](#std-modules)
+  - [Globals](#globals)
 - [CLI](#cli)
   - [Install](#install)
   - [Execute scripts via cli](#execute-scripts-via-cli)
@@ -350,7 +350,7 @@ Methods and properties of the `Process` class which implements
   const args: flags.Args = flags.parse($.args);
   ```
 
-## Globals
+### Globals
 
 To avoid importing modules you can also import the `globals.ts` file. This makes
 all exports from `mod.ts` globally available.
