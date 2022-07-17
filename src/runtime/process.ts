@@ -2,6 +2,7 @@ import { Deferred, deferred, writeAll } from "./deps.ts";
 import { readLines } from "./lib/readline.ts";
 import { ProcessError } from "./process_error.ts";
 import { ProcessOutput } from "./process_output.ts";
+import { Reader } from "./reader.ts";
 import { $ } from "./shell.ts";
 
 export type RetryCallback = (error: ProcessError) => boolean | Promise<boolean>;
@@ -11,7 +12,7 @@ export interface ProcessOptions {
   errorContext?: Function;
 }
 
-export class Process implements Promise<ProcessOutput> {
+export class Process extends Reader<ProcessOutput> {
   readonly [Symbol.toStringTag] = "Process";
   readonly #cmd: string;
   #proc: Deno.Process | null = null;
@@ -27,8 +28,22 @@ export class Process implements Promise<ProcessOutput> {
   #throwErrors = true;
   #isKilled = false;
   #shouldRetry?: RetryCallback;
+  #stdoutReader: Reader<string>;
+  #stderrReader: Reader<string>;
 
   constructor(cmd: string, { errorContext }: ProcessOptions = {}) {
+    super({
+      resolve: () => this.#resolve(),
+    });
+
+    this.#stdoutReader = new Reader({
+      resolve: () => this.#resolve().then(({ stdout }) => stdout),
+    });
+
+    this.#stderrReader = new Reader({
+      resolve: () => this.#resolve().then(({ stderr }) => stderr),
+    });
+
     this.#cmd = cmd;
     this.#baseError = new ProcessError({
       combined: "",
@@ -60,6 +75,7 @@ export class Process implements Promise<ProcessOutput> {
         );
       }
     }
+
     return this.#proc;
   }
 
@@ -99,8 +115,8 @@ export class Process implements Promise<ProcessOutput> {
    * console.log(output); // -> "Hello\n"
    * ```
    */
-  get stdout(): Promise<string> {
-    return this.#resolve().then(({ stdout }) => stdout);
+  get stdout(): Reader<string> {
+    return this.#stdoutReader;
   }
 
   /**
@@ -111,8 +127,8 @@ export class Process implements Promise<ProcessOutput> {
    * console.log(errorOutput); // -> "World\n"
    * ```
    */
-  get stderr(): Promise<string> {
-    return this.#resolve().then(({ stderr }) => stderr);
+  get stderr(): Reader<string> {
+    return this.#stderrReader;
   }
 
   retry(retries: number | RetryCallback): this {
@@ -136,32 +152,6 @@ export class Process implements Promise<ProcessOutput> {
   kill(signo: Deno.Signal): void {
     this.#isKilled = true;
     this.#process.kill(signo);
-  }
-
-  then<TResult1 = ProcessOutput, TResult2 = never>(
-    onfulfilled?:
-      | ((value: ProcessOutput) => TResult1 | PromiseLike<TResult1>)
-      | undefined
-      | null,
-    onrejected?:
-      | ((reason: unknown) => TResult2 | PromiseLike<TResult2>)
-      | undefined
-      | null,
-  ): Promise<TResult1 | TResult2> {
-    return this.#resolve().then(onfulfilled).catch(onrejected);
-  }
-
-  catch<TResult = never>(
-    onrejected?:
-      | ((reason: unknown) => TResult | PromiseLike<TResult>)
-      | undefined
-      | null,
-  ): Promise<ProcessOutput | TResult> {
-    return this.#resolve().catch(onrejected);
-  }
-
-  finally(onfinally?: (() => void) | undefined | null): Promise<ProcessOutput> {
-    return this.#resolve().finally(onfinally);
   }
 
   #resolve(): Promise<ProcessOutput> {
