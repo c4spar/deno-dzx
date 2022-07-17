@@ -1,37 +1,34 @@
-# dzx
+<h1 align="center">dzx</h1>
 
-[![Latest](https://img.shields.io/github/v/tag/c4spar/deno-dzx?style=for-the-badge)](https://github.com/c4spar/deno-dzx/releases)
-[![Build](https://img.shields.io/github/workflow/status/c4spar/deno-dzx/Test?style=for-the-badge)](https://github.com/c4spar/deno-dzx/actions/workflows/test.yaml)
-[![Coverage](https://img.shields.io/codecov/c/github/c4spar/deno-dzx?style=for-the-badge)](https://codecov.io/gh/c4spar/deno-dzx)
-[![Issues](https://img.shields.io/github/issues/c4spar/deno-dzx?style=for-the-badge)](https://github.com/c4spar/deno-dzx/issues)
-[![License](https://img.shields.io/github/license/c4spar/deno-dzx?style=for-the-badge)](https://github.com/c4spar/deno-dzx/blob/main/LICENSE)
+<p align="center" class="badges-container">
+  <a href="https://github.com/c4spar/deno-dzx/releases">
+    <img alt="Latest" src="https://img.shields.io/github/v/tag/c4spar/deno-dzx?style=flat&label=latest" />
+  </a>
+  <a href="https://github.com/c4spar/deno-dzx/actions/workflows/test.yaml">
+    <img alt="Build" src="https://img.shields.io/github/workflow/status/c4spar/deno-dzx/Test?style=flat"/>
+  </a>
+  <a href="https://codecov.io/gh/c4spar/deno-dzx">
+    <img alt="Coverage" src="https://img.shields.io/codecov/c/github/c4spar/deno-dzx?style=flat">
+  </a>
+  <a href="https://github.com/c4spar/deno-dzx/issues">
+    <img alt="Issues" src="https://img.shields.io/github/issues/c4spar/deno-dzx?style=flat" />
+  </a>
+  <a href="https://github.com/c4spar/deno-dzx/blob/main/LICENSE">
+    <img alt="License" src="https://img.shields.io/github/license/c4spar/deno-dzx?style=flat" />
+  </a>
+  <a href="https://deno.land/x/dzx">
+    <img alt="deno.land/x" src="https://img.shields.io/badge/deno.land/x/dzx-blue?logo=deno&logoColor=959DA6&color=272727" />
+  </a>
+</p>
 
-[![deno.land/x](https://img.shields.io/badge/deno.land/x/dzx-blue?style=for-the-badge&logo=deno&logoColor=959DA6&color=272727)](https://deno.land/x/dzx)
+<p align="center">
+  <b>Deno shell tools inspired by <a href="https://github.com/google/zx">zx</a></b>
+</p>
 
-Deno shell tools inspired by [zx](https://github.com/google/zx)
+## Example
 
 > **Warning** This project is in a very experimental state. Many things are
 > subject to change.
-
-- [Example](#example)
-- [Usage](#usage)
-  - [Shell](#shell)
-    - [Variables](#variables)
-    - [Methods](#methods)
-    - [Process](#process)
-- [Std modules](#std-modules)
-- [Globals](#globals)
-- [CLI](#cli)
-  - [Install](#install)
-  - [Execute scripts via cli](#execute-scripts-via-cli)
-  - [Permissions](#permissions)
-  - [Markdown](#markdown)
-  - [Experimental](#experimental)
-    - [Worker](#worker)
-- [Contributing](#contributing)
-- [License](#license)
-
-## Example
 
 ```typescript
 import {
@@ -72,6 +69,25 @@ const basename = path.basename(import.meta.url);
 const stdin = await io.readAll(Deno.stdin);
 await fs.ensureDir("./tmp");
 ```
+
+## Content
+
+- [Usage](#usage)
+  - [Shell](#shell)
+    - [Variables](#variables)
+    - [Methods](#methods)
+    - [Process](#process)
+- [Std modules](#std-modules)
+- [Globals](#globals)
+- [CLI](#cli)
+  - [Install](#install)
+  - [Execute scripts via cli](#execute-scripts-via-cli)
+  - [Permissions](#permissions)
+  - [Markdown](#markdown)
+  - [Experimental](#experimental)
+    - [Worker](#worker)
+- [Contributing](#contributing)
+- [License](#license)
 
 ## Usage
 
