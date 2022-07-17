@@ -111,9 +111,7 @@ await fs.ensureDir("./tmp");
 
 ### Shell
 
-```ts
-import { $ } from "https://deno.land/x/dzx@0.3.2/mod.ts";
-```
+The `$` symbol (shell) is the main context of `dzx`.
 
 #### Variables
 
