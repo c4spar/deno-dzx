@@ -115,6 +115,8 @@ await fs.ensureDir("./tmp");
 
   ```ts
   import "https://deno.land/x/dzx@0.3.2/mod.ts";
+  // or
+  /// <reference path="https://deno.land/x/dzx@0.3.2/globals.ts" />
   ```
 
 ### Shell
@@ -499,7 +501,7 @@ reference to the top of the file.
 
 ```
 #!/usr/bin/env dzx
-/// <reference path="https://deno.land/x/dzx@0.3.2/types.d.ts" />
+/// <reference path="https://deno.land/x/dzx@0.3.2/globals.ts" />
 ```
 
 ### Permissions
@@ -509,7 +511,7 @@ you to explicitly set the permissions for your script.
 
 ```typescript
 #!/usr/bin/env deno run --allow-run --allow-read --allow-env https://deno.land/x/dzx@0.3.2/dzx.ts
-/// <reference path="https://deno.land/x/dzx@0.3.2/types.d.ts" />
+/// <reference path="https://deno.land/x/dzx@0.3.2/globals.ts" />
 
 console.log(`Hello ${$.blue.bold("world")}!`);
 ```
@@ -542,7 +544,7 @@ the `dzx` cli.
 
 ```typescript
 #!/usr/bin/env dzx --worker --allow-read
-/// <reference path="https://deno.land/x/dzx@0.3.2/types.d.ts" />
+/// <reference path="https://deno.land/x/dzx@0.3.2/globals.ts" />
 
 console.log(`Hello from ${$.blue.bold("worker")}!`);
 ```
