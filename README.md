@@ -381,6 +381,10 @@ await $`ls | wc -l`;
 
 ## CLI
 
+The CLI is a tool-chain and playground for dzx. It can execute scripts and
+provides some sub-commands like `repl` and `eval` where `dzx` is globally
+available.
+
 ### Install
 
 ```
@@ -393,7 +397,7 @@ deno install --allow-all --unstable -f https://deno.land/x/dzx@0.3.2/dzx.ts
 ### Commands
 
 - **dzx** `[script] [...args]`: Run a local or remote dzx script (optional in a
-  web worker).
+  web worker). If invoked without argument the `repl` will be started.
 
   ```shell
   dzx --worker ./example.ts
@@ -462,11 +466,15 @@ deno install --allow-all --unstable -f https://deno.land/x/dzx@0.3.2/dzx.ts
 
 ### Execute scripts via cli
 
+You can run a script with the cli by simply calling dzx followed by the filename
+`dzx script.ts`.
+
 When a dzx script is executed via CLI, you don't need to import anything. All
-exports are automatically global available. This applies also to commands like
+exports are automatically globally available. This applies also to commands like
 `dzx eval "console.log($)"`.
 
-To start writing a dzx script, add next shebang at the beginning of your script:
+To create an executable script, add next shebang at the beginning of your
+script:
 
 ```
 #!/usr/bin/env dzx
