@@ -1,29 +1,36 @@
-<h1 align="center">dzx</h1>
+# dzx
 
-<p align="center" class="badges-container">
-  <a href="https://github.com/c4spar/deno-dzx/releases">
-    <img alt="Version" src="https://img.shields.io/github/v/release/c4spar/deno-dzx?logo=github&color=F86F00" />
-  </a>
-  <a href="https://codecov.io/gh/c4spar/deno-dzx">
-    <img src="https://codecov.io/gh/c4spar/deno-dzx/branch/main/graph/badge.svg"/>
-  </a>
-  <a href="https://github.com/c4spar/deno-dzx/issues">
-    <img alt="issues" src="https://img.shields.io/github/issues/c4spar/deno-dzx?label=issues&logo=github">
-  </a>
-  <a href="https://deno.land/">
-    <img alt="Deno version" src="https://img.shields.io/badge/deno-^1.13.0-blue?logo=deno&color=blue" />
-  </a>
-  <a href="https://github.com/c4spar/deno-dzx/blob/main/LICENSE">
-    <img alt="Licence" src="https://img.shields.io/github/license/c4spar/deno-dzx?logo=github" />
-  </a>
-  <a href="https://deno.land/x/dzx">
-    <img alt="deno.land" src="https://img.shields.io/badge/deno.land/x/dzx-blue?logo=deno&logoColor=959DA6&color=272727" />
-  </a>
-</p>
+[![Latest](https://img.shields.io/github/v/tag/c4spar/deno-dzx?style=for-the-badge)](https://github.com/c4spar/deno-dzx/releases)
+[![Build](https://img.shields.io/github/workflow/status/c4spar/deno-dzx/Test?style=for-the-badge)](https://github.com/c4spar/deno-dzx/actions/workflows/test.yaml)
+[![Coverage](https://img.shields.io/codecov/c/github/c4spar/deno-dzx?style=for-the-badge)](https://codecov.io/gh/c4spar/deno-dzx)
+[![Issues](https://img.shields.io/github/issues/c4spar/deno-dzx?style=for-the-badge)](https://github.com/c4spar/deno-dzx/issues)
+[![License](https://img.shields.io/github/license/c4spar/deno-dzx?style=for-the-badge)](https://github.com/c4spar/deno-dzx/blob/main/LICENSE)
+[![deno.land/x](https://img.shields.io/badge/deno.land/x/dzx-blue?style=for-the-badge&logo=deno&logoColor=959DA6&color=272727)](https://deno.land/x/dzx)
 
-<p align="center">
-  <b>Deno shell tools inspired by <a href="https://github.com/google/zx">zx</a></b>
-</p>
+Deno shell tools inspired by [zx](https://github.com/google/zx)
+
+> **Warning** This project is in a very experimental state. Many things are
+> subject to change.
+
+- [Example](#example)
+- [Usage](#usage)
+  - [Shell](#shell)
+    - [Variables](#variables)
+    - [Methods](#methods)
+    - [Process](#process)
+- [Std modules](#std-modules)
+- [Globals](#globals)
+- [CLI](#cli)
+  - [Install](#install)
+  - [Execute scripts via cli](#execute-scripts-via-cli)
+  - [Permissions](#permissions)
+  - [Markdown](#markdown)
+  - [Experimental](#experimental)
+    - [Worker](#worker)
+- [Contributing](#contributing)
+- [License](#license)
+
+## Example
 
 ```typescript
 import {
@@ -35,17 +42,14 @@ import {
   path,
 } from "https://deno.land/x/dzx@0.3.2/mod.ts";
 
-$.verbose = true;
+// Output stdout & stderr. Can be: true, false, 0, 1 or 2. Default is: 1
+$.verbose = 2;
 $.shell = "/usr/local/bin/zsh";
 
 console.log(`Hello from ${$.blue.bold("dzx")}!`);
 
 const branch = await $`git branch --show-current`;
 await $`dep deploy --branch=${branch}`;
-
-// Print command output to stdout and stderr.
-$.stdout = "inherit";
-$.stderr = "inherit";
 
 await Promise.all([
   $`deno lint`,
@@ -68,111 +72,37 @@ const stdin = await io.readAll(Deno.stdin);
 await fs.ensureDir("./tmp");
 ```
 
-## Content
-
-- [Install](#install)
-- [Usage](#usage)
-  - [Permissions](#permissions)
-  - [Markdown](#markdown)
-  - [Methods](#methods)
-  - [Process](#process)
-  - [Modules](#modules)
-  - [Variables](#variables)
-- [Experimental](#experimental)
-  - [Worker](#worker)
-- [CLI](#cli)
-- [Contributing](#contributing)
-- [License](#license)
-
-## Install
-
-```
-deno install --allow-all --unstable -f https://deno.land/x/dzx@0.3.2/dzx.ts
-```
-
-> `--unstable` is required for the `bundle` command which uses `Deno.emit`, for
-> `std/fs/copy` and for web workers.
-
 ## Usage
 
-### Module usage
-
-The default way is to just import the modules you need from the `dzx/mod.ts`
-module. This doesn't inject any globals into your script.
+All symbols can be imported from `dzx/mod.ts`. This doesn't inject any globals
+into your script.
 
 ```ts
 import { $, cd, fs, io, log, path } from "https://deno.land/x/dzx@0.3.2/mod.ts";
 ```
 
-### Globals usage
+### Shell
 
-To avoid importing modules you can also import the `globals.ts` file. This makes
-all exports from `mod.ts` globally available.
+#### Variables
 
-```ts
-import from "https://deno.land/x/dzx@0.3.2/globals.ts";
-```
+- **$.shell:** Set the shell that is used by `` $`command` ``. Default:
+  `/bin/bash`
+- **$.prefix:** Command prefix. Default: `set -euo pipefail;`.
+- **$.mainModule:** The executed dzx script.
+- **$.verbose:** Enable debugging output (log shell commands and execution
+  time).
+- **$.stdout:** Change stdout mode of `` $`command` ``. Can be `"inherit"`,
+  `"piped"`, `"null"` or `number`. Default: `"piped"`
+- **$.stderr:** Change stderr mode of `` $`command` ``. Can be `"inherit"`,
+  `"piped"`, `"null"` or `number`. Default: `"piped"`
+- **$.args:** Equivalent to `Deno.args`, but without the script name as first
+  argument.
+- **$.startTime:** The execution start time in ms.
+- **$.time:** The time left since execution start (now() - $.startTime).
+- **$.quote:** Parser method that is used to safely quote strings. Used by:
+  `` $`command` ``
 
-### CLI usage
-
-When a dzx script is executed via CLI, you don't need to import anything. All
-exports are automatically global available. This applies also to commands like
-`dzx eval "console.log($)"`.
-
-To start writing a dzx script, add next shebang at the beginning of your script:
-
-```
-#!/usr/bin/env dzx
-```
-
-After making your script executable,
-
-```shell
-chmod +x ./script.js
-```
-
-you can simply run it with:
-
-```shell
-./script.js
-```
-
-To enable typescript support in your IDE, you can optionally add a tripple slash
-reference to the top of the file.
-
-```
-#!/usr/bin/env dzx
-/// <reference path="https://deno.land/x/dzx@0.3.2/types.d.ts" />
-```
-
-### Permissions
-
-You can use `dzx` without installation by using next shebang. This also allows
-you to explicitly set the permissions for your script.
-
-```typescript
-#!/usr/bin/env deno run --allow-run --allow-read --allow-env https://deno.land/x/dzx@0.3.2/dzx.ts
-/// <reference path="https://deno.land/x/dzx@0.3.2/types.d.ts" />
-
-console.log(`Hello ${$.blue.bold("world")}!`);
-```
-
-### Markdown
-
-With `dzx` you can run the `js`/`ts` code blocks from a Markdown file as if they
-were a regular script. This is very convenient when you want to blend some
-nicely formatted documentation in with the actual steps of execution.
-
-Give it a try by running:
-
-```bash
-dzx ./examples/markdown.md
-```
-
-See the [markdown example](./examples/markdown.md) for further documentation and
-notes.
-
-### Methods
+#### Methods
 
 - `` $`command` ``: Executes a shell command and returns a `Process` instance.
   The [`Process`](#process) class has several chainable methods.
@@ -263,7 +193,7 @@ notes.
 - `` quote`string` ``: The quote methods quotes safly a string. by default the
   `shq` package is used. Can be overidden with `$.quote`.
 
-### Process
+#### Process
 
 Methods and properties of the `Process` class which implements
 `Promise<ProcessOutput>` and is returned by the `$` method.
@@ -343,7 +273,11 @@ Methods and properties of the `Process` class which implements
   await child;
   ```
 
-### Modules
+### Std modules
+
+> **Note** The `./mod.ts` module exports several `deno/std` modules. If you
+> don't need these modules you can just import the `$` symbol from the
+> `./shell.ts` module.
 
 - **$.\[style]:** Cliffy's color module. A chainable wrapper for Deno's
   `std/fmt/colors` module. Available on the global `$` symbol.
@@ -399,84 +333,30 @@ Methods and properties of the `Process` class which implements
   const args: flags.Args = flags.parse($.args);
   ```
 
-### Variables
+## Globals
 
-- **$.shell:** Set the shell that is used by `` $`command` ``. Default:
-  `/bin/bash`
-- **$.prefix:** Command prefix. Default: `set -euo pipefail;`.
-- **$.mainModule:** The executed dzx script.
-- **$.verbose:** Enable debugging output (log shell commands and execution
-  time).
-- **$.stdout:** Change stdout mode of `` $`command` ``. Can be `"inherit"`,
-  `"piped"`, `"null"` or `number`. Default: `"piped"`
-- **$.stderr:** Change stderr mode of `` $`command` ``. Can be `"inherit"`,
-  `"piped"`, `"null"` or `number`. Default: `"piped"`
-- **$.args:** Equivalent to `Deno.args`, but without the script name as first
-  argument.
-- **$.startTime:** The execution start time in ms.
-- **$.time:** The time left since execution start (now() - $.startTime).
-- **$.quote:** Parser method that is used to safely quote strings. Used by:
-  `` $`command` ``
+To avoid importing modules you can also import the `globals.ts` file. This makes
+all exports from `mod.ts` globally available.
 
-## Experimental
+> **Note** This feature is mostly used by the cli and in most cases you
+> shouldn't use globals.
 
-### Worker
-
-> This is currently an exerminental feature. Permission flags doesn't support
-> values currently. Read permissions are required by default.
-
-If `dzx` is called with `-w` or `--worker`, the script is executed inside an
-isolated web worker. If enabled, you can pass explicit permissions directly to
-the `dzx` cli.
-
-```typescript
-#!/usr/bin/env dzx --worker --allow-read
-/// <reference path="https://deno.land/x/dzx@0.3.2/types.d.ts" />
-
-console.log(`Hello from ${$.blue.bold("worker")}!`);
+```ts
+import from "https://deno.land/x/dzx@0.3.2/globals.ts";
 ```
 
 ## CLI
 
+### Install
+
 ```
-  Usage:   dzx [script] [args...]
-  Version: 0.3.1  (New version available: 0.3.2. Run 'dzx upgrade' to upgrade to the latest version!)
-
-  Description:
-
-    A custom deno runtime for fun.
-
-  Options:
-
-    -h, --help               - Show this help.
-    -V, --version            - Show the version number for this program.
-    -A, --allow-all          - Allow all permissions.                                                           (Depends: --worker)
-    --allow-env              - Allow environment access.                                                        (Depends: --worker)
-    --allow-hrtime           - Allow high resolution time measurement.                                          (Depends: --worker)
-    --allow-net              - Allow network access.                                                            (Depends: --worker)
-    --allow-ffi              - Allow loading dynamic libraries.                                                 (Depends: --worker)
-    --allow-read             - Allow file system read access.                                                   (Depends: --worker)
-    --allow-run              - Allow running subprocesses.                                                      (Depends: --worker)
-    --allow-write            - Allow file system write access.                                                  (Depends: --worker)
-    --compat                 - Node compatibility mode. Currently only enables built-in node modules like 'fs'
-                               and globals like 'process'.
-    --inspect        <host>  - Activate inspector on host:port. (default: 127.0.0.1:9229)
-    --inspect-brk    <host>  - Activate inspector on host:port and break at start of user script.
-    -w, --worker             - Run script in an isolated web worker with it's own permissions. (experimental)
-    -v, --verbose            - Enable verbose mode. This option can appear up to three times.                   (Default: 1)
-                               -v: Print executed commands and script execution time.
-                               -vv: Print also stdout and stderr.
-                               -vvv: Print internal debug information.
-    --no-verbose             - Disable stdout output.
-
-  Commands:
-
-    bundle   [script]  - Bundle a dzx script to a standalone deno script.
-    compile  [script]  - Compile a dzx script to a standalone binary.
-    eval     [code]    - Evaluate a dzx script from the command line.
-    repl               - Start a dzx repl.
-    upgrade            - Upgrade dzx executable to latest or given version.
+deno install --allow-all --unstable -f https://deno.land/x/dzx@0.3.2/dzx.ts
 ```
+
+> **Warning** `--unstable` is required for the `bundle` command which uses
+> `Deno.emit`, for `std/fs/copy` and for web workers.
+
+### Commands
 
 - **dzx** `[script] [...args]`: Run a local or remote dzx script (optional in a
   web worker).
@@ -546,9 +426,86 @@ console.log(`Hello from ${$.blue.bold("worker")}!`);
   dzx upgrade --list-versions
   ```
 
+### Execute scripts via cli
+
+When a dzx script is executed via CLI, you don't need to import anything. All
+exports are automatically global available. This applies also to commands like
+`dzx eval "console.log($)"`.
+
+To start writing a dzx script, add next shebang at the beginning of your script:
+
+```
+#!/usr/bin/env dzx
+```
+
+After making your script executable,
+
+```shell
+chmod +x ./script.js
+```
+
+you can simply run it with:
+
+```shell
+./script.js
+```
+
+To enable typescript support in your IDE, you can optionally add a tripple slash
+reference to the top of the file.
+
+```
+#!/usr/bin/env dzx
+/// <reference path="https://deno.land/x/dzx@0.3.2/types.d.ts" />
+```
+
+### Permissions
+
+You can use `dzx` without installation by using next shebang. This also allows
+you to explicitly set the permissions for your script.
+
+```typescript
+#!/usr/bin/env deno run --allow-run --allow-read --allow-env https://deno.land/x/dzx@0.3.2/dzx.ts
+/// <reference path="https://deno.land/x/dzx@0.3.2/types.d.ts" />
+
+console.log(`Hello ${$.blue.bold("world")}!`);
+```
+
+### Markdown
+
+With `dzx` you can run the `js`/`ts` code blocks from a Markdown file as if they
+were a regular script. This is very convenient when you want to blend some
+nicely formatted documentation in with the actual steps of execution.
+
+Give it a try by running:
+
+```bash
+dzx ./examples/markdown.md
+```
+
+> **Note** See the [markdown example](./examples/markdown.md) for further
+> documentation and notes.
+
+### Experimental
+
+#### worker
+
+> **Warning** This is an exerminental feature. Permission flags doesn't support
+> values currently. Read permissions are required by default.
+
+If `dzx` is called with `-w` or `--worker`, the script is executed inside an
+isolated web worker. If enabled, you can pass explicit permissions directly to
+the `dzx` cli.
+
+```typescript
+#!/usr/bin/env dzx --worker --allow-read
+/// <reference path="https://deno.land/x/dzx@0.3.2/types.d.ts" />
+
+console.log(`Hello from ${$.blue.bold("worker")}!`);
+```
+
 ## Contributing
 
-Any kind of contribution is welcome!
+Any kind of contribution is very welcome!
 
 ## License
 
