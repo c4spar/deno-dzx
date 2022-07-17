@@ -38,7 +38,7 @@ import {
   fs,
   io,
   path,
-} from "https://deno.land/x/dzx@0.3.2/mod.ts";
+} from "https://deno.land/x/dzx@0.4.0/mod.ts";
 
 // Output stdout & stderr. Can be: true, false, 0, 1 or 2. Default is: 1
 $.verbose = 2;
@@ -96,17 +96,17 @@ await fs.ensureDir("./tmp");
 - `./mod.ts`: Exports the shell and all std modules.
 
   ```ts
-  import { $, cd, path } from "https://deno.land/x/dzx@0.3.2/mod.ts";
+  import { $, cd, path } from "https://deno.land/x/dzx@0.4.0/mod.ts";
   // or
-  import $ from "https://deno.land/x/dzx@0.3.2/mod.ts";
+  import $ from "https://deno.land/x/dzx@0.4.0/mod.ts";
   ```
 
 - `./shell.ts`: Exports only the shell.
 
   ```ts
-  import { $ } from "https://deno.land/x/dzx@0.3.2/shell.ts";
+  import { $ } from "https://deno.land/x/dzx@0.4.0/shell.ts";
   // or
-  import $ from "https://deno.land/x/dzx@0.3.2/shell.ts";
+  import $ from "https://deno.land/x/dzx@0.4.0/shell.ts";
   ```
 
 ### Shell
@@ -389,7 +389,7 @@ When impoting `./globals.ts`, all members exported by `./mod.ts` are globally
 available.
 
 ```ts
-import "https://deno.land/x/dzx@0.3.2/globals.ts";
+import "https://deno.land/x/dzx@0.4.0/globals.ts";
 
 cd("foo/bar");
 
@@ -405,7 +405,7 @@ available.
 ### Install
 
 ```
-deno install --allow-all -f https://deno.land/x/dzx@0.3.2/dzx.ts
+deno install --allow-all -f https://deno.land/x/dzx@0.4.0/dzx.ts
 ```
 
 ### Commands
@@ -511,7 +511,7 @@ reference to the top of the file.
 
 ```
 #!/usr/bin/env dzx
-/// <reference path="https://deno.land/x/dzx@0.3.2/globals.ts" />
+/// <reference path="https://deno.land/x/dzx@0.4.0/globals.ts" />
 ```
 
 ### Permissions
@@ -520,8 +520,8 @@ You can use `dzx` without installation by using next shebang. This also allows
 you to explicitly set the permissions for your script.
 
 ```typescript
-#!/usr/bin/env deno run --allow-run --allow-read --allow-env https://deno.land/x/dzx@0.3.2/dzx.ts
-/// <reference path="https://deno.land/x/dzx@0.3.2/globals.ts" />
+#!/usr/bin/env deno run --allow-run --allow-read --allow-env https://deno.land/x/dzx@0.4.0/dzx.ts
+/// <reference path="https://deno.land/x/dzx@0.4.0/globals.ts" />
 
 console.log(`Hello ${$.blue.bold("world")}!`);
 ```
@@ -554,7 +554,7 @@ the `dzx` cli.
 
 ```typescript
 #!/usr/bin/env dzx --worker --allow-read
-/// <reference path="https://deno.land/x/dzx@0.3.2/globals.ts" />
+/// <reference path="https://deno.land/x/dzx@0.4.0/globals.ts" />
 
 console.log(`Hello from ${$.blue.bold("worker")}!`);
 ```
