@@ -25,6 +25,7 @@ export class Process extends Reader<ProcessOutput> {
   #timeout = 0;
   #timers: Array<number> = [];
   #delay = 500;
+  #env: Record<string, string> = {};
   #throwErrors = true;
   #isKilled = false;
   #shouldRetry?: RetryCallback;
@@ -63,7 +64,10 @@ export class Process extends Reader<ProcessOutput> {
     if (!this.#proc) {
       this.#proc = Deno.run({
         cmd: [$.shell, "-c", $.prefix + " " + this.#cmd],
-        env: Deno.env.toObject(),
+        env: {
+          ...Deno.env.toObject(),
+          ...this.#env,
+        },
         stdin: this.#stdin,
         stdout: this.#stdout,
         stderr: this.#stderr,
@@ -146,6 +150,11 @@ export class Process extends Reader<ProcessOutput> {
 
   timeout(timeout: number): this {
     this.#timeout = timeout;
+    return this;
+  }
+
+  env(name: string, value: string | number | boolean): this {
+    this.#env[name] = value.toString();
     return this;
   }
 
