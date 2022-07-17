@@ -1,10 +1,10 @@
-/// <reference path="./types.d.ts" />
-
 import {
   assert,
   assertEquals,
   assertRejects,
+  assertSpyCalls,
   assertStringIncludes,
+  spy,
 } from "./dev_deps.ts";
 
 import { $, $e, $o, cd, path, ProcessError } from "./mod.ts";
@@ -168,6 +168,17 @@ Deno.test({
     const result = await $`exit 1`.noThrow.delay(100).retry(3);
     assertEquals(result.retries, 3);
     assertEquals(result.status.code, 1);
+  },
+});
+
+Deno.test({
+  name: "$ should retry command with custom callback if it fails",
+  async fn() {
+    const retrySpy = spy(({ retries }: ProcessError) => retries < 3);
+    const result = await $`exit 1`.noThrow.delay(100).retry(retrySpy);
+    assertEquals(result.retries, 3);
+    assertEquals(result.status.code, 1);
+    assertSpyCalls(retrySpy, 4);
   },
 });
 

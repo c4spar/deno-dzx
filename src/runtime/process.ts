@@ -5,6 +5,8 @@ import { ProcessOutput } from "./process_output.ts";
 import { Reader } from "./reader.ts";
 import { $ } from "./shell.ts";
 
+export type RetryCallback = (error: ProcessError) => boolean | Promise<boolean>;
+
 export interface ProcessOptions {
   // deno-lint-ignore ban-types
   errorContext?: Function;
@@ -19,13 +21,13 @@ export class Process extends Reader<ProcessOutput> {
   #stdout: Deno.RunOptions["stdout"] = $.stdout;
   #stderr: Deno.RunOptions["stderr"] = $.stderr;
   #baseError: ProcessError;
-  #maxRetries = 0;
   #retries = 0;
   #timeout = 0;
   #timers: Array<number> = [];
   #delay = 500;
   #throwErrors = true;
   #isKilled = false;
+  #shouldRetry?: RetryCallback;
   #stdoutReader: Reader<string>;
   #stderrReader: Reader<string>;
 
@@ -129,8 +131,11 @@ export class Process extends Reader<ProcessOutput> {
     return this.#stderrReader;
   }
 
-  retry(retries: number): this {
-    this.#maxRetries = retries;
+  retry(retries: number | RetryCallback): this {
+    this.#shouldRetry = typeof retries === "number"
+      ? (error) => error.retries < retries
+      : (error) => retries(error);
+
     return this;
   }
 
@@ -195,14 +200,26 @@ export class Process extends Reader<ProcessOutput> {
       });
 
       if (!status.success) {
-        output = ProcessError.merge(
+        const error = ProcessError.merge(
           this.#baseError,
           new ProcessError(output),
         );
 
-        if (this.#throwErrors || this.#retries < this.#maxRetries) {
-          throw output;
+        if (await this.#shouldRetry?.(error)) {
+          if (this.#delay) {
+            await new Promise((resolve) =>
+              this.#timers.push(setTimeout(resolve, this.#delay))
+            );
+          }
+          this.#close();
+          this.#proc = null;
+          this.#retries++;
+
+          return this.#run();
+        } else if (this.#throwErrors) {
+          throw error;
         }
+        output = error;
       }
       this.#close();
       this.#closeTimer();
@@ -210,19 +227,6 @@ export class Process extends Reader<ProcessOutput> {
       return output;
     } catch (error) {
       this.#close();
-
-      if (this.#retries < this.#maxRetries) {
-        this.#retries++;
-        this.#proc = null;
-
-        if (this.#delay) {
-          await new Promise((resolve) =>
-            this.#timers.push(setTimeout(resolve, this.#delay))
-          );
-        }
-
-        return this.#run();
-      }
       this.#closeTimer();
 
       throw error;
@@ -259,28 +263,3 @@ async function read(
     }
   }
 }
-
-// interface Stdio {
-//   stdin?: Deno.SpawnOptions["stdin"];
-//   stdout?: Deno.SpawnOptions["stdout"];
-//   stderr?: Deno.SpawnOptions["stderr"];
-// }
-
-// inherit(): this {
-//   this.#stdin = "inherit";
-//   this.#stdout = "inherit";
-//   this.#stderr = "inherit";
-//   return this;
-// }
-
-// stdio(stdio: Stdio) {
-//   if (stdio.stdin) {
-//     this.#stdin = stdio.stdin;
-//   }
-//   if (stdio.stdout) {
-//     this.#stdout = stdio.stdout;
-//   }
-//   if (stdio.stderr) {
-//     this.#stderr = stdio.stderr;
-//   }
-// }

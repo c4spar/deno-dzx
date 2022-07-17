@@ -1,5 +1,5 @@
+import { createError } from "../runtime/lib/error.ts";
 import { preBundle } from "./bundle.ts";
-import { createError } from "../_utils.ts";
 import { Command, copy, parse, ValidationError } from "./deps.ts";
 
 export function compileCommand() {
