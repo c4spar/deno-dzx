@@ -294,6 +294,13 @@ Methods and properties of the `Process` class which implements
   await $`sleep 10`.timeout(1000);
   ```
 
+- `.cwd(path: string)` Set the cwd for the current process.
+
+  ```ts
+  // Change process cwd.
+  await $`pwd`.cwd("examples");
+  ```
+
 - `.env(name: string, value: string | number | boolean | Record<string, unknown>)`
   Defines an environment variable which is only set for the current process. If
   the value is an object, `JSON.stringify(value)` will be used as value for the
